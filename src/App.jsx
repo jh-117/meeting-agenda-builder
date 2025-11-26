@@ -25,13 +25,6 @@ function App() {
     setCurrentStep('step2');
   };
 
-  const handleStep2Submit = (data) => {
-    setAgendaData((prev) => ({
-      ...prev,
-      ...data,
-    }));
-    setCurrentStep('editor');
-  };
 
   const handlePreviewClick = () => {
     setShowPreview(true);
