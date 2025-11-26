@@ -1,71 +1,64 @@
-// src/services/agendaAIService.js
-import { supabase } from '../supabaseClient.js'
+// src/services/agendaAIService.js (temporary direct fetch version)
+
+const SUPABASE_URL = 'https://ygblsastopstzgamuzht.supabase.co'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnYmxzYXN0b3BzdHpnYW11emh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4ODI3NTcsImV4cCI6MjA3OTQ1ODc1N30.rwHV_otkBu80G3t1jkDWKmPxZrpV6aD-PK3XprofUKc'
 
 export const generateAgendaWithAI = async (formData) => {
   try {
-    console.log('Calling Supabase Edge Function with:', formData);
+    console.log('📡 Calling Edge Function directly...');
     
-    const { data, error } = await supabase.functions.invoke('agenda-generator', {
-      body: {
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/agenda-generator`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         action: 'generate',
         formData: formData
-      }
+      })
     });
 
-    console.log('Supabase response:', { data, error });
-
-    if (error) {
-      console.error('Supabase Edge Function error:', error);
-      throw new Error(`Failed to generate agenda: ${error.message}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    if (!data) {
-      throw new Error('No data received from Edge Function');
-    }
-
-    // If the Edge Function returns an error property
-    if (data.error) {
-      throw new Error(data.error);
-    }
-
+    const data = await response.json();
+    console.log('✅ Edge Function response:', data);
     return data;
     
   } catch (error) {
-    console.error('Error in generateAgendaWithAI:', error);
+    console.error('❌ Error in generateAgendaWithAI:', error);
     throw new Error(`Failed to generate agenda: ${error.message}`);
   }
 }
 
 export const regenerateAgendaWithAI = async (agendaData) => {
   try {
-    console.log('Calling Supabase Edge Function for regeneration:', agendaData);
+    console.log('📡 Calling Edge Function for regeneration...');
     
-    const { data, error } = await supabase.functions.invoke('agenda-generator', {
-      body: {
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/agenda-generator`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         action: 'regenerate',
         agendaData: agendaData
-      }
+      })
     });
 
-    console.log('Supabase regeneration response:', { data, error });
-
-    if (error) {
-      console.error('Supabase Edge Function error:', error);
-      throw new Error(`Failed to regenerate agenda: ${error.message}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    if (!data) {
-      throw new Error('No data received from Edge Function');
-    }
-
-    if (data.error) {
-      throw new Error(data.error);
-    }
-
+    const data = await response.json();
+    console.log('✅ Edge Function regeneration response:', data);
     return data;
     
   } catch (error) {
-    console.error('Error in regenerateAgendaWithAI:', error);
+    console.error('❌ Error in regenerateAgendaWithAI:', error);
     throw new Error(`Failed to regenerate agenda: ${error.message}`);
   }
 }
