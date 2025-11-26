@@ -109,7 +109,7 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, currentLanguage }
 };
 
 function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenerate }) {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const currentLanguage = i18n.language;
   const [isGenerating, setIsGenerating] = useState(false);
   const [exportFormat, setExportFormat] = useState('pdf');
