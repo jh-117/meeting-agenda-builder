@@ -1,0 +1,88 @@
+{
+  "landing": {
+    "heroBadge": "AI-Powered Meeting Agenda Generator",
+    "heroTitle": "Create Professional Meeting Agendas",
+    "heroDescription": "Use AI tools to generate well-organized meeting agendas in minutes. Supports live editing and multi-format export for efficient and professional meetings.",
+    "ctaButton": "Start Creating",
+    "featuresTitle": "Core Features",
+    "feature1Title": "AI-Powered",
+    "feature1Desc": "Generate meeting agendas instantly with AI assistance.",
+    "feature2Title": "Multi-format Export",
+    "feature2Desc": "Download your agenda as PDF, Word, or TXT formats.",
+    "feature3Title": "Live Editing",
+    "feature3Desc": "Edit and adjust your agenda in real-time before export.",
+    "processTitle": "How It Works",
+    "step1": "Input Info",
+    "step2": "AI Generation",
+    "step3": "Edit & Adjust",
+    "step4": "Export",
+    "readyTitle": "Ready to Start?",
+    "readyDesc": "Create your first AI-powered meeting agenda now",
+    "readyButton": "Start Now"
+  },
+   "formStep1": {
+    "header": "Create a New Meeting Agenda",
+    "subHeader": "Step 1 / 2 - Basic Information",
+    "meetingTitle": "Meeting Title",
+    "meetingDate": "Meeting Date",
+    "meetingTime": "Meeting Time",
+    "duration": "Duration (minutes)",
+    "location": "Location / Meeting Link",
+    "facilitator": "Facilitator",
+    "noteTaker": "Note Taker",
+    "attendees": "Attendees",
+    "meetingObjective": "Meeting Objective",  
+    "errors": {
+      "meetingTitle": "Meeting title is required",
+      "meetingDate": "Meeting date is required",
+      "meetingTime": "Meeting time is required",
+      "location": "Location is required",
+      "facilitator": "Facilitator is required",
+      "meetingObjective": "Meeting objective is required"  
+   
+    }
+  },
+  "formStep2": {
+    "header": "Add Detailed Info",
+    "subHeader": "Step 2 / 2 - Agenda & Action Items",
+    "meetingObjective": "Meeting Objective",
+    "agendaItems": "Agenda Items",
+    "discussionItems": "Discussion Items",
+    "actionItems": "Action Items",
+    "notes": "Notes & Additional Info",
+    "addAgenda": "Add Agenda Item",
+    "addAction": "Add Action Item",
+    "continue": "Continue to Editor",
+    "attachments": "附件",
+    "clickToUpload": "点击上传文件",
+    "uploadHint": "支持 PDF, Word, Excel, PowerPoint, 图片等格式",
+    "uploadedFiles": "已上传文件",
+    "back": "返回"
+  },
+  "agendaEditor": {
+    "preview": "Preview",
+    "reset": "Reset",
+    "basicInfo": "Basic Info",
+    "meetingTitle": "Meeting Title",
+    "meetingObjective": "Meeting Objective",
+    "agendaItems": "Agenda Items",
+    "actionItems": "Action Items",
+    "download": "Download Agenda"
+  },
+  "previewModal": {
+    "title": "Agenda Preview",
+    "date": "Date",
+    "time": "Time",
+    "duration": "Duration",
+    "location": "Location",
+    "facilitator": "Facilitator",
+    "agendaOverview": "Agenda Overview",
+    "selectFormat": "Select Export Format",
+    "cancel": "Cancel",
+    "download": "Download",
+    "exporting": "Exporting..."
+  },
+  "notification": {
+    "exportSuccess": "Agenda successfully exported as {{format}}!"
+  }
+}

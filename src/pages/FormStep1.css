@@ -1,0 +1,582 @@
+/* ============================================
+   FormStep1.css - 重构版本
+   ============================================ */
+
+.form-step1 {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.dark .form-step1 {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.form-container {
+  width: 100%;
+  max-width: 800px;
+  background: var(--bg-light);
+  border-radius: 24px;
+  padding: 50px;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.1);
+  border: 1px solid var(--border-light);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.dark .form-container {
+  background: var(--bg-dark-secondary);
+  border-color: var(--border-dark);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.form-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.form-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: var(--text-light);
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .form-header h1 {
+  background: linear-gradient(135deg, #818cf8, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.form-header p {
+  font-size: 14px;
+  color: var(--text-light-secondary);
+}
+
+.dark .form-header p {
+  color: var(--text-dark-secondary);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--border-light);
+  border-radius: 3px;
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+.dark .progress-bar {
+  background: var(--border-dark);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #4f46e5);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* 表单区块样式 */
+.form-section {
+  background: var(--bg-light-secondary);
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+}
+
+.dark .form-section {
+  background: var(--bg-dark);
+  border-color: var(--border-dark);
+}
+
+.form-section:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.1);
+}
+
+.form-section h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dark .form-section h3 {
+  color: var(--text-dark);
+}
+
+/* 表单组样式 */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dark .form-group label {
+  color: var(--text-dark);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 12px 16px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--bg-light);
+  color: var(--text-light);
+  transition: all 0.3s ease;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.dark .form-group input,
+.dark .form-group textarea,
+.dark .form-group select {
+  background: var(--bg-dark-secondary);
+  border-color: var(--border-dark);
+  color: var(--text-dark);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* 表单行布局 */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 带后缀的输入框 */
+.input-with-suffix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-suffix input {
+  padding-right: 60px;
+  width: 100%;
+}
+
+.input-suffix {
+  position: absolute;
+  right: 12px;
+  color: var(--text-light-secondary);
+  font-size: 12px;
+  pointer-events: none;
+  background: transparent;
+}
+
+.dark .input-suffix {
+  color: var(--text-dark-secondary);
+}
+
+/* 复选框组 */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--border-light);
+  background: var(--bg-light);
+  cursor: pointer;
+}
+
+.dark .checkbox-group input[type="checkbox"] {
+  background: var(--bg-dark-secondary);
+  border-color: var(--border-dark);
+}
+
+.checkbox-group input[type="checkbox"]:checked {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.checkbox-group label {
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+/* 文件上传区域 */
+.file-upload-section {
+  margin-top: 8px;
+}
+
+.upload-area {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.file-input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+  border: 2px dashed var(--border-light);
+  border-radius: 12px;
+  background: var(--bg-light);
+  color: var(--text-light-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.dark .upload-label {
+  background: var(--bg-dark-secondary);
+  border-color: var(--border-dark);
+  color: var(--text-dark-secondary);
+}
+
+.upload-label:hover {
+  border-color: var(--primary);
+  background: rgba(99, 102, 241, 0.05);
+  transform: translateY(-2px);
+}
+
+.dark .upload-label:hover {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.upload-label svg {
+  color: var(--primary);
+  opacity: 0.8;
+}
+
+.upload-hint {
+  font-size: 12px;
+  color: var(--text-light-secondary);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.dark .upload-hint {
+  color: var(--text-dark-secondary);
+}
+
+.attachments-list {
+  margin-top: 16px;
+}
+
+.attachments-list h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-light);
+}
+
+.dark .attachments-list h4 {
+  color: var(--text-dark);
+}
+
+.attachment-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-light);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.dark .attachment-item {
+  background: var(--bg-dark-secondary);
+  border-color: var(--border-dark);
+}
+
+.attachment-item:hover {
+  border-color: var(--primary);
+  transform: translateX(2px);
+}
+
+.attachment-item svg {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.file-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.file-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-light);
+  word-break: break-word;
+}
+
+.dark .file-name {
+  color: var(--text-dark);
+}
+
+.file-size {
+  font-size: 11px;
+  color: var(--text-light-secondary);
+}
+
+.dark .file-size {
+  color: var(--text-dark-secondary);
+}
+
+.btn-remove-attachment {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  color: #ef4444;
+  opacity: 0.7;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.btn-remove-attachment:hover {
+  opacity: 1;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* 错误状态 */
+.form-group input.error,
+.form-group textarea.error,
+.form-group select.error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.error-message {
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 4px;
+}
+
+/* 表单操作按钮 */
+.form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-light);
+}
+
+.dark .form-actions {
+  border-top-color: var(--border-dark);
+}
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 40px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 30px;
+    max-height: 90vh;
+  }
+
+  .form-header h1 {
+    font-size: 24px;
+  }
+
+  .form-content {
+    gap: 24px;
+  }
+
+  .form-section {
+    padding: 20px;
+  }
+
+  .upload-label {
+    padding: 30px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-step1 {
+    padding: 20px 10px;
+  }
+
+  .form-container {
+    padding: 20px;
+    border-radius: 16px;
+    max-height: 95vh;
+  }
+
+  .form-header h1 {
+    font-size: 20px;
+  }
+
+  .form-header p {
+    font-size: 12px;
+  }
+
+  .form-section {
+    padding: 16px;
+  }
+
+  .attachment-item {
+    padding: 10px 12px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 20px;
+  }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+.form-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.form-container::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 3px;
+}
+
+.dark .form-container::-webkit-scrollbar-thumb {
+  background: var(--border-dark);
+}
+
+.form-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-light-secondary);
+}
+
+.dark .form-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dark-secondary);
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-section {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* 选择框样式增强 */
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.dark .form-group select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
