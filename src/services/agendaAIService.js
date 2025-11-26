@@ -1,129 +1,48 @@
 // services/agendaAIService.js
-// 这个文件用来调用AI生成议程
-
-// services/agendaAIService.js
-import { createClient } from '@supabase/supabase-js';
-
-let supabase = null;
-
-export const initializeSupabase = (url, key) => {
-  supabase = createClient(url, key);
-};
-
-export const getSupabase = () => {
-  if (!supabase) {
-    throw new Error('Supabase not initialized. Call initializeSupabase first.');
-  }
-  return supabase;
-};
-
-// Update your functions to use getSupabase()
-async function getOpenAIApiKey() {
-  try {
-    const { data, error } = await getSupabase()
-      .from('secrets')
-      .select('value')
-      .eq('name', 'OPENAI_API_KEY')
-      .single();
-
-    if (error) throw error;
-    return data.value;
-  } catch (error) {
-    console.error('Failed to fetch OpenAI API key:', error);
-    throw new Error('无法获取API密钥');
-  }
-}
-
+// 使用 Supabase Edge Function 来访问 secret
 
 /**
- * 调用 OpenAI 生成议程
+ * 调用 Supabase Edge Function 生成议程
+ * Edge Function 会从 Secret 中获取 OpenAI API Key
  */
 async function generateAgendaWithAI(formData) {
   try {
-    const apiKey = await getOpenAIApiKey();
-
-    // 构建提示词
-    const prompt = `You are a professional meeting agenda generator. Based on the following meeting information, generate a detailed and well-structured agenda.
-
-Meeting Information:
-- Title: ${formData.meetingTitle}
-- Date: ${formData.meetingDate}
-- Time: ${formData.meetingTime}
-- Duration: ${formData.duration} minutes
-- Location: ${formData.location}
-- Meeting Type: ${formData.meetingType}
-- Facilitator: ${formData.facilitator}
-- Attendees: ${formData.attendees || 'Not specified'}
-- Objective: ${formData.meetingObjective}
-${formData.additionalInfo ? `- Additional Info: ${formData.additionalInfo}` : ''}
-
-Please generate a JSON response with the following structure (return ONLY valid JSON):
-{
-  "agendaItems": [
-    {
-      "topic": "string",
-      "owner": "string (person responsible for this topic)",
-      "timeAllocation": number (in minutes),
-      "description": "string (what will be discussed)",
-      "expectedOutput": "string (what should be decided or delivered)"
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    
+    if (!supabaseUrl) {
+      throw new Error('Supabase URL 未配置');
     }
-  ],
-  "actionItems": [
-    {
-      "task": "string",
-      "owner": "string",
-      "deadline": "YYYY-MM-DD"
-    }
-  ],
-  "suggestedNotes": "string (any important notes or tips for this meeting)"
-}
 
-Generate between 4-8 agenda items based on the meeting duration. Distribute time proportionally.`;
-
-    // 调用 OpenAI API
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-        temperature: 0.7,
-        max_tokens: 2000,
-      }),
-    });
+    // 调用你的 Edge Function
+    const response = await fetch(
+      `${supabaseUrl}/functions/v1/agenda-generator`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'generate',
+          formData,
+        }),
+      }
+    );
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error?.message || 'OpenAI API error');
+      throw new Error(error.error || 'Edge Function error');
     }
 
     const data = await response.json();
-    const content = data.choices[0].message.content;
-
-    // 清理可能的 markdown 代码块
-    const cleanedContent = content
-      .replace(/```json\n?/g, '')
-      .replace(/```\n?/g, '')
-      .trim();
-
-    const parsedData = JSON.parse(cleanedContent);
 
     // 为议程项添加 ID
-    const agendaItemsWithId = parsedData.agendaItems.map((item, index) => ({
+    const agendaItemsWithId = data.agendaItems.map((item, index) => ({
       ...item,
       id: `agenda-${Date.now()}-${index}`,
     }));
 
     return {
-      ...parsedData,
+      ...data,
       agendaItems: agendaItemsWithId,
     };
   } catch (error) {
@@ -133,83 +52,44 @@ Generate between 4-8 agenda items based on the meeting duration. Distribute time
 }
 
 /**
- * 重新生成议程（用于编辑器中的重新生成功能）
+ * 重新生成议程
  */
 async function regenerateAgendaWithAI(agendaData) {
   try {
-    const apiKey = await getOpenAIApiKey();
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
-    const prompt = `You are a professional meeting agenda generator. Please regenerate the agenda items with a different approach or perspective.
-
-Current agenda items:
-${agendaData.agendaItems.map(item => `- ${item.topic} (${item.timeAllocation}min) - ${item.description}`).join('\n')}
-
-Meeting context:
-- Title: ${agendaData.meetingTitle}
-- Duration: ${agendaData.duration} minutes
-- Objective: ${agendaData.meetingObjective}
-
-Generate a NEW agenda with different structure or emphasis, returning ONLY valid JSON:
-{
-  "agendaItems": [
-    {
-      "topic": "string",
-      "owner": "string",
-      "timeAllocation": number,
-      "description": "string",
-      "expectedOutput": "string"
+    if (!supabaseUrl) {
+      throw new Error('Supabase URL 未配置');
     }
-  ],
-  "actionItems": [
-    {
-      "task": "string",
-      "owner": "string",
-      "deadline": "YYYY-MM-DD"
-    }
-  ]
-}`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-        temperature: 0.8,
-        max_tokens: 2000,
-      }),
-    });
+    const response = await fetch(
+      `${supabaseUrl}/functions/v1/agenda-generator`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'regenerate',
+          agendaData,
+        }),
+      }
+    );
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error?.message || 'OpenAI API error');
+      throw new Error(error.error || 'Edge Function error');
     }
 
     const data = await response.json();
-    const content = data.choices[0].message.content;
 
-    const cleanedContent = content
-      .replace(/```json\n?/g, '')
-      .replace(/```\n?/g, '')
-      .trim();
-
-    const parsedData = JSON.parse(cleanedContent);
-
-    const agendaItemsWithId = parsedData.agendaItems.map((item, index) => ({
+    const agendaItemsWithId = data.agendaItems.map((item, index) => ({
       ...item,
       id: `agenda-${Date.now()}-${index}`,
     }));
 
     return {
-      ...parsedData,
+      ...data,
       agendaItems: agendaItemsWithId,
     };
   } catch (error) {
