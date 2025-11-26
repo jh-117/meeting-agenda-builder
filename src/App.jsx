@@ -19,14 +19,7 @@ function App() {
   const { theme, toggleTheme } = useTheme();
   const { notification, showNotification, hideNotification } = useNotification();
 
-  // Initialize Supabase on mount
-  useEffect(() => {
-    try {
-      initializeSupabase();
-    } catch (error) {
-      console.error('Failed to initialize Supabase:', error);
-    }
-  }, []);
+
 
   const handleStartClick = () => {
     setCurrentStep('step1');
