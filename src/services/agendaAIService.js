@@ -1,20 +1,26 @@
 // services/agendaAIService.js
 // 这个文件用来调用AI生成议程
 
+// services/agendaAIService.js
 import { createClient } from '@supabase/supabase-js';
 
-// 初始化 Supabase 客户端（连接到存放secret的project）
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL, // 使用 Vite 环境变量
-  import.meta.env.VITE_SUPABASE_ANON_KEY // 使用 Vite 环境变量
-);
+let supabase = null;
 
-/**
- * 从 Supabase 获取 OpenAI API Key
- */
+export const initializeSupabase = (url, key) => {
+  supabase = createClient(url, key);
+};
+
+export const getSupabase = () => {
+  if (!supabase) {
+    throw new Error('Supabase not initialized. Call initializeSupabase first.');
+  }
+  return supabase;
+};
+
+// Update your functions to use getSupabase()
 async function getOpenAIApiKey() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabase()
       .from('secrets')
       .select('value')
       .eq('name', 'OPENAI_API_KEY')
@@ -27,6 +33,7 @@ async function getOpenAIApiKey() {
     throw new Error('无法获取API密钥');
   }
 }
+
 
 /**
  * 调用 OpenAI 生成议程
