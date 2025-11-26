@@ -10,5 +10,3 @@ root.render(
     <App />
   </React.StrictMode>
 );
-
-// reportWebVitals has been removed
