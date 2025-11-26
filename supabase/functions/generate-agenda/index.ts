@@ -5,7 +5,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
 serve(async (req) => {
@@ -15,19 +15,40 @@ serve(async (req) => {
   }
 
   try {
-    const { action, formData, agendaData } = await req.json();
+    const { action, formData, agendaData, itemData, context, language = "zh" } = await req.json();
 
-    // 从环境变量获取 OpenAI API Key (从 Agenda_generator secret)
+    // 从环境变量获取 OpenAI API Key
     const openaiApiKey = Deno.env.get("Agenda_generator");
     if (!openaiApiKey) {
       throw new Error("OpenAI API Key not configured");
     }
 
+    // 语言配置
+    const languageConfig = {
+      zh: {
+        systemPrompt: "你是一个专业的会议议程生成助手，请用正式、专业的商务中文回复。所有议程项和行动项都使用中文。",
+        generatePrompt: "基于以下会议信息，生成详细且结构良好的议程：",
+        regeneratePrompt: "请以不同的方法或角度重新生成议程项：",
+        regenerateItemPrompt: "请重新生成这个议程项，提供不同的角度或更详细的内容：",
+        jsonInstruction: "请生成以下结构的JSON响应（仅返回有效的JSON，不要markdown或解释）："
+      },
+      en: {
+        systemPrompt: "You are a professional meeting agenda generator. Please use formal, professional business English. All agenda items and action items should be in English.",
+        generatePrompt: "Based on the following meeting information, generate a detailed and well-structured agenda:",
+        regeneratePrompt: "Please regenerate the agenda items with a different approach or perspective:",
+        regenerateItemPrompt: "Please regenerate this agenda item with a different perspective or more detailed content:",
+        jsonInstruction: "Generate a JSON response with the following structure (return ONLY valid JSON, no markdown, no explanations):"
+      }
+    };
+
+    const config = languageConfig[language] || languageConfig.zh;
+
     let prompt = "";
 
     if (action === "generate") {
-      // 生成新议程
-      prompt = `You are a professional meeting agenda generator. Based on the following meeting information, generate a detailed and well-structured agenda in Chinese.
+      prompt = `${config.systemPrompt}
+
+${config.generatePrompt}
 
 Meeting Information:
 - Title: ${formData.meetingTitle}
@@ -41,7 +62,7 @@ Meeting Information:
 - Objective: ${formData.meetingObjective}
 ${formData.additionalInfo ? `- Additional Info: ${formData.additionalInfo}` : ""}
 
-Please generate a JSON response with the following structure (return ONLY valid JSON, no markdown, no explanations):
+${config.jsonInstruction}
 {
   "agendaItems": [
     {
@@ -62,9 +83,11 @@ Please generate a JSON response with the following structure (return ONLY valid 
 }
 
 Generate between 4-8 agenda items based on the meeting duration of ${formData.duration} minutes. Distribute time proportionally.`;
+
     } else if (action === "regenerate") {
-      // 重新生成议程
-      prompt = `You are a professional meeting agenda generator. Please regenerate the agenda items with a different approach or perspective. Generate response in Chinese.
+      prompt = `${config.systemPrompt}
+
+${config.regeneratePrompt}
 
 Current agenda items:
 ${agendaData.agendaItems.map((item: any) => `- ${item.topic} (${item.timeAllocation}min) - ${item.description}`).join("\n")}
@@ -74,7 +97,7 @@ Meeting context:
 - Duration: ${agendaData.duration} minutes
 - Objective: ${agendaData.meetingObjective}
 
-Generate a NEW agenda with different structure or emphasis, returning ONLY valid JSON:
+${config.jsonInstruction}
 {
   "agendaItems": [
     {
@@ -93,9 +116,37 @@ Generate a NEW agenda with different structure or emphasis, returning ONLY valid
     }
   ]
 }`;
+
+    } else if (action === "regenerate_item") {
+      prompt = `${config.systemPrompt}
+
+${config.regenerateItemPrompt}
+
+Current item:
+- Topic: ${itemData.topic}
+- Description: ${itemData.description}
+- Time Allocation: ${itemData.timeAllocation} minutes
+${itemData.owner ? `- Owner: ${itemData.owner}` : ""}
+${itemData.expectedOutput ? `- Expected Output: ${itemData.expectedOutput}` : ""}
+
+Meeting context:
+- Title: ${context.meetingTitle}
+- Objective: ${context.meetingObjective}
+
+Please regenerate ONLY this single agenda item, returning valid JSON:
+{
+  "topic": "string",
+  "owner": "string",
+  "timeAllocation": number,
+  "description": "string",
+  "expectedOutput": "string"
+}`;
+
     } else {
       throw new Error("Invalid action");
     }
+
+    console.log("🤖 AI Prompt:", prompt);
 
     // 调用 OpenAI API
     const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -114,6 +165,7 @@ Generate a NEW agenda with different structure or emphasis, returning ONLY valid
         ],
         temperature: action === "generate" ? 0.7 : 0.8,
         max_tokens: 2000,
+        response_format: { type: "json_object" }
       }),
     });
 
@@ -124,6 +176,8 @@ Generate a NEW agenda with different structure or emphasis, returning ONLY valid
 
     const openaiData = await openaiResponse.json();
     const content = openaiData.choices[0].message.content;
+
+    console.log("🤖 AI Response:", content);
 
     // 清理可能的 markdown 代码块
     const cleanedContent = content
@@ -139,8 +193,9 @@ Generate a NEW agenda with different structure or emphasis, returning ONLY valid
         "Content-Type": "application/json",
       },
     });
+
   } catch (error) {
-    console.error("Error:", error);
+    console.error("❌ Edge Function Error:", error);
 
     return new Response(
       JSON.stringify({
