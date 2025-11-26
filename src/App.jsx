@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { useTheme } from './hooks/useTheme';
 import { useNotification } from './hooks/useNotification';
@@ -18,8 +18,6 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { notification, showNotification, hideNotification } = useNotification();
-
-
 
   const handleStartClick = () => {
     setCurrentStep('step1');
