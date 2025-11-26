@@ -8,16 +8,8 @@ import AgendaEditor from './pages/AgendaEditor';
 import PreviewModal from './components/PreviewModal';
 import NotificationToast from './components/NotificationToast';
 import ThemeToggle from './components/ThemeToggle';
-import LoadingSpinner from './components/LoadingSpinner'; // 需要创建这个组件
+import LoadingSpinner from './components/LoadingSpinner';
 import { generateAgendaWithAI, regenerateAgendaWithAI } from './services/agendaAIService';
-// App.jsx or main.jsx
-import { initializeSupabase } from './services/agendaAIService';
-
-// Initialize with environment variables
-initializeSupabase(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 function App() {
   const [currentStep, setCurrentStep] = useState('landing'); // landing, step1, editor, preview
@@ -26,6 +18,15 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { notification, showNotification, hideNotification } = useNotification();
+
+  // Initialize Supabase on mount
+  useEffect(() => {
+    try {
+      initializeSupabase();
+    } catch (error) {
+      console.error('Failed to initialize Supabase:', error);
+    }
+  }, []);
 
   const handleStartClick = () => {
     setCurrentStep('step1');
