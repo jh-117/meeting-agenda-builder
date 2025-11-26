@@ -7,9 +7,10 @@ import './LandingPage.css';
 function LandingPage({ onStart }) {
   const { t, i18n } = useTranslation();
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
+ const changeLanguage = (lng) => {
+  i18n.changeLanguage(lng);
+  localStorage.setItem('language', lng);
+};
 
   const containerVariants = {
     hidden: { opacity: 0 },
