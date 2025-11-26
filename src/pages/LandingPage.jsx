@@ -7,10 +7,18 @@ import './LandingPage.css';
 function LandingPage({ onStart }) {
   const { t, i18n } = useTranslation();
 
- const changeLanguage = (lng) => {
-  i18n.changeLanguage(lng);
-  localStorage.setItem('language', lng);
-};
+  /**
+   * 切换语言并保存到 localStorage
+   * @param {string} lng - 'en' 或 'zh'
+   */
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    try {
+      localStorage.setItem('language', lng);
+    } catch (error) {
+      console.warn('Unable to save language preference:', error);
+    }
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -34,12 +42,14 @@ function LandingPage({ onStart }) {
         <button
           className={i18n.language === 'en' ? 'active' : ''}
           onClick={() => changeLanguage('en')}
+          aria-label="Switch to English"
         >
           English
         </button>
         <button
           className={i18n.language === 'zh' ? 'active' : ''}
           onClick={() => changeLanguage('zh')}
+          aria-label="切换到中文"
         >
           中文
         </button>
