@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Clock, Download, Edit } from 'lucide-react';
+import { Zap, Download, Edit } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import './LandingPage.css';
 
@@ -71,30 +71,29 @@ function LandingPage({ onStart }) {
       </motion.div>
 
       {/* Features Section */}
- 
-<motion.div className="features-section" variants={itemVariants}>
-  <h2>{t('landing.featuresTitle')}</h2>
-  <div className="features-grid">
-    <div className="feature-card">
-      <div className="feature-icon-wrapper">
-        <Zap className="feature-icon" />
-      </div>
-      <h3>{t('landing.feature1Title')}</h3>
-      <p>{t('landing.feature1Desc')}</p>
-    </div>
-    <div className="feature-card">
-      <div className="feature-icon-wrapper">
-        <Download className="feature-icon" />
-      </div>
-      <h3>{t('landing.feature2Title')}</h3>
-      <p>{t('landing.feature2Desc')}</p>
-    </div>
-    <div className="feature-card">
-      <div className="feature-icon-wrapper">
-        <Edit className="feature-icon" />
-      </div>
-      <h3>{t('landing.feature3Title')}</h3>
-      <p>{t('landing.feature3Desc')}</p>
+      <motion.div className="features-section" variants={itemVariants}>
+        <h2>{t('landing.featuresTitle')}</h2>
+        <div className="features-grid">
+          <div className="feature-card">
+            <div className="feature-icon-wrapper">
+              <Zap className="feature-icon" />
+            </div>
+            <h3>{t('landing.feature1Title')}</h3>
+            <p>{t('landing.feature1Desc')}</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon-wrapper">
+              <Download className="feature-icon" />
+            </div>
+            <h3>{t('landing.feature2Title')}</h3>
+            <p>{t('landing.feature2Desc')}</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon-wrapper">
+              <Edit className="feature-icon" />
+            </div>
+            <h3>{t('landing.feature3Title')}</h3>
+            <p>{t('landing.feature3Desc')}</p>
           </div>
         </div>
       </motion.div>
