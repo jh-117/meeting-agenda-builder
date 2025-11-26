@@ -8,5 +8,15 @@ export default defineConfig({
   },
   define: {
     'process.env': {}
-  }
+  },
+  esbuild: {
+    loader: 'jsx',
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      loader: {
+        '.js': 'jsx',
+      },
+    },
+  },
 })
