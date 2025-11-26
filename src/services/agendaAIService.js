@@ -4,9 +4,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 // 初始化 Supabase 客户端（连接到存放secret的project）
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL, // 别的project的URL
-  process.env.REACT_APP_SUPABASE_ANON_KEY // 别的project的anon key
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 );
 
 /**
