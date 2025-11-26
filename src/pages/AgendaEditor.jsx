@@ -26,10 +26,15 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { 
+  generateAgendaWithAI, 
+  regenerateAgendaWithAI, 
+  regenerateAgendaItemWithAI 
+} from "../services/agendaAIService";
 import "./AgendaEditor.css";
 
 // 可排序的议程项组件
-const SortableAgendaItem = ({ item, index, onChange, onRemove, currentLanguage }) => {
+const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
   const {
     attributes,
     listeners,
@@ -42,6 +47,10 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, currentLanguage }
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+  };
+
+  const handleRegenerate = () => {
+    onRegenerateItem(item.id);
   };
 
   return (
@@ -60,13 +69,23 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, currentLanguage }
           onChange={(e) => onChange(index, "topic", e.target.value)}
           className="item-topic"
         />
-        <button 
-          className="btn-remove"
-          onClick={() => onRemove(index)}
-          title={currentLanguage === 'zh' ? '删除' : 'Remove'}
-        >
-          ×
-        </button>
+        <div className="item-actions">
+          <button 
+            className="btn-regenerate-item"
+            onClick={handleRegenerate}
+            disabled={isGeneratingItem === item.id}
+            title={currentLanguage === 'zh' ? 'AI重新生成此项' : 'AI Regenerate This Item'}
+          >
+            <RefreshCw size={14} className={isGeneratingItem === item.id ? 'spinning' : ''} />
+          </button>
+          <button 
+            className="btn-remove"
+            onClick={() => onRemove(index)}
+            title={currentLanguage === 'zh' ? '删除' : 'Remove'}
+          >
+            ×
+          </button>
+        </div>
       </div>
       
       <div className="item-details">
@@ -108,16 +127,18 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, currentLanguage }
   );
 };
 
-function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenerate }) {
-  const { i18n } = useTranslation();
+function AgendaEditor({ agendaData, onPreview, onReset, onDataChange }) {
+  const { i18n, t } = useTranslation();
   const currentLanguage = i18n.language;
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingItem, setIsGeneratingItem] = useState(null);
   const [exportFormat, setExportFormat] = useState('pdf');
+  const [error, setError] = useState(null);
 
   // 为议程项添加唯一ID（如果还没有的话）
   const agendaItemsWithId = agendaData.agendaItems.map((item, index) => ({
     ...item,
-    id: item.id || `agenda-${index}`
+    id: item.id || `agenda-${index}-${Date.now()}`
   }));
 
   const sensors = useSensors(
@@ -192,13 +213,56 @@ function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenera
     handleChange("actionItems", updated);
   };
 
-  // 重新生成议程
-  const handleRegenerate = async () => {
+  // AI 重新生成整个议程
+  const handleRegenerateAll = async () => {
     setIsGenerating(true);
+    setError(null);
     try {
-      await onRegenerate(agendaData);
+      const agendaDataForAI = {
+        agendaItems: agendaItemsWithId,
+        meetingTitle: agendaData.meetingTitle,
+        duration: agendaData.duration,
+        meetingObjective: agendaData.meetingObjective
+      };
+      
+      const result = await regenerateAgendaWithAI(agendaDataForAI, currentLanguage);
+      
+      // 更新议程项和行动项
+      handleChange("agendaItems", result.agendaItems || []);
+      handleChange("actionItems", result.actionItems || []);
+      
+    } catch (err) {
+      console.error('重新生成失败:', err);
+      setError(err.message || (currentLanguage === 'zh' ? '重新生成失败，请重试' : 'Regeneration failed, please try again'));
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  // AI 重新生成单个议程项
+  const handleRegenerateItem = async (itemId) => {
+    setIsGeneratingItem(itemId);
+    setError(null);
+    try {
+      const item = agendaItemsWithId.find(item => item.id === itemId);
+      const context = {
+        meetingTitle: agendaData.meetingTitle,
+        meetingObjective: agendaData.meetingObjective
+      };
+      
+      const result = await regenerateAgendaItemWithAI(item, context, currentLanguage);
+      
+      // 更新单个议程项
+      const updatedItems = agendaItemsWithId.map(item => 
+        item.id === itemId ? { ...item, ...result } : item
+      );
+      handleChange("agendaItems", updatedItems);
+      
+    } catch (err) {
+      console.error('重新生成议程项失败:', err);
+      setError(err.message || (currentLanguage === 'zh' ? '重新生成此项失败' : 'Failed to regenerate this item'));
+    } finally {
+      setIsGeneratingItem(null);
     }
   };
 
@@ -229,13 +293,13 @@ function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenera
 
           <button 
             className="btn-icon btn-regenerate" 
-            onClick={handleRegenerate}
+            onClick={handleRegenerateAll}
             disabled={isGenerating}
           >
             <RefreshCw size={16} className={isGenerating ? 'spinning' : ''} />
             {isGenerating 
-              ? (currentLanguage === 'zh' ? '生成中...' : 'Generating...') 
-              : (currentLanguage === 'zh' ? '重新生成' : 'Regenerate')
+              ? (currentLanguage === 'zh' ? 'AI生成中...' : 'AI Generating...') 
+              : (currentLanguage === 'zh' ? 'AI重新生成' : 'AI Regenerate')
             }
           </button>
 
@@ -244,6 +308,14 @@ function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenera
           </button>
         </div>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="error-message">
+          {error}
+          <button onClick={() => setError(null)}>×</button>
+        </div>
+      )}
 
       {/* Editor Content */}
       <div className="editor-content">
@@ -296,12 +368,23 @@ function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenera
                       index={index}
                       onChange={handleAgendaItemChange}
                       onRemove={removeAgendaItem}
+                      onRegenerateItem={handleRegenerateItem}
                       currentLanguage={currentLanguage}
+                      isGeneratingItem={isGeneratingItem}
                     />
                   ))}
                 </div>
               </SortableContext>
             </DndContext>
+
+            {agendaItemsWithId.length === 0 && (
+              <div className="empty-state">
+                <p>{currentLanguage === 'zh' ? '暂无议程项' : 'No agenda items yet'}</p>
+                <button className="btn-primary" onClick={addAgendaItem}>
+                  + {currentLanguage === 'zh' ? '添加第一个议程项' : 'Add First Agenda Item'}
+                </button>
+              </div>
+            )}
           </section>
 
           {/* Action Items */}
@@ -347,6 +430,12 @@ function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenera
                 </div>
               </div>
             ))}
+
+            {agendaData.actionItems.length === 0 && (
+              <div className="empty-state">
+                <p>{currentLanguage === 'zh' ? '暂无行动项' : 'No action items yet'}</p>
+              </div>
+            )}
           </section>
         </div>
 
