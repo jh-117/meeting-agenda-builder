@@ -134,7 +134,7 @@ export const generatePDF = async (agendaData, language = 'en') => {
       heightLeft -= pageHeight;
     }
 
-    const fileName = getFileName('pdf', language);
+    const fileName = getFileName(agendaData, 'pdf', language); // 修复：传递 agendaData
     pdf.save(fileName);
 
   } catch (error) {
@@ -277,7 +277,7 @@ const generateSimplePDF = (agendaData, language = 'en') => {
     doc.text('-', 25, yPosition);
   }
 
-  const fileName = getFileName('pdf', language);
+  const fileName = getFileName(agendaData, 'pdf', language); // 修复：传递 agendaData
   doc.save(fileName);
 };
 
@@ -346,7 +346,7 @@ export const generateDOCX = async (agendaData, language = 'en') => {
   });
 
   const blob = await Packer.toBlob(doc);
-  const fileName = getFileName('docx', language);
+  const fileName = getFileName(agendaData, 'docx', language); // 修复：传递 agendaData
   saveAs(blob, fileName);
 };
 
@@ -402,19 +402,21 @@ export const generateTXT = (agendaData, language = 'en') => {
     content += '-\n';
   }
 
-  const fileName = getFileName('txt', language);
+  const fileName = getFileName(agendaData, 'txt', language); // 修复：传递 agendaData
   const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
   saveAs(blob, fileName);
 };
 
-// Get filename
-const getFileName = (format, language) => {
-  const timestamp = new Date().getTime();
+// Get filename - 修复：添加 agendaData 参数
+const getFileName = (agendaData, format, language) => {
+  // Use meeting date from agendaData or fallback to current date
+  const meetingDate = agendaData.meetingDate || new Date().toISOString().split('T')[0];
+  
   const names = {
-    zh: `会议议程-${timestamp}`,
-    en: `meeting-agenda-${timestamp}`,
-    ms: `agenda-mesyuarat-${timestamp}`,
-    ta: `கூட்ட-agenda-${timestamp}`
+    zh: `会议议程-${meetingDate}`,
+    en: `meeting-agenda-${meetingDate}`,
+    ms: `agenda-mesyuarat-${meetingDate}`,
+    ta: `கூட்ட-agenda-${meetingDate}`
   };
   
   const baseName = names[language] || names.en;
