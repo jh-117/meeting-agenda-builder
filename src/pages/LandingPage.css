@@ -669,20 +669,6 @@
     padding: 20px 28px;
   }
 
-  .card-1 {
-    top: 40px;
-    left: 40px;
-  }
-
-  .card-2 {
-    top: 150px;
-    left: 150px;
-  }
-
-  .card-3 {
-    bottom: 60px;
-    right: 40px;
-  }
 }
 
 @media (max-width: 768px) {
