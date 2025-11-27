@@ -259,7 +259,8 @@
   align-items: center;
   justify-content: center;
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible;
+  padding: 40px;
 }
 
 .floating-card {
