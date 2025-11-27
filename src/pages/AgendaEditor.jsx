@@ -994,5 +994,3 @@ function AgendaEditor({
 
 export default AgendaEditor;
       
-
-export default AgendaEditor;
