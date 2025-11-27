@@ -293,10 +293,11 @@
 }
 
 .card-2 {
-  top: 42vh;
-  left: 18vw;
+  top: 47%;
+  left: 47%;
   animation-delay: 0.5s;
 }
+
 
 .card-3 {
   bottom: 12vh;
