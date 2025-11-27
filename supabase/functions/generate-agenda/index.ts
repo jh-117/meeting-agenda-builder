@@ -1,29 +1,27 @@
 // supabase/functions/agenda-generator/index.ts
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-};
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
 
 serve(async (req) => {
-  // 处理 CORS preflight
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    const { action, formData, agendaData, itemData, context, language = "zh" } = await req.json();
+    const { action, formData, agendaData, itemData, context, language = "zh" } = await req.json()
 
     // 从环境变量获取 OpenAI API Key
-    const openaiApiKey = Deno.env.get("Agenda_generator");
+    const openaiApiKey = Deno.env.get('Agenda_generator')
     if (!openaiApiKey) {
-      throw new Error("OpenAI API Key not configured");
+      throw new Error('OpenAI API Key not configured')
     }
 
-    // 语言配置 - 添加马来文和泰米尔文
+    // 语言配置 - 保持与您原来相同的结构
     const languageConfig = {
       zh: {
         systemPrompt: "你是一个专业的会议议程生成助手，请用正式、专业的商务中文回复。所有议程项和行动项都使用中文。",
@@ -53,11 +51,11 @@ serve(async (req) => {
         regenerateItemPrompt: "இந்த அட்டவணை உருப்படியை வேறுபட்ட கோணம் அல்லது மேலும் விரிவான உள்ளடக்கத்துடன் மீண்டும் உருவாக்கவும்:",
         jsonInstruction: "பின்வரும் கட்டமைப்புடன் JSON பதிலை உருவாக்கவும் (செல்லுபடியாகும் JSON மட்டுமே திருப்பி விடுங்கள், markdown அல்லது விளக்கங்கள் இல்லை):"
       }
-    };
+    }
 
-    const config = languageConfig[language] || languageConfig.zh;
+    const config = languageConfig[language] || languageConfig.zh
 
-    let prompt = "";
+    let prompt = ""
 
     if (action === "generate") {
       prompt = `${config.systemPrompt}
@@ -96,7 +94,7 @@ ${config.jsonInstruction}
   ]
 }
 
-Generate between 4-8 agenda items based on the meeting duration of ${formData.duration} minutes. Distribute time proportionally.`;
+Generate between 4-8 agenda items based on the meeting duration of ${formData.duration} minutes. Distribute time proportionally.`
 
     } else if (action === "regenerate") {
       prompt = `${config.systemPrompt}
@@ -104,7 +102,7 @@ Generate between 4-8 agenda items based on the meeting duration of ${formData.du
 ${config.regeneratePrompt}
 
 Current agenda items:
-${agendaData.agendaItems.map((item: any) => `- ${item.topic} (${item.timeAllocation}min) - ${item.description}`).join("\n")}
+${agendaData.agendaItems.map((item) => `- ${item.topic} (${item.timeAllocation}min) - ${item.description}`).join("\n")}
 
 Meeting context:
 - Title: ${agendaData.meetingTitle}
@@ -129,7 +127,7 @@ ${config.jsonInstruction}
       "deadline": "YYYY-MM-DD"
     }
   ]
-}`;
+}`
 
     } else if (action === "regenerate_item") {
       prompt = `${config.systemPrompt}
@@ -154,13 +152,13 @@ Please regenerate ONLY this single agenda item, returning valid JSON:
   "timeAllocation": number,
   "description": "string",
   "expectedOutput": "string"
-}`;
+}`
 
     } else {
-      throw new Error("Invalid action");
+      throw new Error("Invalid action")
     }
 
-    console.log("🤖 AI Prompt:", prompt);
+    console.log("AI Prompt:", prompt)
 
     // 调用 OpenAI API
     const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -181,47 +179,48 @@ Please regenerate ONLY this single agenda item, returning valid JSON:
         max_tokens: 2000,
         response_format: { type: "json_object" }
       }),
-    });
+    })
 
     if (!openaiResponse.ok) {
-      const error = await openaiResponse.json();
-      throw new Error(error.error?.message || "OpenAI API error");
+      const error = await openaiResponse.json()
+      throw new Error(error.error?.message || "OpenAI API error")
     }
 
-    const openaiData = await openaiResponse.json();
-    const content = openaiData.choices[0].message.content;
+    const openaiData = await openaiResponse.json()
+    const content = openaiData.choices[0].message.content
 
-    console.log("🤖 AI Response:", content);
+    console.log("AI Response:", content)
 
     // 清理可能的 markdown 代码块
     const cleanedContent = content
       .replace(/```json\n?/g, "")
       .replace(/```\n?/g, "")
-      .trim();
+      .trim()
 
-    const parsedData = JSON.parse(cleanedContent);
-
-    return new Response(JSON.stringify(parsedData), {
-      headers: {
-        ...corsHeaders,
-        "Content-Type": "application/json",
-      },
-    });
-
-  } catch (error) {
-    console.error("❌ Edge Function Error:", error);
+    const parsedData = JSON.parse(cleanedContent)
 
     return new Response(
-      JSON.stringify({
-        error: error.message || "Internal server error",
-      }),
+      JSON.stringify(parsedData),
+      {
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+  } catch (error) {
+    console.error('Error:', error)
+
+    return new Response(
+      JSON.stringify({ error: error.message }),
       {
         status: 400,
         headers: {
           ...corsHeaders,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       }
-    );
+    )
   }
-});
+})
