@@ -30,6 +30,10 @@ import { generatePDF, generateDOCX, generateTXT } from '../services/exportServic
 import { useTranslation } from 'react-i18next';
 
 // Sortable Agenda Item Component with DnD functionality
+const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
+  const { t } = useTranslation();
+  
+  // Use the useSortable hook to make this component sortable
 function AgendaEditor({ 
   agendaData = {
     meetingTitle: 'Q4 Project Planning Meeting',
@@ -994,3 +998,5 @@ function AgendaEditor({
 
 export default AgendaEditor;
       
+
+export default AgendaEditor;
