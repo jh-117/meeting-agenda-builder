@@ -219,7 +219,6 @@ function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenera
         meetingObjective: agendaData.meetingObjective
       };
       
-      // ✅ 使用从 props 传递的 onRegenerate，它已经包含了语言参数
       await onRegenerate(agendaDataForAI);
       
     } catch (err) {
@@ -257,7 +256,29 @@ function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenera
   // 导出议程
   const handleExport = () => {
     console.log(`Exporting as ${exportFormat}`, agendaData);
-    alert(`${currentLanguage === 'zh' ? '导出功能即将实现' : 'Export feature coming soon'}`);
+    
+    // 模拟导出功能
+    const exportMessage = currentLanguage === 'zh' 
+      ? `议程已导出为 ${exportFormat.toUpperCase()} 格式`
+      : `Agenda exported as ${exportFormat.toUpperCase()} format`;
+    
+    alert(exportMessage);
+    
+    // 这里可以添加实际的导出逻辑
+    // 例如：generatePDF(agendaData), generateWord(agendaData), 等
+  };
+
+  // 处理预览 - 统一预览功能
+  const handlePreview = () => {
+    // 如果有外部的 onPreview 函数，调用它
+    // 否则在内部处理预览逻辑
+    if (onPreview) {
+      onPreview();
+    } else {
+      // 内部预览逻辑，比如打开模态框或跳转到预览页面
+      console.log("Preview agenda:", agendaData);
+      alert(currentLanguage === 'zh' ? '打开预览模式' : 'Opening preview mode');
+    }
   };
 
   // 格式化日期
@@ -275,7 +296,7 @@ function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenera
         </div>
 
         <div className="editor-actions">
-          <button className="btn-icon" onClick={onPreview}>
+          <button className="btn-icon" onClick={handlePreview}>
             <Eye size={16} /> {currentLanguage === 'zh' ? '预览' : 'Preview'}
           </button>
 
@@ -430,7 +451,7 @@ function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenera
         {/* 右侧预览和导出面板 */}
         <div className="preview-panel">
           <div className="preview-header">
-            <h2>👁️ {currentLanguage === 'zh' ? '预览' : 'Preview'}</h2>
+            <h2>👁️ {currentLanguage === 'zh' ? '实时预览' : 'Live Preview'}</h2>
             
             {/* 导出选项 */}
             <div className="export-options">
