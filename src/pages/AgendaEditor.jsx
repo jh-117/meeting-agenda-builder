@@ -30,163 +30,6 @@ import { generatePDF, generateDOCX, generateTXT } from '../services/exportServic
 import { useTranslation } from 'react-i18next';
 
 // Sortable Agenda Item Component with DnD functionality
-const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
-  const { t } = useTranslation();
-  
-  // Use the useSortable hook to make this component sortable
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: item.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    border: '1px solid #e5e7eb',
-    borderRadius: '8px',
-    padding: '16px',
-    marginBottom: '12px',
-    backgroundColor: 'white',
-    opacity: isDragging ? 0.5 : 1,
-  };
-  
-  return (
-    <div ref={setNodeRef} style={style}>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        marginBottom: '12px'
-      }}>
-        {/* Drag handle */}
-        <div 
-          {...attributes}
-          {...listeners}
-          style={{ 
-            cursor: isDragging ? 'grabbing' : 'grab', 
-            color: '#9ca3af',
-            touchAction: 'none' // Important for mobile drag
-          }}
-        >
-          <GripVertical size={16} />
-        </div>
-        <input
-          placeholder={t('agenda.topicPlaceholder')}
-          value={item.topic}
-          onChange={(e) => onChange(index, "topic", e.target.value)}
-          style={{
-            flex: 1,
-            padding: '8px 12px',
-            border: '1px solid #e5e7eb',
-            borderRadius: '6px',
-            fontSize: '14px'
-          }}
-        />
-        <button 
-          onClick={() => onRegenerateItem(item.id)}
-          disabled={isGeneratingItem === item.id}
-          style={{
-            padding: '8px',
-            border: 'none',
-            backgroundColor: '#f3f4f6',
-            borderRadius: '6px',
-            cursor: 'pointer'
-          }}
-        >
-          <RefreshCw size={14} style={{
-            animation: isGeneratingItem === item.id ? 'spin 1s linear infinite' : 'none'
-          }} />
-        </button>
-        <button 
-          onClick={() => onRemove(index)}
-          style={{
-            padding: '4px 12px',
-            border: 'none',
-            backgroundColor: '#fee2e2',
-            color: '#dc2626',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            fontSize: '18px'
-          }}
-        >
-          ×
-        </button>
-      </div>
-      
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-        <input
-          placeholder={t('agenda.ownerPlaceholder')}
-          value={item.owner}
-          onChange={(e) => onChange(index, "owner", e.target.value)}
-          style={{
-            flex: 1,
-            padding: '8px 12px',
-            border: '1px solid #e5e7eb',
-            borderRadius: '6px',
-            fontSize: '14px'
-          }}
-        />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <input
-            type="number"
-            placeholder={t('agenda.durationPlaceholder')}
-            value={item.timeAllocation}
-            onChange={(e) => onChange(index, "timeAllocation", parseInt(e.target.value) || 15)}
-            min="5"
-            style={{
-              width: '80px',
-              padding: '8px 12px',
-              border: '1px solid #e5e7eb',
-              borderRadius: '6px',
-              fontSize: '14px'
-            }}
-          />
-          <span style={{ fontSize: '14px', color: '#6b7280' }}>
-            {t('agenda.minutes')}
-          </span>
-        </div>
-      </div>
-
-      <textarea
-        placeholder={t('agenda.descriptionPlaceholder')}
-        value={item.description}
-        onChange={(e) => onChange(index, "description", e.target.value)}
-        rows="2"
-        style={{
-          width: '100%',
-          padding: '8px 12px',
-          border: '1px solid #e5e7eb',
-          borderRadius: '6px',
-          fontSize: '14px',
-          marginBottom: '8px',
-          fontFamily: 'inherit',
-          resize: 'vertical'
-        }}
-      />
-
-      <textarea
-        placeholder={t('agenda.expectedOutputPlaceholder')}
-        value={item.expectedOutput}
-        onChange={(e) => onChange(index, "expectedOutput", e.target.value)}
-        rows="2"
-        style={{
-          width: '100%',
-          padding: '8px 12px',
-          border: '1px solid #e5e7eb',
-          borderRadius: '6px',
-          fontSize: '14px',
-          fontFamily: 'inherit',
-          resize: 'vertical'
-        }}
-      />
-    </div>
-  );
-};
-
 function AgendaEditor({ 
   agendaData = {
     meetingTitle: 'Q4 Project Planning Meeting',
@@ -228,7 +71,7 @@ function AgendaEditor({
   const [isExporting, setIsExporting] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
-  // Action Items 状态
+  // Action Items state
   const [actionItems, setActionItems] = useState([
     {
       id: 'action-1',
@@ -245,8 +88,7 @@ function AgendaEditor({
     id: item.id || `agenda-${index}-${Date.now()}`
   }));
 
-
-   // DnD Sensors
+  // DnD Sensors
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -257,7 +99,7 @@ function AgendaEditor({
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
-    if (active.id !== over.id) {
+    if (active.id !== over?.id) {
       const oldIndex = agendaItemsWithId.findIndex((item) => item.id === active.id);
       const newIndex = agendaItemsWithId.findIndex((item) => item.id === over.id);
 
@@ -265,7 +107,6 @@ function AgendaEditor({
       handleChange("agendaItems", newItems);
     }
   };
-
 
   const handleChangeLanguage = (lang) => {
     i18n.changeLanguage(lang);
@@ -305,7 +146,7 @@ function AgendaEditor({
     handleChange("agendaItems", updatedItems);
   };
 
-  // Action Items 处理函数
+  // Action Items handlers
   const handleActionItemChange = (index, field, value) => {
     const updatedItems = [...actionItems];
     updatedItems[index] = { ...updatedItems[index], [field]: value };
@@ -695,225 +536,227 @@ function AgendaEditor({
             </div>
           </div>
 
-{/* Agenda Items with DnD */}
-<div style={{
-  backgroundColor: 'white',
-  padding: '24px',
-  borderRadius: '12px',
-  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-}}>
-  <div style={{
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '20px'
-  }}>
-    <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
-      🗓️ {t('editor.agendaItems')} ({agendaItemsWithId.length})
-    </h2>
-    <button 
-      onClick={addAgendaItem}
-      style={{
-        padding: '8px 16px',
-        backgroundColor: '#6366f1',
-        color: 'white',
-        border: 'none',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        fontSize: '14px',
-        fontWeight: '500'
-      }}
-    >
-      + {t('actions.add')}
-    </button>
-  </div>
+          {/* Agenda Items with DnD */}
+          <div style={{
+            backgroundColor: 'white',
+            padding: '24px',
+            borderRadius: '12px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '20px'
+            }}>
+              <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
+                🗓️ {t('editor.agendaItems')} ({agendaItemsWithId.length})
+              </h2>
+              <button 
+                onClick={addAgendaItem}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#6366f1',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '500'
+                }}
+              >
+                + {t('actions.add')}
+              </button>
+            </div>
 
-  {/* Wrap agenda items with DnD context */}
-  <DndContext
-    sensors={sensors}
-    collisionDetection={closestCenter}
-    onDragEnd={handleDragEnd}
-  >
-    <SortableContext 
-      items={agendaItemsWithId.map(item => item.id)} 
-      strategy={verticalListSortingStrategy}
-    >
-      <div>
-        {agendaItemsWithId.map((item, index) => (
-          <SortableAgendaItem
-            key={item.id}
-            item={item}
-            index={index}
-            onChange={handleAgendaItemChange}
-            onRemove={removeAgendaItem}
-            onRegenerateItem={handleRegenerateItem}
-            currentLanguage={currentLanguage}
-            isGeneratingItem={isGeneratingItem}
-          />
-        ))}
-      </div>
-    </SortableContext>
-  </DndContext>
+            {/* Wrap agenda items with DnD context */}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext 
+                items={agendaItemsWithId.map(item => item.id)} 
+                strategy={verticalListSortingStrategy}
+              >
+                <div>
+                  {agendaItemsWithId.map((item, index) => (
+                    <SortableAgendaItem
+                      key={item.id}
+                      item={item}
+                      index={index}
+                      onChange={handleAgendaItemChange}
+                      onRemove={removeAgendaItem}
+                      onRegenerateItem={handleRegenerateItem}
+                      currentLanguage={currentLanguage}
+                      isGeneratingItem={isGeneratingItem}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
 
-  {agendaItemsWithId.length === 0 && (
-    <div style={{
-      textAlign: 'center',
-      padding: '40px',
-      color: '#9ca3af'
-    }}>
-      <p>{t('editor.noAgendaItems')}</p>
-      <button 
-        onClick={addAgendaItem}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#6366f1',
-          color: 'white',
-          border: 'none',
-          borderRadius: '8px',
-          cursor: 'pointer',
-          fontSize: '14px',
-          fontWeight: '500',
-          marginTop: '12px'
-        }}
-      >
-        + {t('actions.addFirstItem')}
-      </button>
-    </div>
-  )}
-</div>
+            {agendaItemsWithId.length === 0 && (
+              <div style={{
+                textAlign: 'center',
+                padding: '40px',
+                color: '#9ca3af'
+              }}>
+                <p>{t('editor.noAgendaItems')}</p>
+                <button 
+                  onClick={addAgendaItem}
+                  style={{
+                    padding: '10px 20px',
+                    backgroundColor: '#6366f1',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    marginTop: '12px'
+                  }}
+                >
+                  + {t('actions.addFirstItem')}
+                </button>
+              </div>
+            )}
+          </div>
 
-{/* Action Items Section */}
-<div style={{
-  backgroundColor: 'white',
-  padding: '24px',
-  borderRadius: '12px',
-  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-}}>
-  <div style={{
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '20px'
-  }}>
-    <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
-      ✅ {t('editor.actionItems')} ({actionItems.length})
-    </h2>
-    <button 
-      onClick={addActionItem}
-      style={{
-        padding: '8px 16px',
-        backgroundColor: '#10b981',
-        color: 'white',
-        border: 'none',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        fontSize: '14px',
-        fontWeight: '500'
-      }}
-    >
-      + {t('actions.add')}
-    </button>
-  </div>
+          {/* Action Items Section */}
+          <div style={{
+            backgroundColor: 'white',
+            padding: '24px',
+            borderRadius: '12px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '20px'
+            }}>
+              <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
+                ✅ {t('editor.actionItems')} ({actionItems.length})
+              </h2>
+              <button 
+                onClick={addActionItem}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#10b981',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '500'
+                }}
+              >
+                + {t('actions.add')}
+              </button>
+            </div>
 
-  <div>
-    {actionItems.map((item, index) => (
-      <div key={item.id} style={{
-        border: '1px solid #e5e7eb',
-        borderRadius: '8px',
-        padding: '16px',
-        marginBottom: '12px',
-        backgroundColor: 'white'
-      }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          marginBottom: '12px'
-        }}>
-          <input
-            placeholder={t('agenda.taskPlaceholder')}
-            value={item.task}
-            onChange={(e) => handleActionItemChange(index, "task", e.target.value)}
-            style={{
-              flex: 1,
-              padding: '8px 12px',
-              border: '1px solid #e5e7eb',
-              borderRadius: '6px',
-              fontSize: '14px'
-            }}
-          />
-          <button 
-            onClick={() => removeActionItem(index)}
-            style={{
-              padding: '4px 12px',
-              border: 'none',
-              backgroundColor: '#fee2e2',
-              color: '#dc2626',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '18px'
-            }}
-          >
-            ×
-          </button>
+            <div>
+              {actionItems.map((item, index) => (
+                <div key={item.id} style={{
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  marginBottom: '12px',
+                  backgroundColor: 'white'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    marginBottom: '12px'
+                  }}>
+                    <input
+                      placeholder={t('agenda.taskPlaceholder')}
+                      value={item.task}
+                      onChange={(e) => handleActionItemChange(index, "task", e.target.value)}
+                      style={{
+                        flex: 1,
+                        padding: '8px 12px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '6px',
+                        fontSize: '14px'
+                      }}
+                    />
+                    <button 
+                      onClick={() => removeActionItem(index)}
+                      style={{
+                        padding: '4px 12px',
+                        border: 'none',
+                        backgroundColor: '#fee2e2',
+                        color: '#dc2626',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontSize: '18px'
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  
+                  <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                    <input
+                      placeholder={t('agenda.ownerPlaceholder')}
+                      value={item.owner}
+                      onChange={(e) => handleActionItemChange(index, "owner", e.target.value)}
+                      style={{
+                        flex: 1,
+                        padding: '8px 12px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '6px',
+                        fontSize: '14px'
+                      }}
+                    />
+                    <input
+                      type="date"
+                      placeholder={t('agenda.deadlinePlaceholder')}
+                      value={item.deadline}
+                      onChange={(e) => handleActionItemChange(index, "deadline", e.target.value)}
+                      style={{
+                        padding: '8px 12px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '6px',
+                        fontSize: '14px'
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+
+              {actionItems.length === 0 && (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '40px',
+                  color: '#9ca3af'
+                }}>
+                  <p>{t('editor.noActionItems')}</p>
+                  <button 
+                    onClick={addActionItem}
+                    style={{
+                      padding: '10px 20px',
+                      backgroundColor: '#10b981',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      marginTop: '12px'
+                    }}
+                  >
+                    + {t('actions.addFirstActionItem')}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-        
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-          <input
-            placeholder={t('agenda.ownerPlaceholder')}
-            value={item.owner}
-            onChange={(e) => handleActionItemChange(index, "owner", e.target.value)}
-            style={{
-              flex: 1,
-              padding: '8px 12px',
-              border: '1px solid #e5e7eb',
-              borderRadius: '6px',
-              fontSize: '14px'
-            }}
-          />
-          <input
-            type="date"
-            placeholder={t('agenda.deadlinePlaceholder')}
-            value={item.deadline}
-            onChange={(e) => handleActionItemChange(index, "deadline", e.target.value)}
-            style={{
-              padding: '8px 12px',
-              border: '1px solid #e5e7eb',
-              borderRadius: '6px',
-              fontSize: '14px'
-            }}
-          />
-        </div>
-      </div>
-    ))}
 
-    {actionItems.length === 0 && (
-      <div style={{
-        textAlign: 'center',
-        padding: '40px',
-        color: '#9ca3af'
-      }}>
-        <p>{t('editor.noActionItems')}</p>
-        <button 
-          onClick={addActionItem}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#10b981',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '500',
-            marginTop: '12px'
-          }}
-        >
-          + {t('actions.addFirstActionItem')}
-        </button>
-      </div>
-    )}
-  </div>
-</div>
         {/* Right Panel - Preview */}
         <div style={{
           backgroundColor: 'white',
@@ -1148,7 +991,8 @@ function AgendaEditor({
     </div>
   );
 }
-      
+
+export default AgendaEditor;
       
 
 export default AgendaEditor;
