@@ -275,6 +275,9 @@
   transition: all var(--transition-fast);
   color: var(--text-light-secondary);
   font-weight: 500;
+  white-space: nowrap; /* 防止文字换行 */
+  min-width: 60px; /* 确保按钮有最小宽度 */
+  text-align: center;
 }
 
 .dark .language-selector button {
@@ -306,6 +309,35 @@
   border-color: var(--primary-dark);
 }
 
+/* 响应式设计 - 小屏幕调整 */
+@media (max-width: 768px) {
+  .language-selector {
+    right: 20px; /* 在小屏幕上离右边更近 */
+    top: 15px;
+    gap: 6px; /* 减小间距 */
+  }
+  
+  .language-selector button {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-width: 50px; /* 小屏幕上更小的最小宽度 */
+  }
+}
+
+/* 超小屏幕调整 */
+@media (max-width: 480px) {
+  .language-selector {
+    flex-wrap: wrap; /* 如果空间不够可以换行 */
+    justify-content: flex-end;
+    max-width: 200px; /* 限制最大宽度 */
+  }
+  
+  .language-selector button {
+    min-width: 45px;
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+}
 /* ==================== Features Section ==================== */
 .features-section {
   padding: var(--spacing-3xl) clamp(24px, 5vw, 60px);
