@@ -49,7 +49,16 @@
     "meetingObjective": "Objektif Mesyuarat",
     "agendaItems": "Item Agenda",
     "actionItems": "Item Tindakan",
-    "download": "Muat Turun Agenda"
+    "download": "Muat Turun Agenda",
+    "add": "Tambah",
+    "topic": "Topik",
+    "speaker": "Penceramah",
+    "timeAllocation": "Peruntukan Masa",
+    "description": "Penerangan",
+    "expectedOutput": "Output Dijangka",
+    "task": "Tugas",
+    "owner": "Pemilik",
+    "deadline": "Tarikh Akhir"
   },
   "previewModal": {
     "title": "Pratonton Agenda",
