@@ -296,6 +296,49 @@ function AIPreviewPage() {
               )}
             </div>
           </div>
+
+          {/* Action Items Section */}
+          {agendaData.actionItems && agendaData.actionItems.length > 0 && (
+            <div style={{ marginBottom: '24px' }}>
+              <h4 style={{ fontSize: '16px', marginBottom: '12px', color: '#374151' }}>
+                {t('preview.actionItems')} ({agendaData.actionItems.length})
+              </h4>
+              <div>
+                {agendaData.actionItems.map((item) => (
+                  <div
+                    key={item.id}
+                    style={{
+                      display: 'flex',
+                      gap: '12px',
+                      marginBottom: '12px',
+                      paddingBottom: '12px',
+                      borderBottom: '1px solid #f3f4f6'
+                    }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <strong style={{ fontSize: '14px', color: '#1f2937' }}>
+                        {item.task || t('preview.untitledTask')}
+                      </strong>
+                      {item.owner && (
+                        <span style={{ fontSize: '14px', color: '#6b7280' }}>
+                          {' • '}{item.owner}
+                        </span>
+                      )}
+                      {item.deadline && (
+                        <p style={{
+                          margin: '4px 0',
+                          fontSize: '13px',
+                          color: '#6b7280'
+                        }}>
+                          {t('preview.deadline')}: {formatDate(item.deadline)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Action Panel */}
