@@ -93,6 +93,8 @@ function App() {
     }
   };
 
+<Route path="/ai-preview" element={<AIPreviewPage />} />
+  
   return (
     <div className={`app ${theme}`}>
       <div className="app-background"></div>
