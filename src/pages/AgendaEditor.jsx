@@ -29,7 +29,11 @@ import { CSS } from '@dnd-kit/utilities';
 import { generatePDF, generateDOCX, generateTXT } from '../services/exportService';
 import { useTranslation } from 'react-i18next';
 
- // Use the useSortable hook to make this component sortable
+// Sortable Agenda Item Component with DnD functionality
+const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
+  const { t } = useTranslation();
+  
+  // Use the useSortable hook to make this component sortable
   const {
     attributes,
     listeners,
@@ -182,7 +186,6 @@ import { useTranslation } from 'react-i18next';
     </div>
   );
 };
-
 
 function AgendaEditor({ 
   agendaData = {
