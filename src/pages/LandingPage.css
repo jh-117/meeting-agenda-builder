@@ -287,36 +287,20 @@
 }
 
 .card-1 {
-  top: 10vh;
-  left: 3vw;
+  top: 8vh;
+  left: 5vw;
   animation-delay: 0s;
 }
 
 .card-2 {
-  top: 40vh;
-  left: 12vw;
+  top: 42vh;
+  left: 18vw;
   animation-delay: 0.5s;
 }
 
 .card-3 {
-  bottom: 10vh;
-  right: 3vw;
-  animation-delay: 1s;
-}.card-1 {
-  top: 10vh;
-  left: 3vw;
-  animation-delay: 0s;
-}
-
-.card-2 {
-  top: 40vh;
-  left: 12vw;
-  animation-delay: 0.5s;
-}
-
-.card-3 {
-  bottom: 10vh;
-  right: 3vw;
+  bottom: 12vh;
+  right: 8vw;
   animation-delay: 1s;
 }
 
