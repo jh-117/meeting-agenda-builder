@@ -1,0 +1,70 @@
+{
+  "landing": {
+    "heroBadge": "Pembangun Agenda Mesyuarat Berkuasa AI",
+    "heroTitle": "Buat Agenda Mesyuarat Profesional",
+    "heroDescription": "Gunakan alat AI untuk menjana agenda mesyuarat yang teratur dalam beberapa minit. Menyunting secara langsung dan mengeksport dalam pelbagai format untuk mesyuarat yang cekap dan profesional.",
+    "ctaButton": "Mula Mencipta",
+    "featuresTitle": "Ciri Teras",
+    "feature1Title": "Berkuasa AI",
+    "feature1Desc": "Hasilkan agenda mesyuarat serta-merta dengan bantuan AI.",
+    "feature2Title": "Eksport Pelbagai Format",
+    "feature2Desc": "Muat turun agenda anda dalam format PDF, Word, atau TXT.",
+    "feature3Title": "Suntingan Langsung",
+    "feature3Desc": "Sunting dan laraskan agenda anda secara masa nyata sebelum eksport.",
+    "processTitle": "Cara Ia Berfungsi",
+    "step1": "Masukkan Maklumat",
+    "step2": "Penjanaan AI",
+    "step3": "Sunting & Laraskan",
+    "step4": "Eksport",
+    "readyTitle": "Sedia Bermula?",
+    "readyDesc": "Buat agenda mesyuarat berkuasa AI pertama anda sekarang",
+    "readyButton": "Mula Sekarang"
+  },
+  "formStep1": {
+    "header": "Buat Agenda Mesyuarat Baru",
+    "subHeader": "Langkah 1 / 2 - Maklumat Asas",
+    "meetingTitle": "Tajuk Mesyuarat",
+    "meetingDate": "Tarikh Mesyuarat",
+    "meetingTime": "Masa Mesyuarat",
+    "duration": "Tempoh (minit)",
+    "location": "Lokasi / Pautan Mesyuarat",
+    "facilitator": "Fasilitator",
+    "noteTaker": "Pencatat Minit",
+    "attendees": "Peserta",
+    "meetingObjective": "Objektif Mesyuarat",
+    "errors": {
+      "meetingTitle": "Tajuk mesyuarat diperlukan",
+      "meetingDate": "Tarikh mesyuarat diperlukan",
+      "meetingTime": "Masa mesyuarat diperlukan",
+      "location": "Lokasi diperlukan",
+      "facilitator": "Fasilitator diperlukan",
+      "meetingObjective": "Objektif mesyuarat diperlukan"
+    }
+  },
+  "agendaEditor": {
+    "preview": "Pratonton",
+    "reset": "Tetapkan Semula",
+    "basicInfo": "Maklumat Asas",
+    "meetingTitle": "Tajuk Mesyuarat",
+    "meetingObjective": "Objektif Mesyuarat",
+    "agendaItems": "Item Agenda",
+    "actionItems": "Item Tindakan",
+    "download": "Muat Turun Agenda"
+  },
+  "previewModal": {
+    "title": "Pratonton Agenda",
+    "date": "Tarikh",
+    "time": "Masa",
+    "duration": "Tempoh",
+    "location": "Lokasi",
+    "facilitator": "Fasilitator",
+    "agendaOverview": "Gambaran Agenda",
+    "selectFormat": "Pilih Format Eksport",
+    "cancel": "Batal",
+    "download": "Muat Turun",
+    "exporting": "Mengeksport..."
+  },
+  "notification": {
+    "exportSuccess": "Agenda berjaya dieksport sebagai {{format}}!"
+  }
+}
