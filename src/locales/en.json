@@ -80,6 +80,9 @@
     "untitledTopic": "Untitled Topic",
     "expected": "Expected",
     "noAgendaItems": "No agenda items added yet"
+    "actionItems": "Action Items",
+    "untitledTask": "Untitled Task",
+    "deadline": "Deadline"
   },
   "actions": {
     "add": "Add",
