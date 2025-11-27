@@ -217,8 +217,7 @@
   background: rgba(255, 255, 255, 0.8);
   animation: float 3s ease-in-out infinite;
   transition: all var(--transition-normal);
-  text-align: center; /* 确保文字居中 */
-  min-width: 140px; /* 确保最小宽度一致 */
+  text-align: center;
 }
 
 .dark .floating-card {
@@ -227,10 +226,9 @@
   box-shadow: 0 8px 32px var(--shadow-dark-lg);
 }
 
-/* 为所有卡片添加统一的样式 */
+/* 为所有卡片添加统一的样式 - 移除重复的 padding 和 width */
 .card-1, .card-2, .card-3, .card-tamil {
-  width: 140px;
-  padding: 24px 32px;
+  /* 移除重复的 width 和 padding，因为它们已经在 .floating-card 中定义了 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -238,6 +236,7 @@
   text-align: center;
 }
 
+/* 为每个卡片设置具体位置 */
 .card-1 {
   top: 50px;
   left: 50px;
@@ -256,11 +255,11 @@
   animation-delay: 1s;
 }
 
-/* 为泰米尔语卡片添加特定位置 */
+/* 为泰米尔语卡片添加特定位置 - 使用 !important 确保生效 */
 .card-tamil {
-  top: 120px;
-  right: 80px;
-  animation-delay: 0.3s;
+  top: 120px !important;
+  right: 80px !important;
+  animation-delay: 0.3s !important;
 }
 
 @keyframes float {
@@ -272,6 +271,68 @@
   }
 }
 
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .hero-visual {
+    height: 400px;
+  }
+  
+  .floating-card {
+    padding: 16px 24px;
+    font-size: 28px;
+  }
+  
+  .card-1 {
+    top: 40px;
+    left: 40px;
+  }
+  
+  .card-2 {
+    top: 150px;
+    left: 150px;
+  }
+  
+  .card-3 {
+    bottom: 60px;
+    right: 40px;
+  }
+  
+  .card-tamil {
+    top: 100px !important;
+    right: 60px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-visual {
+    height: 350px;
+  }
+  
+  .floating-card {
+    padding: 12px 16px;
+    font-size: 24px;
+  }
+  
+  .card-1 {
+    top: 30px;
+    left: 30px;
+  }
+  
+  .card-2 {
+    top: 120px;
+    left: 120px;
+  }
+  
+  .card-3 {
+    bottom: 50px;
+    right: 30px;
+  }
+  
+  .card-tamil {
+    top: 80px !important;
+    right: 40px !important;
+  }
+}
 /* ==================== Language Selector ==================== */
 .language-selector {
   position: absolute;
