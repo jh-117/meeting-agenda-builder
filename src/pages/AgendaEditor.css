@@ -1,10 +1,10 @@
 /* ============================================
-   AgendaEditor.css - 增强版本
+   AgendaEditor.css - 左右布局优化版本
    ============================================ */
 
 .agenda-editor {
   min-height: 100vh;
-  padding: 40px 20px;
+  padding: 30px 20px;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
@@ -114,28 +114,31 @@
   to { transform: rotate(360deg); }
 }
 
-/* Editor Content */
+/* Editor Content - 改为左右布局 */
 .editor-content {
   display: grid;
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: 1fr 1fr;
   gap: 30px;
   max-width: 1400px;
   margin: 0 auto;
+  align-items: start;
 }
 
 @media (max-width: 1200px) {
   .editor-content {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 
-/* Editor Panel */
+/* Editor Panel - 优化布局 */
 .editor-panel {
   background: var(--bg-light);
   border-radius: 16px;
   padding: 30px;
   border: 1px solid var(--border-light);
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
+  height: fit-content;
   max-height: 80vh;
   overflow-y: auto;
 }
@@ -153,8 +156,11 @@
   padding: 30px;
   border: 1px solid var(--border-light);
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
+  height: fit-content;
   max-height: 80vh;
   overflow-y: auto;
+  position: sticky;
+  top: 30px;
 }
 
 .dark .preview-panel {
@@ -248,20 +254,22 @@
   color: white;
 }
 
-/* Sections */
+/* Sections - 优化布局 */
 .edit-section {
   margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--border-light);
+  padding: 24px;
+  background: var(--bg-light-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
 }
 
 .dark .edit-section {
-  border-bottom-color: var(--border-dark);
+  background: var(--bg-dark);
+  border-color: var(--border-dark);
 }
 
 .edit-section:last-child {
   margin-bottom: 0;
-  border-bottom: none;
 }
 
 .edit-section h2 {
@@ -272,10 +280,13 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .dark .edit-section h2 {
   color: var(--text-dark);
+  border-bottom-color: var(--border-dark);
 }
 
 .section-header {
@@ -287,6 +298,8 @@
 
 .section-header h2 {
   margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .btn-add {
@@ -309,20 +322,30 @@
   box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
 }
 
-/* Edit Groups */
-.edit-group {
-  margin-bottom: 16px;
+/* Edit Groups - 优化布局 */
+.edit-groups-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.edit-group:last-child {
-  margin-bottom: 0;
+.edit-group {
+  background: var(--bg-light);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.dark .edit-group {
+  background: var(--bg-dark-secondary);
+  border-color: var(--border-dark);
 }
 
 .edit-group label {
   display: block;
   font-size: 13px;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   color: var(--text-light-secondary);
 }
 
@@ -337,7 +360,7 @@
   border: 1px solid var(--border-light);
   border-radius: 6px;
   font-size: 13px;
-  background: var(--bg-light-secondary);
+  background: var(--bg-light);
   color: var(--text-light);
   resize: vertical;
   transition: all 0.2s ease;
@@ -357,7 +380,25 @@
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
 }
 
-/* Drag & Drop */
+/* 网格布局优化 */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-grid-full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Drag & Drop 优化 */
 .drag-container {
   display: flex;
   flex-direction: column;
@@ -365,21 +406,22 @@
 }
 
 .edit-item {
-  background: var(--bg-light-secondary);
-  padding: 16px;
+  background: var(--bg-light);
+  padding: 20px;
   border-radius: 8px;
   border: 1px solid var(--border-light);
   transition: all 0.2s ease;
 }
 
 .dark .edit-item {
-  background: var(--bg-dark);
+  background: var(--bg-dark-secondary);
   border-color: var(--border-dark);
 }
 
 .edit-item:hover {
   border-color: var(--primary);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .edit-item.dragging {
@@ -396,7 +438,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .drag-handle {
@@ -427,23 +469,37 @@
   flex: 1;
   font-weight: 600;
   font-size: 14px;
+  color: var(--text-light);
+}
+
+.dark .item-topic {
+  color: var(--text-dark);
 }
 
 .item-details {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-bottom: 12px;
+}
+
+@media (max-width: 480px) {
+  .item-details {
+    grid-template-columns: 1fr;
+  }
 }
 
 .item-owner,
 .item-duration,
 .item-deadline {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .item-description,
 .item-output {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .item-description:last-child,
@@ -500,7 +556,16 @@
 
 /* Action Items */
 .action-item {
+  background: var(--bg-light);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
   margin-bottom: 12px;
+}
+
+.dark .action-item {
+  background: var(--bg-dark-secondary);
+  border-color: var(--border-dark);
 }
 
 .action-item:last-child {
@@ -510,6 +575,18 @@
 .item-task {
   font-weight: 600;
   font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+.dark .item-task {
+  color: var(--text-dark);
+}
+
+.action-item-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
 /* Preview Content */
@@ -520,12 +597,15 @@
 }
 
 .preview-section {
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-light);
+  padding: 20px;
+  background: var(--bg-light-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
 }
 
 .dark .preview-section {
-  border-bottom-color: var(--border-dark);
+  background: var(--bg-dark);
+  border-color: var(--border-dark);
 }
 
 .preview-section:last-child {
@@ -535,18 +615,21 @@
 .preview-section h3 {
   font-size: 20px;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   color: var(--text-light);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .dark .preview-section h3 {
   color: var(--text-dark);
+  border-bottom-color: var(--border-dark);
 }
 
 .preview-section h4 {
   font-size: 16px;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   color: var(--text-light);
 }
 
@@ -557,7 +640,7 @@
 .preview-info {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   font-size: 13px;
 }
 
@@ -588,15 +671,21 @@
 .timeline-item {
   display: flex;
   gap: 12px;
-  padding: 12px;
-  background: var(--bg-light-secondary);
+  padding: 16px;
+  background: var(--bg-light);
   border-radius: 8px;
   border: 1px solid var(--border-light);
+  transition: all 0.2s ease;
 }
 
 .dark .timeline-item {
-  background: var(--bg-dark);
+  background: var(--bg-dark-secondary);
   border-color: var(--border-dark);
+}
+
+.timeline-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .time-slot {
@@ -605,7 +694,7 @@
   justify-content: center;
   min-width: 60px;
   padding: 4px 8px;
-  background: var(--primary);
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
   color: white;
   border-radius: 6px;
   font-size: 11px;
@@ -619,6 +708,8 @@
 .topic-content strong {
   color: var(--text-light);
   font-size: 14px;
+  display: block;
+  margin-bottom: 4px;
 }
 
 .dark .topic-content strong {
@@ -628,6 +719,7 @@
 .owner {
   font-size: 12px;
   color: var(--text-light-secondary);
+  margin-bottom: 4px;
 }
 
 .dark .owner {
@@ -669,19 +761,19 @@
   gap: 8px;
 }
 
-.action-item {
+.action-item-preview {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-  padding: 8px 12px;
-  background: var(--bg-light-secondary);
+  padding: 12px 16px;
+  background: var(--bg-light);
   border-radius: 6px;
   border-left: 3px solid var(--primary);
 }
 
-.dark .action-item {
-  background: var(--bg-dark);
+.dark .action-item-preview {
+  background: var(--bg-dark-secondary);
 }
 
 .task {
@@ -744,10 +836,6 @@
   .editor-content {
     grid-template-columns: 1fr;
   }
-  
-  .preview-panel {
-    order: -1;
-  }
 }
 
 @media (max-width: 768px) {
@@ -783,8 +871,7 @@
   }
 
   .item-details {
-    flex-direction: column;
-    gap: 8px;
+    grid-template-columns: 1fr;
   }
 
   .timeline-item {
@@ -820,6 +907,10 @@
   .btn-add {
     width: 100%;
     justify-content: center;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 }
 
