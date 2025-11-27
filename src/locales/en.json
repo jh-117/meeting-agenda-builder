@@ -1,6 +1,5 @@
 {
   "landing": {
-   
     "heroTitle": "Create Professional Meeting Agendas",
     "heroDescription": "Use AI tools to generate well-organized meeting agendas in minutes. Supports live editing and multi-format export for efficient and professional meetings.",
     "ctaButton": "Start Creating",
@@ -67,5 +66,25 @@
   },
   "notification": {
     "exportSuccess": "Agenda successfully exported as {{format}}!"
+  },
+  "export": {
+    "basicInfo": "Basic Information",
+    "date": "Date",
+    "time": "Time",
+    "duration": "Duration",
+    "minutes": "minutes",
+    "location": "Location",
+    "facilitator": "Facilitator",
+    "noteTaker": "Note Taker",
+    "attendees": "Attendees",
+    "meetingObjective": "Meeting Objective",
+    "agendaItems": "Agenda Items",
+    "speaker": "Speaker",
+    "description": "Description",
+    "expectedOutput": "Expected Output",
+    "actionItems": "Action Items",
+    "owner": "Owner",
+    "deadline": "Deadline",
+    "defaultTitle": "Meeting Agenda"
   }
 }
