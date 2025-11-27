@@ -62,7 +62,7 @@ function LandingPage({ onStart }) {
       {/* Hero Section */}
       <motion.div className="hero-section" variants={itemVariants}>
         <div className="hero-content">
-          <div className="hero-badge">
+          
             <Zap size={16} />
             <span>{t('landing.heroBadge')}</span>
           </div>
