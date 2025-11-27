@@ -58,25 +58,6 @@ serve(async (req) => {
     let prompt = ""
 
     if (action === "generate") {
-      // Build attachments info
-      let attachmentsInfo = ""
-      if (formData.attachments && formData.attachments.length > 0) {
-        attachmentsInfo = "\n\nAttached Documents:\n"
-        formData.attachments.forEach((attachment, index) => {
-          attachmentsInfo += `${index + 1}. ${attachment.name} (${attachment.type || 'file'})\n`
-        })
-        attachmentsInfo += "\nNote: Consider these documents when generating the agenda. They may contain important context about topics to discuss, reports to review, or materials to prepare."
-      }
-
-      // Build additional details info
-      let additionalDetailsInfo = ""
-      if (formData.needAISupplement && formData.additionalInfo && formData.additionalInfo.trim()) {
-        additionalDetailsInfo = `\n\nAdditional Details & Context:
-${formData.additionalInfo}
-
-IMPORTANT: Pay close attention to the additional details above. They provide specific topics, focus areas, or concerns that MUST be reflected in the generated agenda items.`
-      }
-
       prompt = `${config.systemPrompt}
 
 ${config.generatePrompt}
@@ -87,11 +68,11 @@ Meeting Information:
 - Time: ${formData.meetingTime}
 - Duration: ${formData.duration} minutes
 - Location: ${formData.location}
-- Meeting Type: ${formData.meetingType || "Not specified"}
+- Meeting Type: ${formData.meetingType}
 - Facilitator: ${formData.facilitator}
-- Note Taker: ${formData.noteTaker || "Not specified"}
 - Attendees: ${formData.attendees || "Not specified"}
-- Objective: ${formData.meetingObjective}${attachmentsInfo}${additionalDetailsInfo}
+- Objective: ${formData.meetingObjective}
+${formData.additionalInfo ? `- Additional Info: ${formData.additionalInfo}` : ""}
 
 ${config.jsonInstruction}
 {
@@ -113,7 +94,7 @@ ${config.jsonInstruction}
   ]
 }
 
-Generate between 4-8 agenda items based on the meeting duration of ${formData.duration} minutes. Distribute time proportionally. If additional details or attachments are provided, ensure the agenda items directly address those topics and concerns.`
+Generate between 4-8 agenda items based on the meeting duration of ${formData.duration} minutes. Distribute time proportionally.`
 
     } else if (action === "regenerate") {
       prompt = `${config.systemPrompt}
