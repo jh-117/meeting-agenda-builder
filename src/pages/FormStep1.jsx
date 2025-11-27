@@ -36,17 +36,89 @@ function FormStep1({ onSubmit }) {
 
   const [errors, setErrors] = useState({});
 
-  // 会议类型选项
+  // 会议类型选项 - 添加马来文和泰米尔文
   const meetingTypes = [
-    { value: 'project-review', label: { en: 'Project Review', zh: '项目评审' } },
-    { value: 'team-meeting', label: { en: 'Team Meeting', zh: '团队会议' } },
-    { value: 'client-meeting', label: { en: 'Client Meeting', zh: '客户会议' } },
-    { value: 'planning', label: { en: 'Planning Session', zh: '规划会议' } },
-    { value: 'retrospective', label: { en: 'Retrospective', zh: '回顾会议' } },
-    { value: 'brainstorming', label: { en: 'Brainstorming', zh: '头脑风暴' } },
-    { value: 'decision-making', label: { en: 'Decision Making', zh: '决策会议' } },
-    { value: 'status-update', label: { en: 'Status Update', zh: '进度更新' } },
-    { value: 'other', label: { en: 'Other', zh: '其他' } },
+    { 
+      value: 'project-review', 
+      label: { 
+        en: 'Project Review', 
+        zh: '项目评审',
+        ms: 'Semakan Projek',
+        ta: 'திட்ட மதிப்பாய்வு'
+      } 
+    },
+    { 
+      value: 'team-meeting', 
+      label: { 
+        en: 'Team Meeting', 
+        zh: '团队会议',
+        ms: 'Mesyuarat Pasukan',
+        ta: 'குழுக் கூட்டம்'
+      } 
+    },
+    { 
+      value: 'client-meeting', 
+      label: { 
+        en: 'Client Meeting', 
+        zh: '客户会议',
+        ms: 'Mesyuarat Pelanggan',
+        ta: 'வாடிக்கையாளர் கூட்டம்'
+      } 
+    },
+    { 
+      value: 'planning', 
+      label: { 
+        en: 'Planning Session', 
+        zh: '规划会议',
+        ms: 'Sesi Perancangan',
+        ta: 'திட்டமிடும் அமர்வு'
+      } 
+    },
+    { 
+      value: 'retrospective', 
+      label: { 
+        en: 'Retrospective', 
+        zh: '回顾会议',
+        ms: 'Retrospektif',
+        ta: 'பின்னோக்கிப் பார்த்தல்'
+      } 
+    },
+    { 
+      value: 'brainstorming', 
+      label: { 
+        en: 'Brainstorming', 
+        zh: '头脑风暴',
+        ms: 'Sumbang Saran',
+        ta: 'மூளைச்சலவை'
+      } 
+    },
+    { 
+      value: 'decision-making', 
+      label: { 
+        en: 'Decision Making', 
+        zh: '决策会议',
+        ms: 'Membuat Keputusan',
+        ta: 'முடிவெடுக்கும் கூட்டம்'
+      } 
+    },
+    { 
+      value: 'status-update', 
+      label: { 
+        en: 'Status Update', 
+        zh: '进度更新',
+        ms: 'Kemas Kini Status',
+        ta: 'நிலை புதுப்பிப்பு'
+      } 
+    },
+    { 
+      value: 'other', 
+      label: { 
+        en: 'Other', 
+        zh: '其他',
+        ms: 'Lain-lain',
+        ta: 'மற்றவை'
+      } 
+    },
   ];
 
   const handleChange = (e) => {
@@ -134,31 +206,45 @@ function FormStep1({ onSubmit }) {
     const placeholders = {
       meetingTitle: {
         en: "Q4 Project Planning Meeting",
-        zh: "第四季度项目规划会议"
+        zh: "第四季度项目规划会议",
+        ms: "Mesyuarat Perancangan Projek Suku Keempat",
+        ta: "நான்காம் காலாண்டு திட்டமிடல் கூட்டம்"
       },
       location: {
         en: "Conference Room A or meeting link",
-        zh: "会议室A或会议链接"
+        zh: "会议室A或会议链接",
+        ms: "Bilik Mesyuarat A atau pautan mesyuarat",
+        ta: "கூட்ட அறை A அல்லது கூட்ட இணைப்பு"
       },
       facilitator: {
         en: "Zhang San",
-        zh: "张三"
+        zh: "张三",
+        ms: "Ahmad",
+        ta: "ராமன்"
       },
       noteTaker: {
         en: "Li Si", 
-        zh: "李四"
+        zh: "李四",
+        ms: "Siti",
+        ta: "பிரியா"
       },
       attendees: {
         en: "Zhang San, Li Si, Wang Wu, Zhao Liu",
-        zh: "张三、李四、王五、赵六"
+        zh: "张三、李四、王五、赵六",
+        ms: "Ahmad, Siti, Ali, Muthu",
+        ta: "ராமன், பிரியா, குமார், மாலா"
       },
       meetingObjective: {
         en: "Discuss Q4 project goals and resource allocation...",
-        zh: "讨论第四季度项目目标和资源分配..."
+        zh: "讨论第四季度项目目标和资源分配...",
+        ms: "Bincang matlamat projek suku keempat dan peruntukan sumber...",
+        ta: "நான்காம் காலாண்டு திட்ட இலக்குகள் மற்றும் வள ஒதுக்கீடு பற்றி விவாதிக்கவும்..."
       },
       additionalInfo: {
         en: "Example: Need to discuss budget overrun, technical team should present project status, marketing needs to share Q4 campaign results...",
-        zh: "例如：需要重点讨论预算超支问题，技术团队需要汇报项目进度，市场部需要分享第四季度活动成果..."
+        zh: "例如：需要重点讨论预算超支问题，技术团队需要汇报项目进度，市场部需要分享第四季度活动成果...",
+        ms: "Contoh: Perlu bincang lebihan bajet, pasukan teknikal perlu bentang status projek, pemasaran perlu kongsikan keputusan kempen Q4...",
+        ta: "எடுத்துக்காட்டு: வரவு செலவுத் திட்டத்தை மீறியதைப் பற்றி விவாதிக்க வேண்டும், தொழில்நுட்பக் குழு திட்ட நிலையை வழங்க வேண்டும், சந்தைப்படுத்தல் குழு Q4 பிரச்சார முடிவுகளைப் பகிர்ந்து கொள்ள வேண்டும்..."
       }
     };
     return placeholders[field]?.[currentLanguage] || '';
@@ -167,9 +253,99 @@ function FormStep1({ onSubmit }) {
   const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
-    const sizes = currentLanguage === 'zh' ? ['字节', 'KB', 'MB', 'GB'] : ['Bytes', 'KB', 'MB', 'GB'];
+    const sizes = {
+      en: ['Bytes', 'KB', 'MB', 'GB'],
+      zh: ['字节', 'KB', 'MB', 'GB'],
+      ms: ['Bait', 'KB', 'MB', 'GB'],
+      ta: ['பைட்டுகள்', 'KB', 'MB', 'GB']
+    };
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + (sizes[currentLanguage]?.[i] || sizes.en[i]);
+  };
+
+  // 获取动态标题
+  const getSectionTitle = (section) => {
+    const titles = {
+      basicInfo: {
+        en: "Basic Information",
+        zh: "基本信息",
+        ms: "Maklumat Asas",
+        ta: "அடிப்படை தகவல்"
+      },
+      participants: {
+        en: "Participants",
+        zh: "人员信息",
+        ms: "Peserta",
+        ta: "பங்காளிகள்"
+      },
+      meetingContent: {
+        en: "Meeting Content",
+        zh: "会议内容",
+        ms: "Kandungan Mesyuarat",
+        ta: "கூட்ட உள்ளடக்கம்"
+      },
+      attachments: {
+        en: "Attachments",
+        zh: "附件",
+        ms: "Lampiran",
+        ta: "இணைப்புகள்"
+      },
+      selectMeetingType: {
+        en: "Select meeting type",
+        zh: "选择会议类型",
+        ms: "Pilih jenis mesyuarat",
+        ta: "கூட்ட வகையைத் தேர்ந்தெடுக்கவும்"
+      },
+      customType: {
+        en: "Custom Type",
+        zh: "自定义类型",
+        ms: "Jenis Tersuai",
+        ta: "தனிப்பயன் வகை"
+      },
+      specifyMeetingType: {
+        en: "Please specify meeting type",
+        zh: "请输入会议类型",
+        ms: "Sila nyatakan jenis mesyuarat",
+        ta: "கூட்ட வகையைக் குறிப்பிடவும்"
+      },
+      aiSupplement: {
+        en: "Add more details for better AI results",
+        zh: "提供更多信息让AI生成更精准的议程",
+        ms: "Berikan lebih banyak maklumat untuk hasil AI yang lebih tepat",
+        ta: "மேம்பட்ட AI முடிவுகளுக்கு கூடுதல் விவரங்களைச் சேர்க்கவும்"
+      },
+      clickToUpload: {
+        en: "Click to upload files",
+        zh: "点击上传文件",
+        ms: "Klik untuk muat naik fail",
+        ta: "கோப்புகளைப் பதிவேற்ற கிளிக் செய்க"
+      },
+      uploadHint: {
+        en: "Supports PDF, Word, Excel, PowerPoint, images, etc.",
+        zh: "支持 PDF, Word, Excel, PowerPoint, 图片等格式",
+        ms: "Menyokong PDF, Word, Excel, PowerPoint, imej, dll.",
+        ta: "PDF, Word, Excel, PowerPoint, படங்கள் போன்றவைகளை ஆதரிக்கிறது"
+      },
+      uploadedFiles: {
+        en: "Uploaded Files",
+        zh: "已上传文件",
+        ms: "Fail Dimuat Naik",
+        ta: "பதிவேற்றப்பட்ட கோப்புகள்"
+      },
+      generateAgenda: {
+        en: "AI Generate Agenda",
+        zh: "AI 生成议程",
+        ms: "AI Hasilkan Agenda",
+        ta: "AI அட்டவணையை உருவாக்குக"
+      },
+      minutes: {
+        en: "minutes",
+        zh: "分钟",
+        ms: "minit",
+        ta: "நிமிடங்கள்"
+      }
+    };
+    return titles[section]?.[currentLanguage] || titles[section]?.en || '';
   };
 
   const containerVariants = { 
@@ -197,7 +373,7 @@ function FormStep1({ onSubmit }) {
         <form onSubmit={handleSubmit} className="form-content">
           {/* 基本信息 */}
           <motion.div className="form-section" variants={itemVariants}>
-            <h3>📋 {currentLanguage === 'zh' ? '基本信息' : 'Basic Information'}</h3>
+            <h3>📋 {getSectionTitle('basicInfo')}</h3>
             
             <div className="form-group">
               <label htmlFor="meetingTitle">
@@ -259,7 +435,7 @@ function FormStep1({ onSubmit }) {
                     max="480" 
                     step="15"
                   />
-                  <span className="input-suffix">{currentLanguage === 'zh' ? '分钟' : 'min'}</span>
+                  <span className="input-suffix">{getSectionTitle('minutes')}</span>
                 </div>
               </motion.div>
             </div>
@@ -283,7 +459,7 @@ function FormStep1({ onSubmit }) {
             <div className="form-row">
               <motion.div className="form-group" variants={itemVariants}>
                 <label htmlFor="meetingType">
-                  {currentLanguage === 'zh' ? '会议类型' : 'Meeting Type'}
+                  {t('formStep1.meetingType')}
                 </label>
                 <select 
                   id="meetingType"
@@ -291,10 +467,10 @@ function FormStep1({ onSubmit }) {
                   value={formData.meetingType} 
                   onChange={handleChange}
                 >
-                  <option value="">{currentLanguage === 'zh' ? '选择会议类型' : 'Select meeting type'}</option>
+                  <option value="">{getSectionTitle('selectMeetingType')}</option>
                   {meetingTypes.map(type => (
                     <option key={type.value} value={type.value}>
-                      {type.label[currentLanguage]}
+                      {type.label[currentLanguage] || type.label.en}
                     </option>
                   ))}
                 </select>
@@ -303,7 +479,7 @@ function FormStep1({ onSubmit }) {
               {formData.meetingType === 'other' && (
                 <motion.div className="form-group" variants={itemVariants}>
                   <label htmlFor="customMeetingType">
-                    {currentLanguage === 'zh' ? '自定义类型' : 'Custom Type'}
+                    {getSectionTitle('customType')}
                   </label>
                   <input 
                     id="customMeetingType"
@@ -311,7 +487,7 @@ function FormStep1({ onSubmit }) {
                     name="customMeetingType" 
                     value={formData.customMeetingType} 
                     onChange={handleChange} 
-                    placeholder={currentLanguage === 'zh' ? '请输入会议类型' : 'Please specify meeting type'}
+                    placeholder={getSectionTitle('specifyMeetingType')}
                   />
                 </motion.div>
               )}
@@ -320,7 +496,7 @@ function FormStep1({ onSubmit }) {
 
           {/* 人员信息 */}
           <motion.div className="form-section" variants={itemVariants}>
-            <h3>👥 {currentLanguage === 'zh' ? '人员信息' : 'Participants'}</h3>
+            <h3>👥 {getSectionTitle('participants')}</h3>
             
             <div className="form-row">
               <motion.div className="form-group" variants={itemVariants}>
@@ -368,67 +544,64 @@ function FormStep1({ onSubmit }) {
               />
             </div>
           </motion.div>
-{/* 会议内容 */}
-<motion.div className="form-section" variants={itemVariants}>
-  <h3>🎯 {currentLanguage === 'zh' ? '会议内容' : 'Meeting Content'}</h3>
-  
-  {/* 会议目的 - 确保这个有正确的样式 */}
-  <div className="form-group">
-    <label htmlFor="meetingObjective">
-      {t('formStep1.meetingObjective')} *
-    </label>
-    <textarea
-      id="meetingObjective"
-      name="meetingObjective"
-      value={formData.meetingObjective}
-      onChange={handleChange}
-      placeholder={getPlaceholder('meetingObjective')}
-      rows="4"
-      className={errors.meetingObjective ? 'error' : ''}
-    />
-    {errors.meetingObjective && <span className="error-message">{errors.meetingObjective}</span>}
-  </div>
 
-  {/* AI 补充信息 - 确保结构完全相同 */}
-  <div className="form-group">
-    <div className="checkbox-group">
-      <input
-        type="checkbox"
-        id="needAISupplement"
-        name="needAISupplement"
-        checked={formData.needAISupplement}
-        onChange={handleChange}
-      />
-      <label htmlFor="needAISupplement">
-        {currentLanguage === 'zh' ? '提供更多信息让AI生成更精准的议程' : 'Add more details for better AI results'}
-      </label>
-    </div>
-    
-    {formData.needAISupplement && (
-      <motion.div
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: 1, height: 'auto' }}
-        transition={{ duration: 0.3 }}
-      >
-        {/* 这里确保使用相同的 form-group 结构 */}
-        <div className="form-group" style={{ marginTop: '12px' }}>
-          <textarea
-            name="additionalInfo"
-            value={formData.additionalInfo}
-            onChange={handleChange}
-            placeholder={getPlaceholder('additionalInfo')}
-            rows="4"
-          />
-        </div>
-      </motion.div>
-    )}
-  </div>
-</motion.div>
+          {/* 会议内容 */}
+          <motion.div className="form-section" variants={itemVariants}>
+            <h3>🎯 {getSectionTitle('meetingContent')}</h3>
+            
+            <div className="form-group">
+              <label htmlFor="meetingObjective">
+                {t('formStep1.meetingObjective')} *
+              </label>
+              <textarea
+                id="meetingObjective"
+                name="meetingObjective"
+                value={formData.meetingObjective}
+                onChange={handleChange}
+                placeholder={getPlaceholder('meetingObjective')}
+                rows="4"
+                className={errors.meetingObjective ? 'error' : ''}
+              />
+              {errors.meetingObjective && <span className="error-message">{errors.meetingObjective}</span>}
+            </div>
 
+            <div className="form-group">
+              <div className="checkbox-group">
+                <input
+                  type="checkbox"
+                  id="needAISupplement"
+                  name="needAISupplement"
+                  checked={formData.needAISupplement}
+                  onChange={handleChange}
+                />
+                <label htmlFor="needAISupplement">
+                  {getSectionTitle('aiSupplement')}
+                </label>
+              </div>
+              
+              {formData.needAISupplement && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="form-group" style={{ marginTop: '12px' }}>
+                    <textarea
+                      name="additionalInfo"
+                      value={formData.additionalInfo}
+                      onChange={handleChange}
+                      placeholder={getPlaceholder('additionalInfo')}
+                      rows="4"
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
 
           {/* 文件上传 */}
           <motion.div className="form-section" variants={itemVariants}>
-            <h3>📎 {currentLanguage === 'zh' ? '附件' : 'Attachments'}</h3>
+            <h3>📎 {getSectionTitle('attachments')}</h3>
             
             <div className="file-upload-section">
               <div className="upload-area">
@@ -442,16 +615,16 @@ function FormStep1({ onSubmit }) {
                 />
                 <label htmlFor="file-upload" className="upload-label">
                   <Upload size={24} />
-                  <span>{currentLanguage === 'zh' ? '点击上传文件' : 'Click to upload files'}</span>
+                  <span>{getSectionTitle('clickToUpload')}</span>
                   <span className="upload-hint">
-                    {currentLanguage === 'zh' ? '支持 PDF, Word, Excel, PowerPoint, 图片等格式' : 'Supports PDF, Word, Excel, PowerPoint, images, etc.'}
+                    {getSectionTitle('uploadHint')}
                   </span>
                 </label>
               </div>
               
               {formData.attachments.length > 0 && (
                 <div className="attachments-list">
-                  <h4>{currentLanguage === 'zh' ? '已上传文件' : 'Uploaded Files'} ({formData.attachments.length})</h4>
+                  <h4>{getSectionTitle('uploadedFiles')} ({formData.attachments.length})</h4>
                   {formData.attachments.map((attachment) => (
                     <div key={attachment.id} className="attachment-item">
                       <FileText size={16} />
@@ -481,7 +654,7 @@ function FormStep1({ onSubmit }) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              {currentLanguage === 'zh' ? 'AI 生成议程' : 'AI Generate Agenda'} 
+              {getSectionTitle('generateAgenda')}
               <ArrowRight size={20} />
             </motion.button>
           </motion.div>
