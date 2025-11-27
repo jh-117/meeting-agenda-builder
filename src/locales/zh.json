@@ -28,7 +28,7 @@
     "meetingTime": "会议时间",
     "duration": "时长 (分钟)",
     "location": "地点/会议链接",
-    "meetingType":"会议类型"
+    "meetingType":"会议类型",
     "facilitator": "主持人",
     "noteTaker": "记录人",
     "attendees": "参与者",
