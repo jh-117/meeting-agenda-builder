@@ -9,22 +9,8 @@ import {
   FileCode,
   Home
 } from "lucide-react";
+import { generatePDF, generateDOCX, generateTXT } from './services/exportService'
 
-// Mock export functions (replace with your actual implementations)
-const generatePDF = async (data, language) => {
-  console.log('Generating PDF...', data);
-  alert('PDF generation would happen here');
-};
-
-const generateDOCX = async (data, language) => {
-  console.log('Generating DOCX...', data);
-  alert('DOCX generation would happen here');
-};
-
-const generateTXT = (data, language) => {
-  console.log('Generating TXT...', data);
-  alert('TXT generation would happen here');
-};
 
 // Sortable Agenda Item Component
 const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
