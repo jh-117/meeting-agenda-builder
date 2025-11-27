@@ -15,13 +15,13 @@ serve(async (req) => {
   try {
     const { action, formData, agendaData, itemData, context, language = "zh" } = await req.json()
 
-    // 从环境变量获取 OpenAI API Key
+    // Get OpenAI API Key from environment
     const openaiApiKey = Deno.env.get('Agenda_generator')
     if (!openaiApiKey) {
       throw new Error('OpenAI API Key not configured')
     }
 
-    // 语言配置 - 保持与您原来相同的结构
+    // Language configuration
     const languageConfig = {
       zh: {
         systemPrompt: "你是一个专业的会议议程生成助手，请用正式、专业的商务中文回复。所有议程项和行动项都使用中文。",
@@ -179,7 +179,7 @@ Please regenerate ONLY this single agenda item, returning valid JSON:
 
     console.log("AI Prompt:", prompt)
 
-    // 调用 OpenAI API
+    // Call OpenAI API
     const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -210,7 +210,7 @@ Please regenerate ONLY this single agenda item, returning valid JSON:
 
     console.log("AI Response:", content)
 
-    // 清理可能的 markdown 代码块
+    // Clean possible markdown code blocks
     const cleanedContent = content
       .replace(/```json\n?/g, "")
       .replace(/```\n?/g, "")
