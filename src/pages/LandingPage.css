@@ -297,20 +297,26 @@
 }
 
 .card-1 {
-  top: 50px;
-  left: 50px;
+  top: 20% !important;
+  left: 10% !important;
+  right: auto !important;
+  bottom: auto !important;
   animation-delay: 0s;
 }
 
 .card-2 {
-  top: 200px;
-  left: 200px;
+  top: 55% !important;
+  left: 35% !important;
+  right: auto !important;
+  bottom: auto !important;
   animation-delay: 0.5s;
 }
 
 .card-3 {
-  bottom: 80px;
-  right: 60px;
+  top: auto !important;
+  left: auto !important;
+  bottom: 15% !important;
+  right: 8% !important;
   animation-delay: 1s;
 }
 
