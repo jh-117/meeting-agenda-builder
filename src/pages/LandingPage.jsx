@@ -9,7 +9,7 @@ function LandingPage({ onStart }) {
 
   /**
    * 切换语言并保存到 localStorage
-   * @param {string} lng - 'en' 或 'zh'
+   * @param {string} lng - 'en', 'zh', 'ms', 'ta'
    */
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -30,6 +30,14 @@ function LandingPage({ onStart }) {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
+  // 语言配置
+  const languages = [
+    { code: 'en', name: 'English', nativeName: 'English' },
+    { code: 'zh', name: 'Chinese', nativeName: '中文' },
+    { code: 'ms', name: 'Malay', nativeName: 'Bahasa Melayu' },
+    { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்' }
+  ];
+
   return (
     <motion.div
       className="landing-page"
@@ -39,20 +47,16 @@ function LandingPage({ onStart }) {
     >
       {/* Language Selector */}
       <motion.div className="language-selector" variants={itemVariants}>
-        <button
-          className={i18n.language === 'en' ? 'active' : ''}
-          onClick={() => changeLanguage('en')}
-          aria-label="Switch to English"
-        >
-          English
-        </button>
-        <button
-          className={i18n.language === 'zh' ? 'active' : ''}
-          onClick={() => changeLanguage('zh')}
-          aria-label="切换到中文"
-        >
-          中文
-        </button>
+        {languages.map((lang) => (
+          <button
+            key={lang.code}
+            className={i18n.language === lang.code ? 'active' : ''}
+            onClick={() => changeLanguage(lang.code)}
+            aria-label={`Switch to ${lang.name}`}
+          >
+            {lang.nativeName}
+          </button>
+        ))}
       </motion.div>
 
       {/* Hero Section */}
