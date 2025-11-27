@@ -34,6 +34,159 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
   const { t } = useTranslation();
   
   // Use the useSortable hook to make this component sortable
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    border: '1px solid #e5e7eb',
+    borderRadius: '8px',
+    padding: '16px',
+    marginBottom: '12px',
+    backgroundColor: 'white',
+    opacity: isDragging ? 0.5 : 1,
+  };
+  
+  return (
+    <div ref={setNodeRef} style={style}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        marginBottom: '12px'
+      }}>
+        {/* Drag handle */}
+        <div 
+          {...attributes}
+          {...listeners}
+          style={{ 
+            cursor: isDragging ? 'grabbing' : 'grab', 
+            color: '#9ca3af',
+            touchAction: 'none' // Important for mobile drag
+          }}
+        >
+          <GripVertical size={16} />
+        </div>
+        <input
+          placeholder={t('agenda.topicPlaceholder')}
+          value={item.topic}
+          onChange={(e) => onChange(index, "topic", e.target.value)}
+          style={{
+            flex: 1,
+            padding: '8px 12px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '6px',
+            fontSize: '14px'
+          }}
+        />
+        <button 
+          onClick={() => onRegenerateItem(item.id)}
+          disabled={isGeneratingItem === item.id}
+          style={{
+            padding: '8px',
+            border: 'none',
+            backgroundColor: '#f3f4f6',
+            borderRadius: '6px',
+            cursor: 'pointer'
+          }}
+        >
+          <RefreshCw size={14} style={{
+            animation: isGeneratingItem === item.id ? 'spin 1s linear infinite' : 'none'
+          }} />
+        </button>
+        <button 
+          onClick={() => onRemove(index)}
+          style={{
+            padding: '4px 12px',
+            border: 'none',
+            backgroundColor: '#fee2e2',
+            color: '#dc2626',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontSize: '18px'
+          }}
+        >
+          ×
+        </button>
+      </div>
+      
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+        <input
+          placeholder={t('agenda.ownerPlaceholder')}
+          value={item.owner}
+          onChange={(e) => onChange(index, "owner", e.target.value)}
+          style={{
+            flex: 1,
+            padding: '8px 12px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '6px',
+            fontSize: '14px'
+          }}
+        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <input
+            type="number"
+            placeholder={t('agenda.durationPlaceholder')}
+            value={item.timeAllocation}
+            onChange={(e) => onChange(index, "timeAllocation", parseInt(e.target.value) || 15)}
+            min="5"
+            style={{
+              width: '80px',
+              padding: '8px 12px',
+              border: '1px solid #e5e7eb',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
+          <span style={{ fontSize: '14px', color: '#6b7280' }}>
+            {t('agenda.minutes')}
+          </span>
+        </div>
+      </div>
+
+      <textarea
+        placeholder={t('agenda.descriptionPlaceholder')}
+        value={item.description}
+        onChange={(e) => onChange(index, "description", e.target.value)}
+        rows="2"
+        style={{
+          width: '100%',
+          padding: '8px 12px',
+          border: '1px solid #e5e7eb',
+          borderRadius: '6px',
+          fontSize: '14px',
+          marginBottom: '8px',
+          fontFamily: 'inherit',
+          resize: 'vertical'
+        }}
+      />
+
+      <textarea
+        placeholder={t('agenda.expectedOutputPlaceholder')}
+        value={item.expectedOutput}
+        onChange={(e) => onChange(index, "expectedOutput", e.target.value)}
+        rows="2"
+        style={{
+          width: '100%',
+          padding: '8px 12px',
+          border: '1px solid #e5e7eb',
+          borderRadius: '6px',
+          fontSize: '14px',
+          fontFamily: 'inherit',
+          resize: 'vertical'
+        }}
+      />
+    </div>
+  );
+};
+
 function AgendaEditor({ 
   agendaData = {
     meetingTitle: 'Q4 Project Planning Meeting',
@@ -75,7 +228,7 @@ function AgendaEditor({
   const [isExporting, setIsExporting] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
-  // Action Items state
+  // Action Items 状态
   const [actionItems, setActionItems] = useState([
     {
       id: 'action-1',
@@ -92,7 +245,8 @@ function AgendaEditor({
     id: item.id || `agenda-${index}-${Date.now()}`
   }));
 
-  // DnD Sensors
+
+   // DnD Sensors
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -103,7 +257,7 @@ function AgendaEditor({
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
-    if (active.id !== over?.id) {
+    if (active.id !== over.id) {
       const oldIndex = agendaItemsWithId.findIndex((item) => item.id === active.id);
       const newIndex = agendaItemsWithId.findIndex((item) => item.id === over.id);
 
@@ -111,6 +265,7 @@ function AgendaEditor({
       handleChange("agendaItems", newItems);
     }
   };
+
 
   const handleChangeLanguage = (lang) => {
     i18n.changeLanguage(lang);
@@ -150,7 +305,7 @@ function AgendaEditor({
     handleChange("agendaItems", updatedItems);
   };
 
-  // Action Items handlers
+  // Action Items 处理函数
   const handleActionItemChange = (index, field, value) => {
     const updatedItems = [...actionItems];
     updatedItems[index] = { ...updatedItems[index], [field]: value };
@@ -997,4 +1152,3 @@ function AgendaEditor({
 }
 
 export default AgendaEditor;
-      
