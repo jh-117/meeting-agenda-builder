@@ -64,7 +64,7 @@ function LandingPage({ onStart }) {
         <div className="hero-content">
           <div className="hero-badge">
             <Zap size={16} />
-            <span>{t('landing.heroBadge')}</span>
+          
           </div>
           <motion.h1 className="hero-title">{t('landing.heroTitle')}</motion.h1>
           <motion.p className="hero-description">{t('landing.heroDescription')}</motion.p>
