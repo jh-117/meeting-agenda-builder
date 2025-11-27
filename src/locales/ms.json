@@ -63,7 +63,9 @@
     "facilitator": "Fasilitator",
     "agendaItems": "Item Agenda",
     "noAgendaItems": "Tiada item agenda lagi",
-    "livePreview": "Pratonton Langsung"
+    "livePreview": "Pratonton Langsung",
+      "actionItems": "Item Tindakan",
+    "noActionItems": "Tiada item tindakan lagi"
   },
   "preview": {
     "date": "Tarikh",
