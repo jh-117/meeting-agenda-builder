@@ -91,7 +91,9 @@
     "regenerating": "重新生成中...",
     "backToHome": "返回首页",
     "download": "下载",
-    "addFirstActionItem": "添加第一个行动项目"
+    "addFirstActionItem": "添加第一个行动项目",
+    "goBack": "返回",
+    "editAgenda": "编辑议程"
   },
   "export": {
     "exportAs": "导出为",
@@ -121,5 +123,19 @@
   },
   "notification": {
     "exportSuccess": "议程已成功导出为 {{format}} 格式！"
+  },
+  "aiPreview": {
+    "title": "AI 生成的议程",
+    "subtitle": "查看并选择您的下一步操作",
+    "aiGenerated": "AI 已生成",
+    "nextSteps": "下一步",
+    "downloadFormat": "下载格式",
+    "agendaPreview": "议程预览",
+    "noAgendaData": "没有议程数据",
+    "pleaseGenerate": "请先使用 AI 生成议程。",
+    "tip": "提示",
+    "tipContent": "下载可立即获取议程，或编辑以在下载前进行自定义。",
+    "downloadingAs": "下载中...",
+    "downloadAs": "下载为"
   }
 }

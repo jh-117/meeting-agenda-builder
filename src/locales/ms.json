@@ -91,7 +91,9 @@
     "regenerating": "Menjana Semula...",
     "backToHome": "Kembali ke Laman Utama",
     "download": "Muat Turun",
-    "addFirstActionItem": "Tambah Item Tindakan Pertama"
+    "addFirstActionItem": "Tambah Item Tindakan Pertama",
+    "goBack": "Kembali",
+    "editAgenda": "Sunting Agenda"
   },
   "export": {
     "exportAs": "Eksport sebagai",
@@ -121,5 +123,19 @@
   },
   "notification": {
     "exportSuccess": "Agenda berjaya dieksport sebagai {{format}}!"
+  },
+  "aiPreview": {
+    "title": "Agenda Dijana AI",
+    "subtitle": "Semak dan pilih tindakan seterusnya anda",
+    "aiGenerated": "Dijana AI",
+    "nextSteps": "Langkah Seterusnya",
+    "downloadFormat": "Format Muat Turun",
+    "agendaPreview": "Pratonton Agenda",
+    "noAgendaData": "Tiada Data Agenda",
+    "pleaseGenerate": "Sila jana agenda menggunakan AI dahulu.",
+    "tip": "Petua",
+    "tipContent": "Muat turun untuk mendapatkan agenda dengan segera, atau Sunting untuk membuat penyesuaian sebelum memuat turun.",
+    "downloadingAs": "Memuat turun...",
+    "downloadAs": "Muat turun sebagai"
   }
 }

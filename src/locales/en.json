@@ -91,7 +91,9 @@
     "regenerating": "Regenerating...",
     "backToHome": "Back to Home",
     "download": "Download",
-    "addFirstActionItem": "Add First Action Item"
+    "addFirstActionItem": "Add First Action Item",
+    "goBack": "Go Back",
+    "editAgenda": "Edit Agenda"
   },
   "export": {
     "exportAs": "Export as",
@@ -121,5 +123,19 @@
   },
   "notification": {
     "exportSuccess": "Agenda successfully exported as {{format}}!"
+  },
+  "aiPreview": {
+    "title": "AI Generated Agenda",
+    "subtitle": "Review and choose your next action",
+    "aiGenerated": "AI Generated",
+    "nextSteps": "Next Steps",
+    "downloadFormat": "Download Format",
+    "agendaPreview": "Agenda Preview",
+    "noAgendaData": "No Agenda Data",
+    "pleaseGenerate": "Please generate an agenda using AI first.",
+    "tip": "Tip",
+    "tipContent": "Download to get the agenda immediately, or Edit to make customizations before downloading.",
+    "downloadingAs": "Downloading...",
+    "downloadAs": "Download as"
   }
 }
