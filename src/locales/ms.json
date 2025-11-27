@@ -79,7 +79,10 @@
     "agenda": "Agenda",
     "untitledTopic": "Topik Tanpa Tajuk",
     "expected": "Dijangka",
-    "noAgendaItems": "Tiada item agenda ditambah lagi"
+    "noAgendaItems": "Tiada item agenda ditambah lagi",
+      "actionItems": "Item Tindakan",
+    "untitledTask": "Tugas Tanpa Nama",
+    "deadline": "Tarikh Akhir"
   },
   "actions": {
     "add": "Tambah",
@@ -87,7 +90,8 @@
     "aiRegenerate": "AI Jana Semula",
     "regenerating": "Menjana Semula...",
     "backToHome": "Kembali ke Laman Utama",
-    "download": "Muat Turun"
+    "download": "Muat Turun",
+    "addFirstActionItem": "Tambah Item Tindakan Pertama"
   },
   "export": {
     "exportAs": "Eksport sebagai",
