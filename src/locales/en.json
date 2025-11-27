@@ -20,7 +20,7 @@
     "readyDesc": "Create your first AI-powered meeting agenda now",
     "readyButton": "Start Now"
   },
-   "formStep1": {
+  "formStep1": {
     "header": "Create a New Meeting Agenda",
     "subHeader": "Step 1 / 2 - Basic Information",
     "meetingTitle": "Meeting Title",
@@ -31,33 +31,15 @@
     "facilitator": "Facilitator",
     "noteTaker": "Note Taker",
     "attendees": "Attendees",
-    "meetingObjective": "Meeting Objective",  
+    "meetingObjective": "Meeting Objective",
     "errors": {
       "meetingTitle": "Meeting title is required",
       "meetingDate": "Meeting date is required",
       "meetingTime": "Meeting time is required",
       "location": "Location is required",
       "facilitator": "Facilitator is required",
-      "meetingObjective": "Meeting objective is required"  
-   
+      "meetingObjective": "Meeting objective is required"
     }
-  },
-  "formStep2": {
-    "header": "Add Detailed Info",
-    "subHeader": "Step 2 / 2 - Agenda & Action Items",
-    "meetingObjective": "Meeting Objective",
-    "agendaItems": "Agenda Items",
-    "discussionItems": "Discussion Items",
-    "actionItems": "Action Items",
-    "notes": "Notes & Additional Info",
-    "addAgenda": "Add Agenda Item",
-    "addAction": "Add Action Item",
-    "continue": "Continue to Editor",
-    "attachments": "附件",
-    "clickToUpload": "点击上传文件",
-    "uploadHint": "支持 PDF, Word, Excel, PowerPoint, 图片等格式",
-    "uploadedFiles": "已上传文件",
-    "back": "返回"
   },
   "agendaEditor": {
     "preview": "Preview",
