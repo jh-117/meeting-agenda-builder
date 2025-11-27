@@ -1,6 +1,6 @@
 {
   "landing": {
-    "heroBadge": "AI 驱动的会议议程生成器",
+    
     "heroTitle": "创建专业的会议议程",
     "heroDescription": "使用 AI 智能生成工具，只需几分钟即可创建精心组织的会议议程。支持实时编辑、多格式导出，让您的会议更高效、更专业。",
     "ctaButton": "开始创建",
@@ -28,6 +28,7 @@
     "meetingTime": "会议时间",
     "duration": "时长 (分钟)",
     "location": "地点/会议链接",
+    "meetingType":"会议类型"
     "facilitator": "主持人",
     "noteTaker": "记录人",
     "attendees": "参与者",
