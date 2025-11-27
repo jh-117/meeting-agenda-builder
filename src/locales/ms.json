@@ -48,7 +48,9 @@
     "minutes": "minit",
     "minutesShort": "min",
     "descriptionPlaceholder": "Penerangan...",
-    "expectedOutputPlaceholder": "Output dijangka..."
+    "expectedOutputPlaceholder": "Output dijangka...",
+     "taskPlaceholder": "Tugas",
+    "deadlinePlaceholder": "Tarikh Akhir"
   },
   "editor": {
     "basicInfo": "Maklumat Asas",
