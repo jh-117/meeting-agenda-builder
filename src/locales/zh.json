@@ -79,7 +79,10 @@
     "agenda": "议程",
     "untitledTopic": "未命名议题",
     "expected": "预期产出",
-    "noAgendaItems": "暂无议程项目"
+    "noAgendaItems": "暂无议程项目",
+    "actionItems": "行动项目",
+    "untitledTask": "未命名任务",
+    "deadline": "截止日期"
   },
   "actions": {
     "add": "添加",
@@ -87,7 +90,8 @@
     "aiRegenerate": "AI 重新生成",
     "regenerating": "重新生成中...",
     "backToHome": "返回首页",
-    "download": "下载"
+    "download": "下载",
+    "addFirstActionItem": "添加第一个行动项目"
   },
   "export": {
     "exportAs": "导出为",
