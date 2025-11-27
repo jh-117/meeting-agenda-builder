@@ -64,6 +64,8 @@
     "agendaItems": "Agenda Items",
     "noAgendaItems": "No agenda items yet",
     "livePreview": "Live Preview"
+     "actionItems": "Action Items",
+    "noActionItems": "No action items yet"
   },
   "preview": {
     "date": "Date",
