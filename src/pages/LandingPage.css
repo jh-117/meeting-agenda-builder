@@ -217,6 +217,8 @@
   background: rgba(255, 255, 255, 0.8);
   animation: float 3s ease-in-out infinite;
   transition: all var(--transition-normal);
+  text-align: center; /* 确保文字居中 */
+  min-width: 140px; /* 确保最小宽度一致 */
 }
 
 .dark .floating-card {
@@ -225,25 +227,40 @@
   box-shadow: 0 8px 32px var(--shadow-dark-lg);
 }
 
-.card-1 {
+/* 为所有卡片添加统一的样式 */
+.card-1, .card-2, .card-3, .card-tamil {
   width: 140px;
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.card-1 {
   top: 50px;
   left: 50px;
   animation-delay: 0s;
 }
 
 .card-2 {
-  width: 140px;
   top: 200px;
   left: 200px;
   animation-delay: 0.5s;
 }
 
 .card-3 {
-  width: 140px;
   bottom: 80px;
   right: 60px;
   animation-delay: 1s;
+}
+
+/* 为泰米尔语卡片添加特定位置 */
+.card-tamil {
+  top: 120px;
+  right: 80px;
+  animation-delay: 0.3s;
 }
 
 @keyframes float {
@@ -275,8 +292,8 @@
   transition: all var(--transition-fast);
   color: var(--text-light-secondary);
   font-weight: 500;
-  white-space: nowrap; /* 防止文字换行 */
-  min-width: 60px; /* 确保按钮有最小宽度 */
+  white-space: nowrap;
+  min-width: 60px;
   text-align: center;
 }
 
@@ -309,33 +326,117 @@
   border-color: var(--primary-dark);
 }
 
+/* 确保卡片内的内容样式一致 */
+.floating-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-light);
+  margin: 0;
+  text-align: center;
+}
+
+.dark .card-title {
+  color: var(--text-dark);
+}
+
+.card-button {
+  background: var(--primary-light);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.dark .card-button {
+  background: var(--primary-dark);
+}
+
+.card-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 /* 响应式设计 - 小屏幕调整 */
 @media (max-width: 768px) {
   .language-selector {
-    right: 20px; /* 在小屏幕上离右边更近 */
+    right: 20px;
     top: 15px;
-    gap: 6px; /* 减小间距 */
+    gap: 6px;
   }
   
   .language-selector button {
     padding: 6px 12px;
     font-size: 12px;
-    min-width: 50px; /* 小屏幕上更小的最小宽度 */
+    min-width: 50px;
+  }
+  
+  .floating-card {
+    padding: 16px 24px;
+    font-size: 28px;
+    min-width: 120px;
+  }
+  
+  .card-1, .card-2, .card-3, .card-tamil {
+    width: 120px;
+    padding: 16px 24px;
   }
 }
 
 /* 超小屏幕调整 */
 @media (max-width: 480px) {
   .language-selector {
-    flex-wrap: wrap; /* 如果空间不够可以换行 */
+    flex-wrap: wrap;
     justify-content: flex-end;
-    max-width: 200px; /* 限制最大宽度 */
+    max-width: 200px;
   }
   
   .language-selector button {
     min-width: 45px;
     padding: 4px 8px;
     font-size: 11px;
+  }
+  
+  .hero-visual {
+    height: 400px;
+  }
+  
+  .floating-card {
+    padding: 12px 16px;
+    font-size: 24px;
+    min-width: 100px;
+  }
+  
+  .card-1, .card-2, .card-3, .card-tamil {
+    width: 100px;
+    padding: 12px 16px;
+  }
+  
+  .card-title {
+    font-size: 16px;
+  }
+  
+  .card-button {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-width: 100px;
   }
 }
 /* ==================== Features Section ==================== */
