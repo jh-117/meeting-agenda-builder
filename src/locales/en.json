@@ -48,7 +48,7 @@
     "minutes": "minutes",
     "minutesShort": "min",
     "descriptionPlaceholder": "Description...",
-    "expectedOutputPlaceholder": "Expected output..."
+    "expectedOutputPlaceholder": "Expected output...",
     "taskPlaceholder": "Task",
     "deadlinePlaceholder": "Deadline"
   },
@@ -63,7 +63,7 @@
     "facilitator": "Facilitator",
     "agendaItems": "Agenda Items",
     "noAgendaItems": "No agenda items yet",
-    "livePreview": "Live Preview"
+    "livePreview": "Live Preview",
     "actionItems": "Action Items",
     "noActionItems": "No action items yet"
   },
@@ -79,7 +79,7 @@
     "agenda": "Agenda",
     "untitledTopic": "Untitled Topic",
     "expected": "Expected",
-    "noAgendaItems": "No agenda items added yet"
+    "noAgendaItems": "No agenda items added yet",
     "actionItems": "Action Items",
     "untitledTask": "Untitled Task",
     "deadline": "Deadline"
@@ -90,7 +90,8 @@
     "aiRegenerate": "AI Regenerate",
     "regenerating": "Regenerating...",
     "backToHome": "Back to Home",
-    "download": "Download"
+    "download": "Download",
+    "addFirstActionItem": "Add First Action Item"
   },
   "export": {
     "exportAs": "Export as",
