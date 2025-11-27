@@ -1,26 +1,24 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next'; // 修复这里
+import { useTranslation } from 'react-i18next';
 import './App.css';
 import { useTheme } from './hooks/useTheme';
 import { useNotification } from './hooks/useNotification';
 import LandingPage from './pages/LandingPage';
-import FormStep1 from './pages/FormStep1'; // 修复这里
+import FormStep1 from './pages/FormStep1';
 import AgendaEditor from './pages/AgendaEditor';
-
-import NotificationToast from './components/NotificationToast'; // 修复这里
+import NotificationToast from './components/NotificationToast';
 import ThemeToggle from './components/ThemeToggle';
 import LoadingSpinner from './components/LoadingSpinner';
-import { generateAgendaWithAI, regenerateAgendaWithAI } from './services/agendaAIService'; // 修复这里
-import AIPreviewPage from './pages/AIPreviewPage';
+import { generateAgendaWithAI, regenerateAgendaWithAI } from './services/agendaAIService';
 
 function App() {
   const [currentStep, setCurrentStep] = useState('landing');
   const [agendaData, setAgendaData] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false); // 修复这里
+  const [isGenerating, setIsGenerating] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { notification, showNotification, hideNotification } = useNotification();
-  const { i18n } = useTranslation(); // 修复这里
+  const { i18n } = useTranslation();
 
   const handleStartClick = () => {
     setCurrentStep('step1');
@@ -92,49 +90,17 @@ function App() {
       setIsGenerating(false);
     }
   };
+
   return (
     <div className={`app ${theme}`}>
       <ThemeToggle theme={theme} onToggle={toggleTheme} />
       
-      {/* Debug info - remove in production */}
-      <div style={{
-        position: 'fixed',
-        top: '10px',
-        right: '10px',
-        backgroundColor: 'rgba(0,0,0,0.8)',
-        color: 'white',
-        padding: '5px 10px',
-        borderRadius: '5px',
-        fontSize: '12px',
-        zIndex: 1000
-      }}>
-        Step: {currentStep}
-      </div>
-      
-      {/* Step-based navigation */}
       {currentStep === 'landing' && (
         <LandingPage onStartClick={handleStartClick} />
       )}
       
       {currentStep === 'step1' && (
         <FormStep1 onSubmit={handleStep1Submit} />
-      )}
-      
-      {currentStep === 'ai-preview' && agendaData && (
-        <AIPreviewPage 
-          agendaData={agendaData}
-          onEdit={() => {
-            console.log('✏️ Editing agenda');
-            setCurrentStep('editor');
-          }}
-          onBack={() => {
-            console.log('🔙 Back to editor');
-            setCurrentStep('editor');
-          }}
-          onDownloadComplete={() => {
-            showNotification('议程下载完成！', 'success');
-          }}
-        />
       )}
       
       {currentStep === 'editor' && agendaData && (
@@ -149,13 +115,10 @@ function App() {
       
       {isGenerating && <LoadingSpinner />}
 
-      {/* Notification Toast - make sure it's properly configured */}
-      {notification && (
-        <NotificationToast
-          notification={notification}
-          onClose={hideNotification}
-        />
-      )}
+      <NotificationToast
+        notification={notification}
+        onClose={hideNotification}
+      />
     </div>
   );
 }
