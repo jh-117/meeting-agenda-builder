@@ -286,21 +286,37 @@
   box-shadow: 0 8px 32px var(--shadow-dark-lg);
 }
 
-..card-1 {
-  top: 50px;
-  left: 50px;
+.card-1 {
+  top: 10vh;
+  left: 3vw;
   animation-delay: 0s;
 }
 
 .card-2 {
-  top: 200px;
-  left: 200px;
+  top: 40vh;
+  left: 12vw;
   animation-delay: 0.5s;
 }
 
 .card-3 {
-  bottom: 80px;
-  right: 60px;
+  bottom: 10vh;
+  right: 3vw;
+  animation-delay: 1s;
+}.card-1 {
+  top: 10vh;
+  left: 3vw;
+  animation-delay: 0s;
+}
+
+.card-2 {
+  top: 40vh;
+  left: 12vw;
+  animation-delay: 0.5s;
+}
+
+.card-3 {
+  bottom: 10vh;
+  right: 3vw;
   animation-delay: 1s;
 }
 
