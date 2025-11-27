@@ -1,26 +1,26 @@
 {
   "landing": {
     "heroTitle": "Create Professional Meeting Agendas",
-    "heroDescription": "Use AI tools to generate well-organized meeting agendas in minutes. Supports live editing and multi-format export for efficient and professional meetings.",
+    "heroDescription": "Use AI tools to generate structured meeting agendas in minutes. Edit in real-time and export multiple formats for efficient and professional meetings.",
     "ctaButton": "Start Creating",
     "featuresTitle": "Core Features",
-    "feature1Title": "AI-Powered",
-    "feature1Desc": "Generate meeting agendas instantly with AI assistance.",
-    "feature2Title": "Multi-format Export",
-    "feature2Desc": "Download your agenda as PDF, Word, or TXT formats.",
+    "feature1Title": "AI Powered",
+    "feature1Desc": "Instantly generate meeting agendas with AI assistance.",
+    "feature2Title": "Multiple Export Formats",
+    "feature2Desc": "Download your agenda in PDF, Word, or TXT formats.",
     "feature3Title": "Live Editing",
-    "feature3Desc": "Edit and adjust your agenda in real-time before export.",
+    "feature3Desc": "Edit and adjust your agenda in real-time before exporting.",
     "processTitle": "How It Works",
-    "step1": "Input Info",
+    "step1": "Enter Information",
     "step2": "AI Generation",
     "step3": "Edit & Adjust",
     "step4": "Export",
-    "readyTitle": "Ready to Start?",
+    "readyTitle": "Ready to Get Started?",
     "readyDesc": "Create your first AI-powered meeting agenda now",
     "readyButton": "Start Now"
   },
   "formStep1": {
-    "header": "Create a New Meeting Agenda",
+    "header": "Create New Meeting Agenda",
     "subHeader": "Step 1 / 2 - Basic Information",
     "meetingTitle": "Meeting Title",
     "meetingDate": "Meeting Date",
@@ -41,42 +41,54 @@
       "meetingObjective": "Meeting objective is required"
     }
   },
-  "agendaEditor": {
-    "preview": "Preview",
-    "reset": "Reset",
-    "basicInfo": "Basic Info",
+  "agenda": {
+    "topicPlaceholder": "Topic title",
+    "ownerPlaceholder": "Owner",
+    "durationPlaceholder": "Duration",
+    "minutes": "minutes",
+    "minutesShort": "min",
+    "descriptionPlaceholder": "Description...",
+    "expectedOutputPlaceholder": "Expected output..."
+  },
+  "editor": {
+    "basicInfo": "Basic Information",
     "meetingTitle": "Meeting Title",
     "meetingObjective": "Meeting Objective",
+    "date": "Date",
+    "time": "Time",
+    "duration": "Duration (minutes)",
+    "location": "Location",
+    "facilitator": "Facilitator",
     "agendaItems": "Agenda Items",
-    "actionItems": "Action Items",
-    "download": "Download Agenda",
-    "add": "Add",
-    "topic": "Topic",
-    "speaker": "Speaker",
-    "timeAllocation": "Time Allocation",
-    "description": "Description",
-    "expectedOutput": "Expected Output",
-    "task": "Task",
-    "owner": "Owner",
-    "deadline": "Deadline"
+    "noAgendaItems": "No agenda items yet",
+    "livePreview": "Live Preview"
   },
-  "previewModal": {
-    "title": "Agenda Preview",
+  "preview": {
     "date": "Date",
     "time": "Time",
     "duration": "Duration",
     "location": "Location",
     "facilitator": "Facilitator",
-    "agendaOverview": "Agenda Overview",
-    "selectFormat": "Select Export Format",
-    "cancel": "Cancel",
-    "download": "Download",
-    "exporting": "Exporting..."
+    "noteTaker": "Note Taker",
+    "meetingObjective": "Meeting Objective",
+    "noObjective": "No objective specified",
+    "agenda": "Agenda",
+    "untitledTopic": "Untitled Topic",
+    "expected": "Expected",
+    "noAgendaItems": "No agenda items added yet"
   },
-  "notification": {
-    "exportSuccess": "Agenda successfully exported as {{format}}!"
+  "actions": {
+    "add": "Add",
+    "addFirstItem": "Add First Item",
+    "aiRegenerate": "AI Regenerate",
+    "regenerating": "Regenerating...",
+    "backToHome": "Back to Home",
+    "download": "Download"
   },
   "export": {
+    "exportAs": "Export as",
+    "exporting": "Exporting...",
+    "failed": "Export failed: {{error}}",
     "basicInfo": "Basic Information",
     "date": "Date",
     "time": "Time",
@@ -95,5 +107,11 @@
     "owner": "Owner",
     "deadline": "Deadline",
     "defaultTitle": "Meeting Agenda"
+  },
+  "common": {
+    "notSet": "Not set"
+  },
+  "notification": {
+    "exportSuccess": "Agenda successfully exported as {{format}}!"
   }
 }
