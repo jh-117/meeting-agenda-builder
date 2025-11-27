@@ -9,7 +9,22 @@ import {
   FileCode,
   Home
 } from "lucide-react";
-import { generatePDF, generateDOCX, generateTXT } from '../services/exportService';
+
+// Mock export functions (replace with your actual implementations)
+const generatePDF = async (data, language) => {
+  console.log('Generating PDF...', data);
+  alert('PDF generation would happen here');
+};
+
+const generateDOCX = async (data, language) => {
+  console.log('Generating DOCX...', data);
+  alert('DOCX generation would happen here');
+};
+
+const generateTXT = (data, language) => {
+  console.log('Generating TXT...', data);
+  alert('TXT generation would happen here');
+};
 
 // Sortable Agenda Item Component
 const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
@@ -181,7 +196,6 @@ function AgendaEditor({
   const [isGeneratingItem, setIsGeneratingItem] = useState(null);
   const [exportFormat, setExportFormat] = useState('pdf');
   const [error, setError] = useState(null);
-  const [isExporting, setIsExporting] = useState(false);
 
   const agendaItemsWithId = (agendaData?.agendaItems || []).map((item, index) => ({
     ...item,
@@ -223,9 +237,6 @@ function AgendaEditor({
 
   const handleExport = async () => {
     try {
-      setIsExporting(true);
-      setError(null);
-      
       const exportData = {
         ...agendaData,
         agendaItems: agendaItemsWithId
@@ -247,8 +258,6 @@ function AgendaEditor({
     } catch (error) {
       console.error('Export error:', error);
       setError(`Export failed: ${error.message}`);
-    } finally {
-      setIsExporting(false);
     }
   };
 
@@ -768,7 +777,6 @@ function AgendaEditor({
 
             <button 
               onClick={handleExport}
-              disabled={isExporting}
               style={{
                 width: '100%',
                 display: 'flex',
@@ -776,19 +784,17 @@ function AgendaEditor({
                 justifyContent: 'center',
                 gap: '8px',
                 padding: '12px',
-                backgroundColor: isExporting ? '#9ca3af' : '#6366f1',
+                backgroundColor: '#6366f1',
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
-                cursor: isExporting ? 'not-allowed' : 'pointer',
+                cursor: 'pointer',
                 fontSize: '14px',
                 fontWeight: '600'
               }}
             >
-              <Download size={16} style={{
-                animation: isExporting ? 'spin 1s linear infinite' : 'none'
-              }} /> 
-              {isExporting ? 'Exporting...' : `Download (${exportFormat.toUpperCase()})`}
+              <Download size={16} /> 
+              Download ({exportFormat.toUpperCase()})
             </button>
           </div>
         </div>
