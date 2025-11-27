@@ -2,12 +2,15 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Packer, Document, Paragraph, HeadingLevel } from 'docx';
 import { saveAs } from 'file-saver';
-import { getExportTexts } from './exportLanguages';
+import i18n from '../i18n';
 
-// PDF 导出 - 使用 HTML 转 PDF 方法
-export const generatePDF = async (agendaData, language = 'zh') => {
+// PDF export function
+export const generatePDF = async (agendaData, language = 'en') => {
   try {
-    // 创建临时容器
+    // Set the language for i18n
+    await i18n.changeLanguage(language);
+    
+    // Create temporary container
     const tempDiv = document.createElement('div');
     tempDiv.style.position = 'absolute';
     tempDiv.style.left = '-9999px';
@@ -20,41 +23,39 @@ export const generatePDF = async (agendaData, language = 'zh') => {
     tempDiv.style.background = 'white';
     tempDiv.style.color = 'black';
 
-    const t = getExportTexts(language);
-
-    // 构建 HTML 内容
+    // Build HTML content using i18n
     let htmlContent = `
       <div style="font-family: inherit;">
-        <!-- 标题 -->
+        <!-- Title -->
         <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 10px;">
-          <h1 style="margin: 0; font-size: 24px; color: #2c3e50;">${agendaData.meetingTitle || t.defaultTitle}</h1>
+          <h1 style="margin: 0; font-size: 24px; color: #2c3e50;">${agendaData.meetingTitle || i18n.t('export.defaultTitle')}</h1>
         </div>
         
-        <!-- 基本信息 -->
+        <!-- Basic Information -->
         <div style="margin-bottom: 25px;">
-          <h2 style="font-size: 18px; color: #34495e; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; margin-bottom: 15px;">${t.basicInfo}</h2>
+          <h2 style="font-size: 18px; color: #34495e; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; margin-bottom: 15px;">${i18n.t('export.basicInfo')}</h2>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <div><strong>${t.date}:</strong> ${agendaData.meetingDate || ''}</div>
-            <div><strong>${t.time}:</strong> ${agendaData.meetingTime || ''}</div>
-            <div><strong>${t.duration}:</strong> ${agendaData.duration || ''} ${t.minutes}</div>
-            <div><strong>${t.location}:</strong> ${agendaData.location || ''}</div>
-            <div><strong>${t.facilitator}:</strong> ${agendaData.facilitator || ''}</div>
-            ${agendaData.noteTaker ? `<div><strong>${t.noteTaker}:</strong> ${agendaData.noteTaker}</div>` : ''}
+            <div><strong>${i18n.t('export.date')}:</strong> ${agendaData.meetingDate || ''}</div>
+            <div><strong>${i18n.t('export.time')}:</strong> ${agendaData.meetingTime || ''}</div>
+            <div><strong>${i18n.t('export.duration')}:</strong> ${agendaData.duration || ''} ${i18n.t('export.minutes')}</div>
+            <div><strong>${i18n.t('export.location')}:</strong> ${agendaData.location || ''}</div>
+            <div><strong>${i18n.t('export.facilitator')}:</strong> ${agendaData.facilitator || ''}</div>
+            ${agendaData.noteTaker ? `<div><strong>${i18n.t('export.noteTaker')}:</strong> ${agendaData.noteTaker}</div>` : ''}
           </div>
-          ${agendaData.attendees ? `<div style="margin-top: 10px;"><strong>${t.attendees}:</strong> ${agendaData.attendees}</div>` : ''}
+          ${agendaData.attendees ? `<div style="margin-top: 10px;"><strong>${i18n.t('export.attendees')}:</strong> ${agendaData.attendees}</div>` : ''}
         </div>
         
-        <!-- 会议目的 -->
+        <!-- Meeting Objective -->
         <div style="margin-bottom: 25px;">
-          <h2 style="font-size: 18px; color: #34495e; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; margin-bottom: 15px;">${t.meetingObjective}</h2>
+          <h2 style="font-size: 18px; color: #34495e; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; margin-bottom: 15px;">${i18n.t('export.meetingObjective')}</h2>
           <p style="margin: 0; line-height: 1.6;">${agendaData.meetingObjective || ''}</p>
         </div>
     `;
 
-    // 议程项
+    // Agenda Items
     htmlContent += `
         <div style="margin-bottom: 25px;">
-          <h2 style="font-size: 18px; color: #34495e; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; margin-bottom: 15px;">${t.agendaItems}</h2>
+          <h2 style="font-size: 18px; color: #34495e; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; margin-bottom: 15px;">${i18n.t('export.agendaItems')}</h2>
     `;
 
     if (agendaData.agendaItems && agendaData.agendaItems.length > 0) {
@@ -65,24 +66,24 @@ export const generatePDF = async (agendaData, language = 'zh') => {
               ${index + 1}. ${item.topic || ''}
             </h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px;">
-              ${item.owner ? `<div><strong>${t.speaker}:</strong> ${item.owner}</div>` : ''}
-              ${item.timeAllocation ? `<div><strong>${t.duration}:</strong> ${item.timeAllocation} ${t.minutes}</div>` : ''}
+              ${item.owner ? `<div><strong>${i18n.t('export.speaker')}:</strong> ${item.owner}</div>` : ''}
+              ${item.timeAllocation ? `<div><strong>${i18n.t('export.duration')}:</strong> ${item.timeAllocation} ${i18n.t('export.minutes')}</div>` : ''}
             </div>
-            ${item.description ? `<div style="margin-top: 8px;"><strong>${t.description}:</strong> ${item.description}</div>` : ''}
-            ${item.expectedOutput ? `<div style="margin-top: 8px;"><strong>${t.expectedOutput}:</strong> ${item.expectedOutput}</div>` : ''}
+            ${item.description ? `<div style="margin-top: 8px;"><strong>${i18n.t('export.description')}:</strong> ${item.description}</div>` : ''}
+            ${item.expectedOutput ? `<div style="margin-top: 8px;"><strong>${i18n.t('export.expectedOutput')}:</strong> ${item.expectedOutput}</div>` : ''}
           </div>
         `;
       });
     } else {
-      htmlContent += '<p style="color: #7f8c8d; font-style: italic;">-</p>';
+      htmlContent += `<p style="color: #7f8c8d; font-style: italic;">-</p>`;
     }
 
     htmlContent += `</div>`;
 
-    // 行动项
+    // Action Items
     htmlContent += `
         <div style="margin-bottom: 25px;">
-          <h2 style="font-size: 18px; color: #34495e; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; margin-bottom: 15px;">${t.actionItems}</h2>
+          <h2 style="font-size: 18px; color: #34495e; border-bottom: 1px solid #bdc3c7; padding-bottom: 5px; margin-bottom: 15px;">${i18n.t('export.actionItems')}</h2>
     `;
 
     if (agendaData.actionItems && agendaData.actionItems.length > 0) {
@@ -91,14 +92,14 @@ export const generatePDF = async (agendaData, language = 'zh') => {
           <div style="margin-bottom: 15px; padding: 12px; border-left: 4px solid #3498db; background: #f8f9fa;">
             <div style="font-weight: bold; margin-bottom: 5px;">${index + 1}. ${item.task || ''}</div>
             <div style="display: flex; gap: 20px; font-size: 13px; color: #555;">
-              ${item.owner ? `<div><strong>${t.owner}:</strong> ${item.owner}</div>` : ''}
-              ${item.deadline ? `<div><strong>${t.deadline}:</strong> ${item.deadline}</div>` : ''}
+              ${item.owner ? `<div><strong>${i18n.t('export.owner')}:</strong> ${item.owner}</div>` : ''}
+              ${item.deadline ? `<div><strong>${i18n.t('export.deadline')}:</strong> ${item.deadline}</div>` : ''}
             </div>
           </div>
         `;
       });
     } else {
-      htmlContent += '<p style="color: #7f8c8d; font-style: italic;">-</p>';
+      htmlContent += `<p style="color: #7f8c8d; font-style: italic;">-</p>`;
     }
 
     htmlContent += `</div></div>`;
@@ -106,7 +107,7 @@ export const generatePDF = async (agendaData, language = 'zh') => {
     tempDiv.innerHTML = htmlContent;
     document.body.appendChild(tempDiv);
 
-    // 转换为 canvas 然后生成 PDF
+    // Convert to canvas then generate PDF
     const canvas = await html2canvas(tempDiv, {
       scale: 2,
       useCORS: true,
@@ -147,49 +148,51 @@ export const generatePDF = async (agendaData, language = 'zh') => {
   }
 };
 
-// 简单的回退方案
-const generateSimplePDF = (agendaData, language = 'zh') => {
+// Simple fallback solution
+const generateSimplePDF = (agendaData, language = 'en') => {
   const doc = new jsPDF();
-  const t = getExportTexts(language);
+  
+  // Set language for i18n
+  i18n.changeLanguage(language);
   
   let yPosition = 20;
   
-  // 标题
+  // Title
   doc.setFontSize(20);
-  doc.text(agendaData.meetingTitle || t.defaultTitle, 105, yPosition, { align: 'center' });
+  doc.text(agendaData.meetingTitle || i18n.t('export.defaultTitle'), 105, yPosition, { align: 'center' });
   yPosition += 15;
 
-  // 基本信息
+  // Basic Information
   doc.setFontSize(14);
-  doc.text(t.basicInfo, 20, yPosition);
+  doc.text(i18n.t('export.basicInfo'), 20, yPosition);
   yPosition += 10;
   
   doc.setFontSize(11);
-  doc.text(`${t.date}: ${agendaData.meetingDate || ''}`, 20, yPosition);
-  doc.text(`${t.time}: ${agendaData.meetingTime || ''}`, 110, yPosition);
+  doc.text(`${i18n.t('export.date')}: ${agendaData.meetingDate || ''}`, 20, yPosition);
+  doc.text(`${i18n.t('export.time')}: ${agendaData.meetingTime || ''}`, 110, yPosition);
   yPosition += 6;
   
-  doc.text(`${t.duration}: ${agendaData.duration || ''} ${t.minutes}`, 20, yPosition);
-  doc.text(`${t.location}: ${agendaData.location || ''}`, 110, yPosition);
+  doc.text(`${i18n.t('export.duration')}: ${agendaData.duration || ''} ${i18n.t('export.minutes')}`, 20, yPosition);
+  doc.text(`${i18n.t('export.location')}: ${agendaData.location || ''}`, 110, yPosition);
   yPosition += 6;
   
-  doc.text(`${t.facilitator}: ${agendaData.facilitator || ''}`, 20, yPosition);
+  doc.text(`${i18n.t('export.facilitator')}: ${agendaData.facilitator || ''}`, 20, yPosition);
   if (agendaData.noteTaker) {
-    doc.text(`${t.noteTaker}: ${agendaData.noteTaker}`, 110, yPosition);
+    doc.text(`${i18n.t('export.noteTaker')}: ${agendaData.noteTaker}`, 110, yPosition);
   }
   yPosition += 6;
   
   if (agendaData.attendees) {
-    const attendeesLines = doc.splitTextToSize(`${t.attendees}: ${agendaData.attendees}`, 170);
+    const attendeesLines = doc.splitTextToSize(`${i18n.t('export.attendees')}: ${agendaData.attendees}`, 170);
     doc.text(attendeesLines, 20, yPosition);
     yPosition += attendeesLines.length * 6;
   }
   
   yPosition += 5;
 
-  // 会议目的
+  // Meeting Objective
   doc.setFontSize(14);
-  doc.text(t.meetingObjective, 20, yPosition);
+  doc.text(i18n.t('export.meetingObjective'), 20, yPosition);
   yPosition += 10;
   
   doc.setFontSize(11);
@@ -199,9 +202,9 @@ const generateSimplePDF = (agendaData, language = 'zh') => {
     yPosition += objectiveLines.length * 6 + 5;
   }
 
-  // 议程项
+  // Agenda Items
   doc.setFontSize(14);
-  doc.text(t.agendaItems, 20, yPosition);
+  doc.text(i18n.t('export.agendaItems'), 20, yPosition);
   yPosition += 10;
   
   doc.setFontSize(11);
@@ -218,20 +221,20 @@ const generateSimplePDF = (agendaData, language = 'zh') => {
       yPosition += 6;
       
       if (item.owner) {
-        doc.text(`${t.speaker}: ${item.owner}`, 30, yPosition);
+        doc.text(`${i18n.t('export.speaker')}: ${item.owner}`, 30, yPosition);
         yPosition += 5;
       }
       if (item.timeAllocation) {
-        doc.text(`${t.duration}: ${item.timeAllocation} ${t.minutes}`, 30, yPosition);
+        doc.text(`${i18n.t('export.duration')}: ${item.timeAllocation} ${i18n.t('export.minutes')}`, 30, yPosition);
         yPosition += 5;
       }
       if (item.description) {
-        const descLines = doc.splitTextToSize(`${t.description}: ${item.description}`, 160);
+        const descLines = doc.splitTextToSize(`${i18n.t('export.description')}: ${item.description}`, 160);
         doc.text(descLines, 30, yPosition);
         yPosition += descLines.length * 5;
       }
       if (item.expectedOutput) {
-        const outputLines = doc.splitTextToSize(`${t.expectedOutput}: ${item.expectedOutput}`, 160);
+        const outputLines = doc.splitTextToSize(`${i18n.t('export.expectedOutput')}: ${item.expectedOutput}`, 160);
         doc.text(outputLines, 30, yPosition);
         yPosition += outputLines.length * 5;
       }
@@ -242,13 +245,13 @@ const generateSimplePDF = (agendaData, language = 'zh') => {
     yPosition += 10;
   }
 
-  // 行动项
+  // Action Items
   doc.setFontSize(14);
   if (yPosition > 250) {
     doc.addPage();
     yPosition = 20;
   }
-  doc.text(t.actionItems, 20, yPosition);
+  doc.text(i18n.t('export.actionItems'), 20, yPosition);
   yPosition += 10;
   
   doc.setFontSize(11);
@@ -263,10 +266,10 @@ const generateSimplePDF = (agendaData, language = 'zh') => {
       yPosition += 5;
       
       if (item.owner) {
-        doc.text(`${t.owner}: ${item.owner}`, 30, yPosition);
+        doc.text(`${i18n.t('export.owner')}: ${item.owner}`, 30, yPosition);
       }
       if (item.deadline) {
-        doc.text(`${t.deadline}: ${item.deadline}`, 30, yPosition + 5);
+        doc.text(`${i18n.t('export.deadline')}: ${item.deadline}`, 30, yPosition + 5);
       }
       yPosition += 10;
     });
@@ -278,59 +281,61 @@ const generateSimplePDF = (agendaData, language = 'zh') => {
   doc.save(fileName);
 };
 
-// DOCX 导出
-export const generateDOCX = async (agendaData, language = 'zh') => {
-  const t = getExportTexts(language);
+// DOCX export
+export const generateDOCX = async (agendaData, language = 'en') => {
+  // Set language for i18n
+  await i18n.changeLanguage(language);
+  
   const sections = [];
 
-  // 标题
+  // Title
   sections.push(
     new Paragraph({
-      text: agendaData.meetingTitle || t.defaultTitle,
+      text: agendaData.meetingTitle || i18n.t('export.defaultTitle'),
       heading: HeadingLevel.HEADING_1,
     })
   );
 
-  // 基本信息
-  sections.push(new Paragraph({ text: t.basicInfo, heading: HeadingLevel.HEADING_2 }));
-  sections.push(new Paragraph(`${t.date}: ${agendaData.meetingDate || ''}`));
-  sections.push(new Paragraph(`${t.time}: ${agendaData.meetingTime || ''} (${t.duration}: ${agendaData.duration || ''} ${t.minutes})`));
-  sections.push(new Paragraph(`${t.location}: ${agendaData.location || ''}`));
-  sections.push(new Paragraph(`${t.facilitator}: ${agendaData.facilitator || ''}`));
+  // Basic Information
+  sections.push(new Paragraph({ text: i18n.t('export.basicInfo'), heading: HeadingLevel.HEADING_2 }));
+  sections.push(new Paragraph(`${i18n.t('export.date')}: ${agendaData.meetingDate || ''}`));
+  sections.push(new Paragraph(`${i18n.t('export.time')}: ${agendaData.meetingTime || ''} (${i18n.t('export.duration')}: ${agendaData.duration || ''} ${i18n.t('export.minutes')})`));
+  sections.push(new Paragraph(`${i18n.t('export.location')}: ${agendaData.location || ''}`));
+  sections.push(new Paragraph(`${i18n.t('export.facilitator')}: ${agendaData.facilitator || ''}`));
   if (agendaData.noteTaker) {
-    sections.push(new Paragraph(`${t.noteTaker}: ${agendaData.noteTaker}`));
+    sections.push(new Paragraph(`${i18n.t('export.noteTaker')}: ${agendaData.noteTaker}`));
   }
   if (agendaData.attendees) {
-    sections.push(new Paragraph(`${t.attendees}: ${agendaData.attendees}`));
+    sections.push(new Paragraph(`${i18n.t('export.attendees')}: ${agendaData.attendees}`));
   }
 
-  // 会议目的
-  sections.push(new Paragraph({ text: t.meetingObjective, heading: HeadingLevel.HEADING_2 }));
+  // Meeting Objective
+  sections.push(new Paragraph({ text: i18n.t('export.meetingObjective'), heading: HeadingLevel.HEADING_2 }));
   if (agendaData.meetingObjective) {
     sections.push(new Paragraph(agendaData.meetingObjective));
   }
 
-  // 议程项
-  sections.push(new Paragraph({ text: t.agendaItems, heading: HeadingLevel.HEADING_2 }));
+  // Agenda Items
+  sections.push(new Paragraph({ text: i18n.t('export.agendaItems'), heading: HeadingLevel.HEADING_2 }));
   if (agendaData.agendaItems && agendaData.agendaItems.length > 0) {
     agendaData.agendaItems.forEach((item, index) => {
       sections.push(new Paragraph({ text: `${index + 1}. ${item.topic || ''}`, heading: HeadingLevel.HEADING_3 }));
-      if (item.owner) sections.push(new Paragraph(`${t.speaker}: ${item.owner}`));
-      if (item.timeAllocation) sections.push(new Paragraph(`${t.duration}: ${item.timeAllocation} ${t.minutes}`));
-      if (item.description) sections.push(new Paragraph(`${t.description}: ${item.description}`));
-      if (item.expectedOutput) sections.push(new Paragraph(`${t.expectedOutput}: ${item.expectedOutput}`));
+      if (item.owner) sections.push(new Paragraph(`${i18n.t('export.speaker')}: ${item.owner}`));
+      if (item.timeAllocation) sections.push(new Paragraph(`${i18n.t('export.duration')}: ${item.timeAllocation} ${i18n.t('export.minutes')}`));
+      if (item.description) sections.push(new Paragraph(`${i18n.t('export.description')}: ${item.description}`));
+      if (item.expectedOutput) sections.push(new Paragraph(`${i18n.t('export.expectedOutput')}: ${item.expectedOutput}`));
     });
   } else {
     sections.push(new Paragraph('-'));
   }
 
-  // 行动项
-  sections.push(new Paragraph({ text: t.actionItems, heading: HeadingLevel.HEADING_2 }));
+  // Action Items
+  sections.push(new Paragraph({ text: i18n.t('export.actionItems'), heading: HeadingLevel.HEADING_2 }));
   if (agendaData.actionItems && agendaData.actionItems.length > 0) {
     agendaData.actionItems.forEach((item, index) => {
       sections.push(new Paragraph(`${index + 1}. ${item.task || ''}`));
-      if (item.owner) sections.push(new Paragraph(`${t.owner}: ${item.owner}`));
-      if (item.deadline) sections.push(new Paragraph(`${t.deadline}: ${item.deadline}`));
+      if (item.owner) sections.push(new Paragraph(`${i18n.t('export.owner')}: ${item.owner}`));
+      if (item.deadline) sections.push(new Paragraph(`${i18n.t('export.deadline')}: ${item.deadline}`));
     });
   } else {
     sections.push(new Paragraph('-'));
@@ -345,51 +350,53 @@ export const generateDOCX = async (agendaData, language = 'zh') => {
   saveAs(blob, fileName);
 };
 
-// TXT 导出
-export const generateTXT = (agendaData, language = 'zh') => {
-  const t = getExportTexts(language);
+// TXT export
+export const generateTXT = (agendaData, language = 'en') => {
+  // Set language for i18n
+  i18n.changeLanguage(language);
+  
   let content = '';
 
-  content += `=== ${agendaData.meetingTitle || t.defaultTitle} ===\n\n`;
+  content += `=== ${agendaData.meetingTitle || i18n.t('export.defaultTitle')} ===\n\n`;
 
-  content += `${t.basicInfo}\n`;
-  content += `${t.date}: ${agendaData.meetingDate || ''}\n`;
-  content += `${t.time}: ${agendaData.meetingTime || ''} (${t.duration}: ${agendaData.duration || ''} ${t.minutes})\n`;
-  content += `${t.location}: ${agendaData.location || ''}\n`;
-  content += `${t.facilitator}: ${agendaData.facilitator || ''}\n`;
+  content += `${i18n.t('export.basicInfo')}\n`;
+  content += `${i18n.t('export.date')}: ${agendaData.meetingDate || ''}\n`;
+  content += `${i18n.t('export.time')}: ${agendaData.meetingTime || ''} (${i18n.t('export.duration')}: ${agendaData.duration || ''} ${i18n.t('export.minutes')})\n`;
+  content += `${i18n.t('export.location')}: ${agendaData.location || ''}\n`;
+  content += `${i18n.t('export.facilitator')}: ${agendaData.facilitator || ''}\n`;
   if (agendaData.noteTaker) {
-    content += `${t.noteTaker}: ${agendaData.noteTaker}\n`;
+    content += `${i18n.t('export.noteTaker')}: ${agendaData.noteTaker}\n`;
   }
   if (agendaData.attendees) {
-    content += `${t.attendees}: ${agendaData.attendees}\n`;
+    content += `${i18n.t('export.attendees')}: ${agendaData.attendees}\n`;
   }
   content += '\n';
 
-  content += `${t.meetingObjective}\n`;
+  content += `${i18n.t('export.meetingObjective')}\n`;
   if (agendaData.meetingObjective) {
     content += `${agendaData.meetingObjective}\n`;
   }
   content += '\n';
 
-  content += `${t.agendaItems}\n`;
+  content += `${i18n.t('export.agendaItems')}\n`;
   if (agendaData.agendaItems && agendaData.agendaItems.length > 0) {
     agendaData.agendaItems.forEach((item, index) => {
       content += `\n${index + 1}. ${item.topic || ''}\n`;
-      if (item.owner) content += `   ${t.speaker}: ${item.owner}\n`;
-      if (item.timeAllocation) content += `   ${t.duration}: ${item.timeAllocation} ${t.minutes}\n`;
-      if (item.description) content += `   ${t.description}: ${item.description}\n`;
-      if (item.expectedOutput) content += `   ${t.expectedOutput}: ${item.expectedOutput}\n`;
+      if (item.owner) content += `   ${i18n.t('export.speaker')}: ${item.owner}\n`;
+      if (item.timeAllocation) content += `   ${i18n.t('export.duration')}: ${item.timeAllocation} ${i18n.t('export.minutes')}\n`;
+      if (item.description) content += `   ${i18n.t('export.description')}: ${item.description}\n`;
+      if (item.expectedOutput) content += `   ${i18n.t('export.expectedOutput')}: ${item.expectedOutput}\n`;
     });
   } else {
     content += '-\n';
   }
 
-  content += `\n${t.actionItems}\n`;
+  content += `\n${i18n.t('export.actionItems')}\n`;
   if (agendaData.actionItems && agendaData.actionItems.length > 0) {
     agendaData.actionItems.forEach((item, index) => {
       content += `${index + 1}. ${item.task || ''}\n`;
-      if (item.owner) content += `   ${t.owner}: ${item.owner}\n`;
-      if (item.deadline) content += `   ${t.deadline}: ${item.deadline}\n\n`;
+      if (item.owner) content += `   ${i18n.t('export.owner')}: ${item.owner}\n`;
+      if (item.deadline) content += `   ${i18n.t('export.deadline')}: ${item.deadline}\n\n`;
     });
   } else {
     content += '-\n';
@@ -400,7 +407,7 @@ export const generateTXT = (agendaData, language = 'zh') => {
   saveAs(blob, fileName);
 };
 
-// 获取文件名
+// Get filename
 const getFileName = (format, language) => {
   const timestamp = new Date().getTime();
   const names = {
