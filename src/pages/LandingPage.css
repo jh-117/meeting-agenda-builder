@@ -96,21 +96,10 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   max-width: 90vw;
-  background: var(--bg-light);
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  box-shadow: 0 4px 12px var(--shadow-light);
-  border: 1px solid var(--border-light);
-}
-
-.dark .language-selector {
-  background: var(--bg-dark-secondary);
-  box-shadow: 0 4px 12px var(--shadow-dark);
-  border-color: var(--border-dark);
 }
 
 .language-selector button {
-  background: transparent;
+  background: var(--bg-light-secondary);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
   padding: 8px 16px;
@@ -125,12 +114,13 @@
 }
 
 .dark .language-selector button {
+  background: var(--bg-dark-secondary);
   border-color: var(--border-dark);
   color: var(--text-dark-secondary);
 }
 
 .language-selector button:hover {
-  background: var(--bg-light-secondary);
+  background: var(--bg-light-tertiary);
   border-color: var(--primary-light);
   color: var(--text-light);
 }
@@ -269,7 +259,7 @@
   align-items: center;
   justify-content: center;
   max-width: 100%;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .floating-card {
@@ -288,8 +278,6 @@
   animation: float 3s ease-in-out infinite;
   transition: all var(--transition-normal);
   text-align: center;
-  width: 120px;
-  height: 120px;
 }
 
 .dark .floating-card {
@@ -306,32 +294,28 @@
   text-align: center;
 }
 
-/* 修复：分散浮动卡片位置，避免重叠 */
 .card-1 {
-  top: 0;
-  left: 0;
+  top: 50px;
+  left: 50px;
   animation-delay: 0s;
 }
 
 .card-2 {
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
+  top: 200px;
+  left: 200px;
   animation-delay: 0.5s;
 }
 
 .card-3 {
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 80px;
+  right: 60px;
   animation-delay: 1s;
 }
 
 .card-tamil {
-  top: 25% !important;
-  right: 20% !important;
+  top: 120px !important;
+  right: 80px !important;
   animation-delay: 0.3s !important;
-  transform: none !important;
 }
 
 @keyframes float {
@@ -687,31 +671,26 @@
   .floating-card {
     font-size: 28px;
     padding: 20px 28px;
-    width: 100px;
-    height: 100px;
   }
 
   .card-1 {
-    top: 0;
-    left: 0;
+    top: 40px;
+    left: 40px;
   }
 
   .card-2 {
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
+    top: 150px;
+    left: 150px;
   }
 
   .card-3 {
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 60px;
+    right: 40px;
   }
 
   .card-tamil {
-    top: 25% !important;
-    right: 20% !important;
-    transform: none !important;
+    top: 100px !important;
+    right: 60px !important;
   }
 }
 
@@ -800,7 +779,6 @@
     justify-content: flex-end;
     max-width: 100%;
     gap: 6px;
-    padding: 6px 8px;
   }
 
   .language-selector button {
