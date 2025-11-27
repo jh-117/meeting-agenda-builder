@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, FileText, File } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { generatePDF, generateDOCX, generateTXT } from '../services/exportService';
-import { getExportTexts } from '../services/exportLanguage'; // 从 services 目录导入
+import { getExportTexts } from '../services/exportLanguages'; // 从 services 目录导入
 import './PreviewModal.css';
 
 function PreviewModal({ agendaData, onDownload, onClose }) {
