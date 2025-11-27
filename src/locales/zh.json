@@ -1,86 +1,98 @@
 {
   "landing": {
     "heroTitle": "创建专业会议议程",
-    "heroDescription": "使用AI工具在几分钟内生成组织良好的会议议程。支持实时编辑和多格式导出，实现高效专业的会议。",
+    "heroDescription": "使用AI工具在几分钟内生成结构化的会议议程。实时编辑并导出多种格式，实现高效专业的会议。",
     "ctaButton": "开始创建",
     "featuresTitle": "核心功能",
     "feature1Title": "AI驱动",
-    "feature1Desc": "通过AI辅助即时生成会议议程。",
+    "feature1Desc": "借助AI即时生成会议议程。",
     "feature2Title": "多格式导出",
-    "feature2Desc": "将议程下载为PDF、Word或TXT格式。",
+    "feature2Desc": "以PDF、Word或TXT格式下载您的议程。",
     "feature3Title": "实时编辑",
     "feature3Desc": "在导出前实时编辑和调整您的议程。",
-    "processTitle": "如何使用",
+    "processTitle": "工作原理",
     "step1": "输入信息",
     "step2": "AI生成",
     "step3": "编辑调整",
     "step4": "导出",
-    "readyTitle": "准备开始？",
+    "readyTitle": "准备好开始了吗？",
     "readyDesc": "立即创建您的第一个AI驱动的会议议程",
     "readyButton": "立即开始"
   },
   "formStep1": {
     "header": "创建新会议议程",
-    "subHeader": "第1步 / 共2步 - 基本信息",
+    "subHeader": "步骤 1 / 2 - 基本信息",
     "meetingTitle": "会议标题",
     "meetingDate": "会议日期",
     "meetingTime": "会议时间",
-    "duration": "持续时间（分钟）",
-    "location": "地点 / 会议链接",
+    "duration": "时长（分钟）",
+    "location": "地点/会议链接",
     "meetingType": "会议类型",
     "facilitator": "主持人",
     "noteTaker": "记录人",
     "attendees": "参会人员",
     "meetingObjective": "会议目标",
     "errors": {
-      "meetingTitle": "会议标题是必需的",
-      "meetingDate": "会议日期是必需的",
-      "meetingTime": "会议时间是必需的",
-      "location": "地点是必需的",
-      "facilitator": "主持人是必需的",
-      "meetingObjective": "会议目标是必需的"
+      "meetingTitle": "会议标题必填",
+      "meetingDate": "会议日期必填",
+      "meetingTime": "会议时间必填",
+      "location": "地点必填",
+      "facilitator": "主持人必填",
+      "meetingObjective": "会议目标必填"
     }
   },
-  "agendaEditor": {
-    "preview": "预览",
-    "reset": "重置",
+  "agenda": {
+    "topicPlaceholder": "议题标题",
+    "ownerPlaceholder": "负责人",
+    "durationPlaceholder": "时长",
+    "minutes": "分钟",
+    "minutesShort": "分钟",
+    "descriptionPlaceholder": "描述...",
+    "expectedOutputPlaceholder": "预期产出..."
+  },
+  "editor": {
     "basicInfo": "基本信息",
     "meetingTitle": "会议标题",
     "meetingObjective": "会议目标",
-    "agendaItems": "议程项目",
-    "actionItems": "行动项目",
-    "download": "下载议程",
-    "add": "添加",
-    "topic": "主题",
-    "speaker": "发言人",
-    "timeAllocation": "时间分配",
-    "description": "描述",
-    "expectedOutput": "预期输出",
-    "task": "任务",
-    "owner": "负责人",
-    "deadline": "截止日期"
-  },
-  "previewModal": {
-    "title": "议程预览",
     "date": "日期",
     "time": "时间",
-    "duration": "持续时间",
+    "duration": "时长（分钟）",
     "location": "地点",
     "facilitator": "主持人",
-    "agendaOverview": "议程概览",
-    "selectFormat": "选择导出格式",
-    "cancel": "取消",
-    "download": "下载",
-    "exporting": "导出中..."
+    "agendaItems": "议程项目",
+    "noAgendaItems": "暂无议程项目",
+    "livePreview": "实时预览"
   },
-  "notification": {
-    "exportSuccess": "议程已成功导出为{{format}}格式！"
+  "preview": {
+    "date": "日期",
+    "time": "时间",
+    "duration": "时长",
+    "location": "地点",
+    "facilitator": "主持人",
+    "noteTaker": "记录人",
+    "meetingObjective": "会议目标",
+    "noObjective": "未指定目标",
+    "agenda": "议程",
+    "untitledTopic": "未命名议题",
+    "expected": "预期产出",
+    "noAgendaItems": "暂无议程项目"
+  },
+  "actions": {
+    "add": "添加",
+    "addFirstItem": "添加第一个项目",
+    "aiRegenerate": "AI 重新生成",
+    "regenerating": "重新生成中...",
+    "backToHome": "返回首页",
+    "download": "下载"
   },
   "export": {
+    "exportAs": "导出为",
+    "exporting": "导出中...",
+    "failed": "导出失败：{{error}}",
     "basicInfo": "基本信息",
     "date": "日期",
     "time": "时间",
-    "duration": "持续时间",
+    "duration": "时长",
     "minutes": "分钟",
     "location": "地点",
     "facilitator": "主持人",
@@ -90,10 +102,16 @@
     "agendaItems": "议程项目",
     "speaker": "发言人",
     "description": "描述",
-    "expectedOutput": "预期输出",
+    "expectedOutput": "预期产出",
     "actionItems": "行动项目",
     "owner": "负责人",
     "deadline": "截止日期",
     "defaultTitle": "会议议程"
+  },
+  "common": {
+    "notSet": "未设置"
+  },
+  "notification": {
+    "exportSuccess": "议程已成功导出为 {{format}} 格式！"
   }
 }
