@@ -50,7 +50,7 @@
     "descriptionPlaceholder": "Description...",
     "expectedOutputPlaceholder": "Expected output..."
      "taskPlaceholder": "Task",
-    "deadlinePlaceholder": "Deadline"
+    "deadlinePlaceholder": "Deadline",
   },
   "editor": {
     "basicInfo": "Basic Information",
