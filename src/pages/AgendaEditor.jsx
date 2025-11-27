@@ -9,7 +9,7 @@ import {
   FileCode,
   Home
 } from "lucide-react";
-import { generatePDF, generateDOCX, generateTXT } from '../services/exportServices'; // 导入您的导出函数
+import { generatePDF, generateDOCX, generateTXT } from './services/exportService'; // 导入您的导出函数
 
 // 可排序的议程项组件
 const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
