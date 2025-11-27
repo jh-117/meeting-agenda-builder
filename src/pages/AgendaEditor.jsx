@@ -7,12 +7,16 @@ import {
   FileText,
   FileDown,
   FileCode,
-  Home
+  Home,
+  Globe
 } from "lucide-react";
 import { generatePDF, generateDOCX, generateTXT } from '../services/exportService';
+import { useTranslation } from 'react-i18next';
 
 // Sortable Agenda Item Component
 const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
+  const { t } = useTranslation();
+  
   return (
     <div style={{
       border: '1px solid #e5e7eb',
@@ -31,7 +35,7 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
           <GripVertical size={16} />
         </div>
         <input
-          placeholder={currentLanguage === 'zh' ? '议题标题' : 'Topic title'}
+          placeholder={t('agenda.topicPlaceholder')}
           value={item.topic}
           onChange={(e) => onChange(index, "topic", e.target.value)}
           style={{
@@ -75,7 +79,7 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
       
       <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
         <input
-          placeholder={currentLanguage === 'zh' ? '负责人' : 'Owner'}
+          placeholder={t('agenda.ownerPlaceholder')}
           value={item.owner}
           onChange={(e) => onChange(index, "owner", e.target.value)}
           style={{
@@ -89,7 +93,7 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <input
             type="number"
-            placeholder={currentLanguage === 'zh' ? '时长' : 'Duration'}
+            placeholder={t('agenda.durationPlaceholder')}
             value={item.timeAllocation}
             onChange={(e) => onChange(index, "timeAllocation", parseInt(e.target.value) || 15)}
             min="5"
@@ -102,13 +106,13 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
             }}
           />
           <span style={{ fontSize: '14px', color: '#6b7280' }}>
-            {currentLanguage === 'zh' ? '分钟' : 'min'}
+            {t('agenda.minutes')}
           </span>
         </div>
       </div>
 
       <textarea
-        placeholder={currentLanguage === 'zh' ? '描述...' : 'Description...'}
+        placeholder={t('agenda.descriptionPlaceholder')}
         value={item.description}
         onChange={(e) => onChange(index, "description", e.target.value)}
         rows="2"
@@ -125,7 +129,7 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
       />
 
       <textarea
-        placeholder={currentLanguage === 'zh' ? '预期产出...' : 'Expected output...'}
+        placeholder={t('agenda.expectedOutputPlaceholder')}
         value={item.expectedOutput}
         onChange={(e) => onChange(index, "expectedOutput", e.target.value)}
         rows="2"
@@ -177,16 +181,24 @@ function AgendaEditor({
   onRegenerate, 
   isRegenerating 
 }) {
-  const currentLanguage = 'en';
+  const { t, i18n } = useTranslation();
   const [isGeneratingItem, setIsGeneratingItem] = useState(null);
   const [exportFormat, setExportFormat] = useState('pdf');
   const [error, setError] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+
+  const currentLanguage = i18n.language;
 
   const agendaItemsWithId = (agendaData?.agendaItems || []).map((item, index) => ({
     ...item,
     id: item.id || `agenda-${index}-${Date.now()}`
   }));
+
+  const handleChangeLanguage = (lang) => {
+    i18n.changeLanguage(lang);
+    setShowLanguageDropdown(false);
+  };
 
   const handleChange = (field, value) => {
     if (onDataChange) {
@@ -246,7 +258,7 @@ function AgendaEditor({
       }
     } catch (error) {
       console.error('Export error:', error);
-      setError(`Export failed: ${error.message}`);
+      setError(t('export.failed', { error: error.message }));
     } finally {
       setIsExporting(false);
     }
@@ -266,15 +278,23 @@ function AgendaEditor({
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'Not set';
+    if (!dateString) return t('common.notSet');
     try {
-      return new Date(dateString).toLocaleDateString('en-US');
+      return new Date(dateString).toLocaleDateString(currentLanguage);
     } catch {
       return dateString;
     }
   };
 
   const data = agendaData || {};
+
+  // Language options
+  const languageOptions = [
+    { code: 'zh', name: '中文', nativeName: '中文' },
+    { code: 'en', name: 'English', nativeName: 'English' },
+    { code: 'ms', name: 'Malay', nativeName: 'Bahasa Melayu' },
+    { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்' }
+  ];
 
   return (
     <div style={{ 
@@ -310,11 +330,65 @@ function AgendaEditor({
             {data.meetingTitle}
           </h1>
           <p style={{ margin: 0, color: '#6b7280', fontSize: '14px' }}>
-            {data.meetingDate} • {data.meetingTime} • {data.duration} minutes
+            {data.meetingDate} • {data.meetingTime} • {data.duration} {t('agenda.minutes')}
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '12px', marginRight: '60px' }}>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          {/* Language Switcher */}
+          <div style={{ position: 'relative' }}>
+            <button 
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 16px',
+                backgroundColor: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
+            >
+              <Globe size={16} />
+              {languageOptions.find(lang => lang.code === currentLanguage)?.nativeName}
+            </button>
+            
+            {showLanguageDropdown && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                marginTop: '4px',
+                backgroundColor: 'white',
+                border: '1px solid #e2e8f0',
+                borderRadius: '6px',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                zIndex: 1000,
+                minWidth: '120px'
+              }}>
+                {languageOptions.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => handleChangeLanguage(lang.code)}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: 'none',
+                      backgroundColor: currentLanguage === lang.code ? '#f1f5f9' : 'white',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      textAlign: 'left'
+                    }}
+                  >
+                    {lang.nativeName}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          
           <button 
             onClick={handleRegenerate}
             disabled={isRegenerating}
@@ -336,7 +410,7 @@ function AgendaEditor({
             <RefreshCw size={16} style={{
               animation: isRegenerating ? 'spin 1s linear infinite' : 'none'
             }} />
-            {isRegenerating ? 'Regenerating...' : 'AI Regenerate'}
+            {isRegenerating ? t('actions.regenerating') : t('actions.aiRegenerate')}
           </button>
           
           <button 
@@ -355,7 +429,7 @@ function AgendaEditor({
               fontWeight: '500'
             }}
           >
-            <Home size={16} /> Back to Home
+            <Home size={16} /> {t('actions.backToHome')}
           </button>
         </div>
       </div>
@@ -397,12 +471,12 @@ function AgendaEditor({
             boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
           }}>
             <h2 style={{ fontSize: '18px', marginBottom: '20px', color: '#1f2937' }}>
-              📋 Basic Information
+              📋 {t('editor.basicInfo')}
             </h2>
 
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500' }}>
-                Meeting Title
+                {t('editor.meetingTitle')}
               </label>
               <input
                 value={data.meetingTitle}
@@ -419,7 +493,7 @@ function AgendaEditor({
 
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500' }}>
-                Meeting Objective
+                {t('editor.meetingObjective')}
               </label>
               <textarea
                 value={data.meetingObjective}
@@ -439,7 +513,7 @@ function AgendaEditor({
 
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500' }}>
-                Date
+                {t('editor.date')}
               </label>
               <input
                 type="date"
@@ -457,7 +531,7 @@ function AgendaEditor({
 
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500' }}>
-                Time
+                {t('editor.time')}
               </label>
               <input
                 type="time"
@@ -475,7 +549,7 @@ function AgendaEditor({
 
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500' }}>
-                Duration (minutes)
+                {t('editor.duration')}
               </label>
               <input
                 type="number"
@@ -493,7 +567,7 @@ function AgendaEditor({
 
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500' }}>
-                Location
+                {t('editor.location')}
               </label>
               <input
                 value={data.location}
@@ -510,7 +584,7 @@ function AgendaEditor({
 
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500' }}>
-                Facilitator
+                {t('editor.facilitator')}
               </label>
               <input
                 value={data.facilitator}
@@ -540,7 +614,7 @@ function AgendaEditor({
               marginBottom: '20px'
             }}>
               <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
-                🗓️ Agenda Items ({agendaItemsWithId.length})
+                🗓️ {t('editor.agendaItems')} ({agendaItemsWithId.length})
               </h2>
               <button 
                 onClick={addAgendaItem}
@@ -555,7 +629,7 @@ function AgendaEditor({
                   fontWeight: '500'
                 }}
               >
-                + Add
+                + {t('actions.add')}
               </button>
             </div>
 
@@ -580,7 +654,7 @@ function AgendaEditor({
                 padding: '40px',
                 color: '#9ca3af'
               }}>
-                <p>No agenda items yet</p>
+                <p>{t('editor.noAgendaItems')}</p>
                 <button 
                   onClick={addAgendaItem}
                   style={{
@@ -595,7 +669,7 @@ function AgendaEditor({
                     marginTop: '12px'
                   }}
                 >
-                  + Add First Item
+                  + {t('actions.addFirstItem')}
                 </button>
               </div>
             )}
@@ -621,11 +695,11 @@ function AgendaEditor({
             marginBottom: '20px'
           }}>
             <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
-              👁️ Live Preview
+              👁️ {t('editor.livePreview')}
             </h2>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <label style={{ fontSize: '14px', color: '#6b7280' }}>Export as:</label>
+              <label style={{ fontSize: '14px', color: '#6b7280' }}>{t('export.exportAs')}:</label>
               <div style={{ display: 'flex', gap: '4px' }}>
                 <button 
                   onClick={() => setExportFormat('pdf')}
@@ -677,29 +751,29 @@ function AgendaEditor({
               </h3>
               
               <div style={{ fontSize: '14px', color: '#4b5563', lineHeight: '1.8' }}>
-                <p style={{ margin: '4px 0' }}><strong>Date:</strong> {formatDate(data.meetingDate)}</p>
-                <p style={{ margin: '4px 0' }}><strong>Time:</strong> {data.meetingTime}</p>
-                <p style={{ margin: '4px 0' }}><strong>Duration:</strong> {data.duration} minutes</p>
-                <p style={{ margin: '4px 0' }}><strong>Location:</strong> {data.location}</p>
-                <p style={{ margin: '4px 0' }}><strong>Facilitator:</strong> {data.facilitator}</p>
+                <p style={{ margin: '4px 0' }}><strong>{t('preview.date')}:</strong> {formatDate(data.meetingDate)}</p>
+                <p style={{ margin: '4px 0' }}><strong>{t('preview.time')}:</strong> {data.meetingTime}</p>
+                <p style={{ margin: '4px 0' }}><strong>{t('preview.duration')}:</strong> {data.duration} {t('agenda.minutes')}</p>
+                <p style={{ margin: '4px 0' }}><strong>{t('preview.location')}:</strong> {data.location}</p>
+                <p style={{ margin: '4px 0' }}><strong>{t('preview.facilitator')}:</strong> {data.facilitator}</p>
                 {data.noteTaker && (
-                  <p style={{ margin: '4px 0' }}><strong>Note Taker:</strong> {data.noteTaker}</p>
+                  <p style={{ margin: '4px 0' }}><strong>{t('preview.noteTaker')}:</strong> {data.noteTaker}</p>
                 )}
               </div>
             </div>
 
             <div style={{ marginBottom: '24px' }}>
               <h4 style={{ fontSize: '16px', marginBottom: '8px', color: '#374151' }}>
-                Meeting Objective
+                {t('preview.meetingObjective')}
               </h4>
               <p style={{ margin: 0, fontSize: '14px', color: '#6b7280', lineHeight: '1.6' }}>
-                {data.meetingObjective || 'No objective specified'}
+                {data.meetingObjective || t('preview.noObjective')}
               </p>
             </div>
 
             <div style={{ marginBottom: '24px' }}>
               <h4 style={{ fontSize: '16px', marginBottom: '12px', color: '#374151' }}>
-                Agenda
+                {t('preview.agenda')}
               </h4>
               <div>
                 {agendaItemsWithId.length > 0 ? (
@@ -723,11 +797,11 @@ function AgendaEditor({
                         fontWeight: '600',
                         height: 'fit-content'
                       }}>
-                        {item.timeAllocation || 15}min
+                        {item.timeAllocation || 15}{t('agenda.minutesShort')}
                       </div>
                       <div style={{ flex: 1 }}>
                         <strong style={{ fontSize: '14px', color: '#1f2937' }}>
-                          {item.topic || 'Untitled Topic'}
+                          {item.topic || t('preview.untitledTopic')}
                         </strong>
                         {item.owner && (
                           <span style={{ fontSize: '14px', color: '#6b7280' }}>
@@ -751,7 +825,7 @@ function AgendaEditor({
                             color: '#9ca3af',
                             fontStyle: 'italic'
                           }}>
-                            <em>Expected: </em>
+                            <em>{t('preview.expected')}: </em>
                             {item.expectedOutput}
                           </p>
                         )}
@@ -760,7 +834,7 @@ function AgendaEditor({
                   ))
                 ) : (
                   <p style={{ fontSize: '14px', color: '#9ca3af', fontStyle: 'italic' }}>
-                    No agenda items added yet
+                    {t('preview.noAgendaItems')}
                   </p>
                 )}
               </div>
@@ -788,7 +862,7 @@ function AgendaEditor({
               <Download size={16} style={{
                 animation: isExporting ? 'spin 1s linear infinite' : 'none'
               }} /> 
-              {isExporting ? 'Exporting...' : `Download (${exportFormat.toUpperCase()})`}
+              {isExporting ? t('export.exporting') : `${t('actions.download')} (${exportFormat.toUpperCase()})`}
             </button>
           </div>
         </div>
