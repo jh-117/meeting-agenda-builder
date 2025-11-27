@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import {
-  Download,
-  RotateCcw,
+import { 
+  Download, 
+  RotateCcw, 
   GripVertical,
   RefreshCw,
   FileText,
@@ -12,60 +12,26 @@ import {
 } from "lucide-react";
 import { generatePDF, generateDOCX, generateTXT } from '../services/exportService';
 import { useTranslation } from 'react-i18next';
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { regenerateAgendaItemWithAI } from '../services/agendaAIService';
 
 // Sortable Agenda Item Component
 const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
   const { t } = useTranslation();
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: item.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    border: '1px solid #e5e7eb',
-    borderRadius: '8px',
-    padding: '16px',
-    marginBottom: '12px',
-    backgroundColor: 'white'
-  };
-
+  
   return (
-    <div ref={setNodeRef} style={style}>
+    <div style={{
+      border: '1px solid #e5e7eb',
+      borderRadius: '8px',
+      padding: '16px',
+      marginBottom: '12px',
+      backgroundColor: 'white'
+    }}>
       <div style={{
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
         marginBottom: '12px'
       }}>
-        <div
-          {...attributes}
-          {...listeners}
-          style={{ cursor: 'grab', color: '#9ca3af', touchAction: 'none' }}
-        >
+        <div style={{ cursor: 'grab', color: '#9ca3af' }}>
           <GripVertical size={16} />
         </div>
         <input
@@ -80,27 +46,22 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
             fontSize: '14px'
           }}
         />
-        <button
-          onClick={() => onRegenerateItem(item.id, index)}
+        <button 
+          onClick={() => onRegenerateItem(item.id)}
           disabled={isGeneratingItem === item.id}
           style={{
             padding: '8px',
             border: 'none',
-            backgroundColor: isGeneratingItem === item.id ? '#e0e7ff' : '#f3f4f6',
+            backgroundColor: '#f3f4f6',
             borderRadius: '6px',
-            cursor: isGeneratingItem === item.id ? 'not-allowed' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+            cursor: 'pointer'
           }}
-          title={t('actions.aiRegenerate')}
         >
           <RefreshCw size={14} style={{
-            animation: isGeneratingItem === item.id ? 'spin 1s linear infinite' : 'none',
-            color: isGeneratingItem === item.id ? '#6366f1' : '#6b7280'
+            animation: isGeneratingItem === item.id ? 'spin 1s linear infinite' : 'none'
           }} />
         </button>
-        <button
+        <button 
           onClick={() => onRemove(index)}
           style={{
             padding: '4px 12px',
@@ -115,7 +76,7 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
           ×
         </button>
       </div>
-
+      
       <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
         <input
           placeholder={t('agenda.ownerPlaceholder')}
@@ -186,7 +147,7 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
   );
 };
 
-function AgendaEditor({
+function AgendaEditor({ 
   agendaData = {
     meetingTitle: 'Q4 Project Planning Meeting',
     meetingDate: '2025-11-27',
@@ -214,11 +175,11 @@ function AgendaEditor({
         expectedOutput: 'Agreement on the key goals for the upcoming...'
       }
     ]
-  },
-  onReset,
-  onDataChange,
-  onRegenerate,
-  isRegenerating
+  }, 
+  onReset, 
+  onDataChange, 
+  onRegenerate, 
+  isRegenerating 
 }) {
   const { t, i18n } = useTranslation();
   const [isGeneratingItem, setIsGeneratingItem] = useState(null);
@@ -227,6 +188,7 @@ function AgendaEditor({
   const [isExporting, setIsExporting] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
+  // Action Items 状态
   const [actionItems, setActionItems] = useState([
     {
       id: 'action-1',
@@ -242,26 +204,6 @@ function AgendaEditor({
     ...item,
     id: item.id || `agenda-${index}-${Date.now()}`
   }));
-
-  // DnD Sensors
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-
-    if (active.id !== over.id) {
-      const oldIndex = agendaItemsWithId.findIndex((item) => item.id === active.id);
-      const newIndex = agendaItemsWithId.findIndex((item) => item.id === over.id);
-
-      const newItems = arrayMove(agendaItemsWithId, oldIndex, newIndex);
-      handleChange("agendaItems", newItems);
-    }
-  };
 
   const handleChangeLanguage = (lang) => {
     i18n.changeLanguage(lang);
@@ -301,6 +243,7 @@ function AgendaEditor({
     handleChange("agendaItems", updatedItems);
   };
 
+  // Action Items 处理函数
   const handleActionItemChange = (index, field, value) => {
     const updatedItems = [...actionItems];
     updatedItems[index] = { ...updatedItems[index], [field]: value };
@@ -326,7 +269,7 @@ function AgendaEditor({
     try {
       setIsExporting(true);
       setError(null);
-
+      
       const exportData = {
         ...agendaData,
         agendaItems: agendaItemsWithId,
@@ -360,35 +303,11 @@ function AgendaEditor({
     }
   };
 
-  const handleRegenerateItem = async (itemId, index) => {
+  const handleRegenerateItem = async (itemId) => {
     setIsGeneratingItem(itemId);
-    try {
-      const currentItem = agendaItemsWithId[index];
-      const context = {
-        meetingTitle: agendaData.meetingTitle,
-        meetingObjective: agendaData.meetingObjective,
-        duration: agendaData.duration
-      };
-
-      console.log('🔄 Regenerating agenda item:', currentItem);
-
-      const regeneratedItem = await regenerateAgendaItemWithAI(currentItem, context, currentLanguage);
-
-      const updatedItems = [...agendaItemsWithId];
-      updatedItems[index] = {
-        ...currentItem,
-        ...regeneratedItem,
-        id: currentItem.id
-      };
-
-      handleChange("agendaItems", updatedItems);
-      console.log('✅ Item regenerated successfully');
-    } catch (error) {
-      console.error('❌ Error regenerating item:', error);
-      setError(t('export.failed', { error: error.message }));
-    } finally {
+    setTimeout(() => {
       setIsGeneratingItem(null);
-    }
+    }, 1000);
   };
 
   const formatDate = (dateString) => {
@@ -402,6 +321,7 @@ function AgendaEditor({
 
   const data = agendaData || {};
 
+  // Language options
   const languageOptions = [
     { code: 'zh', name: '中文', nativeName: '中文' },
     { code: 'en', name: 'English', nativeName: 'English' },
@@ -410,8 +330,8 @@ function AgendaEditor({
   ];
 
   return (
-    <div style={{
-      minHeight: '100vh',
+    <div style={{ 
+      minHeight: '100vh', 
       backgroundColor: '#f9fafb',
       padding: '20px'
     }}>
@@ -434,8 +354,8 @@ function AgendaEditor({
         alignItems: 'center'
       }}>
         <div>
-          <h1 style={{
-            margin: '0 0 8px 0',
+          <h1 style={{ 
+            margin: '0 0 8px 0', 
             fontSize: '28px',
             color: '#6366f1',
             fontWeight: 'bold'
@@ -450,7 +370,7 @@ function AgendaEditor({
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           {/* Language Switcher */}
           <div style={{ position: 'relative' }}>
-            <button
+            <button 
               onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
               style={{
                 display: 'flex',
@@ -467,7 +387,7 @@ function AgendaEditor({
               <Globe size={16} />
               {languageOptions.find(lang => lang.code === currentLanguage)?.nativeName}
             </button>
-
+            
             {showLanguageDropdown && (
               <div style={{
                 position: 'absolute',
@@ -501,8 +421,8 @@ function AgendaEditor({
               </div>
             )}
           </div>
-
-          <button
+          
+          <button 
             onClick={handleRegenerate}
             disabled={isRegenerating}
             style={{
@@ -525,8 +445,8 @@ function AgendaEditor({
             }} />
             {isRegenerating ? t('actions.regenerating') : t('actions.aiRegenerate')}
           </button>
-
-          <button
+          
+          <button 
             onClick={onReset}
             style={{
               display: 'flex',
@@ -559,7 +479,7 @@ function AgendaEditor({
           alignItems: 'center'
         }}>
           {error}
-          <button
+          <button 
             onClick={() => setError(null)}
             style={{
               background: 'none',
@@ -729,7 +649,7 @@ function AgendaEditor({
               <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
                 🗓️ {t('editor.agendaItems')} ({agendaItemsWithId.length})
               </h2>
-              <button
+              <button 
                 onClick={addAgendaItem}
                 style={{
                   padding: '8px 16px',
@@ -746,31 +666,20 @@ function AgendaEditor({
               </button>
             </div>
 
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={agendaItemsWithId.map(item => item.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                <div>
-                  {agendaItemsWithId.map((item, index) => (
-                    <SortableAgendaItem
-                      key={item.id}
-                      item={item}
-                      index={index}
-                      onChange={handleAgendaItemChange}
-                      onRemove={removeAgendaItem}
-                      onRegenerateItem={handleRegenerateItem}
-                      currentLanguage={currentLanguage}
-                      isGeneratingItem={isGeneratingItem}
-                    />
-                  ))}
-                </div>
-              </SortableContext>
-            </DndContext>
+            <div>
+              {agendaItemsWithId.map((item, index) => (
+                <SortableAgendaItem
+                  key={item.id}
+                  item={item}
+                  index={index}
+                  onChange={handleAgendaItemChange}
+                  onRemove={removeAgendaItem}
+                  onRegenerateItem={handleRegenerateItem}
+                  currentLanguage={currentLanguage}
+                  isGeneratingItem={isGeneratingItem}
+                />
+              ))}
+            </div>
 
             {agendaItemsWithId.length === 0 && (
               <div style={{
@@ -779,7 +688,7 @@ function AgendaEditor({
                 color: '#9ca3af'
               }}>
                 <p>{t('editor.noAgendaItems')}</p>
-                <button
+                <button 
                   onClick={addAgendaItem}
                   style={{
                     padding: '10px 20px',
@@ -815,7 +724,7 @@ function AgendaEditor({
               <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
                 ✅ {t('editor.actionItems')} ({actionItems.length})
               </h2>
-              <button
+              <button 
                 onClick={addActionItem}
                 style={{
                   padding: '8px 16px',
@@ -859,7 +768,7 @@ function AgendaEditor({
                         fontSize: '14px'
                       }}
                     />
-                    <button
+                    <button 
                       onClick={() => removeActionItem(index)}
                       style={{
                         padding: '4px 12px',
@@ -874,7 +783,7 @@ function AgendaEditor({
                       ×
                     </button>
                   </div>
-
+                  
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
                     <input
                       placeholder={t('agenda.ownerPlaceholder')}
@@ -911,7 +820,7 @@ function AgendaEditor({
                   color: '#9ca3af'
                 }}>
                   <p>{t('editor.noActionItems')}</p>
-                  <button
+                  <button 
                     onClick={addActionItem}
                     style={{
                       padding: '10px 20px',
@@ -954,11 +863,11 @@ function AgendaEditor({
             <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
               👁️ {t('editor.livePreview')}
             </h2>
-
+            
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <label style={{ fontSize: '14px', color: '#6b7280' }}>{t('export.exportAs')}:</label>
               <div style={{ display: 'flex', gap: '4px' }}>
-                <button
+                <button 
                   onClick={() => setExportFormat('pdf')}
                   style={{
                     padding: '8px',
@@ -971,7 +880,7 @@ function AgendaEditor({
                 >
                   <FileText size={16} />
                 </button>
-                <button
+                <button 
                   onClick={() => setExportFormat('word')}
                   style={{
                     padding: '8px',
@@ -984,7 +893,7 @@ function AgendaEditor({
                 >
                   <FileDown size={16} />
                 </button>
-                <button
+                <button 
                   onClick={() => setExportFormat('txt')}
                   style={{
                     padding: '8px',
@@ -1000,13 +909,13 @@ function AgendaEditor({
               </div>
             </div>
           </div>
-
+          
           <div>
             <div style={{ marginBottom: '24px' }}>
               <h3 style={{ fontSize: '20px', marginBottom: '12px', color: '#1f2937' }}>
                 {data.meetingTitle}
               </h3>
-
+              
               <div style={{ fontSize: '14px', color: '#4b5563', lineHeight: '1.8' }}>
                 <p style={{ margin: '4px 0' }}><strong>{t('preview.date')}:</strong> {formatDate(data.meetingDate)}</p>
                 <p style={{ margin: '4px 0' }}><strong>{t('preview.time')}:</strong> {data.meetingTime}</p>
@@ -1035,8 +944,8 @@ function AgendaEditor({
               <div>
                 {agendaItemsWithId.length > 0 ? (
                   agendaItemsWithId.map((item) => (
-                    <div
-                      key={item.id}
+                    <div 
+                      key={item.id} 
                       style={{
                         display: 'flex',
                         gap: '12px',
@@ -1137,7 +1046,7 @@ function AgendaEditor({
               </div>
             )}
 
-            <button
+            <button 
               onClick={handleExport}
               disabled={isExporting}
               style={{
@@ -1158,7 +1067,7 @@ function AgendaEditor({
             >
               <Download size={16} style={{
                 animation: isExporting ? 'spin 1s linear infinite' : 'none'
-              }} />
+              }} /> 
               {isExporting ? t('export.exporting') : `${t('actions.download')} (${exportFormat.toUpperCase()})`}
             </button>
           </div>
