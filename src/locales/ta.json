@@ -48,7 +48,9 @@
     "minutes": "நிமிடங்கள்",
     "minutesShort": "நிமி",
     "descriptionPlaceholder": "விளக்கம்...",
-    "expectedOutputPlaceholder": "எதிர்பார்க்கப்படும் வெளியீடு..."
+    "expectedOutputPlaceholder": "எதிர்பார்க்கப்படும் வெளியீடு...",
+    "taskPlaceholder": "பணி",
+    "deadlinePlaceholder": "கடைசி தேதி"
   },
   "editor": {
     "basicInfo": "அடிப்படை தகவல்",
@@ -61,7 +63,10 @@
     "facilitator": "எளிதாக்குபவர்",
     "agendaItems": "அட்டவணை உருப்படிகள்",
     "noAgendaItems": "இன்னும் அட்டவணை உருப்படிகள் இல்லை",
-    "livePreview": "நேரடி முன்னோட்டம்"
+    "livePreview": "நேரடி முன்னோட்டம்",
+        "actionItems": "செயல் உருப்படிகள்",
+    "noActionItems": "இன்னும் செயல் உருப்படிகள் இல்லை"
+
   },
   "preview": {
     "date": "தேதி",
@@ -75,7 +80,10 @@
     "agenda": "அட்டவணை",
     "untitledTopic": "தலைப்பில்லாத தலைப்பு",
     "expected": "எதிர்பார்க்கப்படுகிறது",
-    "noAgendaItems": "இன்னும் அட்டவணை உருப்படிகள் சேர்க்கப்படவில்லை"
+    "noAgendaItems": "இன்னும் அட்டவணை உருப்படிகள் சேர்க்கப்படவில்லை",
+      "actionItems": "செயல் உருப்படிகள்",
+    "untitledTask": "தலைப்பில்லாத பணி",
+    "deadline": "கடைசி தேதி"
   },
   "actions": {
     "add": "சேர்",
@@ -83,7 +91,8 @@
     "aiRegenerate": "AI மீண்டும் உருவாக்கு",
     "regenerating": "மீண்டும் உருவாக்குகிறது...",
     "backToHome": "முகப்புக்குத் திரும்பு",
-    "download": "பதிவிறக்க"
+    "download": "பதிவிறக்க",
+    "addFirstActionItem": "முதல் செயல் உருப்படியைச் சேர்"
   },
   "export": {
     "exportAs": "ஏற்றுமதி செய்ய",
