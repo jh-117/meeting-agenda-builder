@@ -49,7 +49,16 @@
     "meetingObjective": "கூட்ட நோக்கம்",
     "agendaItems": "அட்டவணை உருப்படிகள்",
     "actionItems": "செயல் உருப்படிகள்",
-    "download": "அட்டவணையைப் பதிவிறக்கவும்"
+    "download": "அட்டவணையைப் பதிவிறக்கவும்",
+    "add": "சேர்",
+    "topic": "தலைப்பு",
+    "speaker": "பேச்சாளர்",
+    "timeAllocation": "நேர ஒதுக்கீடு",
+    "description": "விளக்கம்",
+    "expectedOutput": "எதிர்பார்க்கப்படும் வெளியீடு",
+    "task": "பணி",
+    "owner": "உரிமையாளர்",
+    "deadline": "கடைசி தேதி"
   },
   "previewModal": {
     "title": "அட்டவணை முன்னோட்டம்",
