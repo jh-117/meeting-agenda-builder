@@ -9,8 +9,8 @@ import {
   FileCode,
   Home
 } from "lucide-react";
-import { generatePDF, generateDOCX, generateTXT } from './services/exportService'; // 导入您的导出函数
-import { exportTexts } from './services/exportLanguages;'
+import { generatePDF, generateDOCX, generateTXT } from './services/exportService';
+import { exportTexts } from './services/exportLanguages';
 
 // 可排序的议程项组件
 const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
@@ -88,19 +88,26 @@ function AgendaEditor({ agendaData, onReset, onDataChange, onRegenerate, isRegen
   const [exportFormat, setExportFormat] = useState('pdf');
   const [error, setError] = useState(null);
 
-  const agendaItemsWithId = agendaData.agendaItems.map((item, index) => ({
+  // Fix: Use agendaData from props and ensure proper state management
+  const agendaItemsWithId = (agendaData?.agendaItems || []).map((item, index) => ({
     ...item,
     id: item.id || `agenda-${index}-${Date.now()}`
   }));
 
+  // Fix: Properly handle data changes through the prop callback
   const handleChange = (field, value) => {
-    setAgendaData(prev => ({ ...prev, [field]: value }));
+    if (onDataChange) {
+      onDataChange({
+        ...agendaData,
+        [field]: value
+      });
+    }
   };
 
   const handleAgendaItemChange = (index, field, value) => {
-    const updated = [...agendaItemsWithId];
-    updated[index] = { ...updated[index], [field]: value };
-    handleChange("agendaItems", updated);
+    const updatedItems = [...agendaItemsWithId];
+    updatedItems[index] = { ...updatedItems[index], [field]: value };
+    handleChange("agendaItems", updatedItems);
   };
 
   const addAgendaItem = () => {
@@ -112,54 +119,78 @@ function AgendaEditor({ agendaData, onReset, onDataChange, onRegenerate, isRegen
       description: '',
       expectedOutput: ''
     };
-    handleChange("agendaItems", [...agendaItemsWithId, newItem]);
+    const updatedItems = [...agendaItemsWithId, newItem];
+    handleChange("agendaItems", updatedItems);
   };
 
   const removeAgendaItem = (index) => {
-    const updated = agendaItemsWithId.filter((_, i) => i !== index);
-    handleChange("agendaItems", updated);
+    const updatedItems = agendaItemsWithId.filter((_, i) => i !== index);
+    handleChange("agendaItems", updatedItems);
   };
 
-  // 修复：连接多格式导出功能
+  // Fix: Handle export function properly
   const handleExport = async () => {
     try {
+      const exportData = {
+        ...agendaData,
+        agendaItems: agendaItemsWithId
+      };
+
       switch (exportFormat) {
         case 'pdf':
-          await generatePDF(agendaData, currentLanguage);
+          await generatePDF(exportData, currentLanguage);
           break;
         case 'word':
-          await generateDOCX(agendaData, currentLanguage);
+          await generateDOCX(exportData, currentLanguage);
           break;
         case 'txt':
-          generateTXT(agendaData, currentLanguage);
+          await generateTXT(exportData, currentLanguage);
           break;
         default:
-          await generatePDF(agendaData, currentLanguage);
+          await generatePDF(exportData, currentLanguage);
       }
     } catch (error) {
       console.error('Export error:', error);
-      setError(`导出失败: ${error.message}`);
+      setError(`Export failed: ${error.message}`);
     }
   };
 
-  // 修复：连接 AI 重新生成功能
+  // Fix: Handle regenerate function
   const handleRegenerate = async () => {
     if (onRegenerate) {
       await onRegenerate();
     }
   };
 
-  // 修复：单个议程项重新生成
+  // Fix: Handle item regeneration
   const handleRegenerateItem = async (itemId) => {
     setIsGeneratingItem(itemId);
-    // 这里可以调用单个议程项重新生成的 API
+    // TODO: Implement actual item regeneration logic
     setTimeout(() => {
       setIsGeneratingItem(null);
     }, 1000);
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US');
+    if (!dateString) return 'Not set';
+    try {
+      return new Date(dateString).toLocaleDateString('en-US');
+    } catch {
+      return dateString;
+    }
+  };
+
+  // Fix: Provide default data if agendaData is undefined
+  const data = agendaData || {
+    meetingTitle: 'Meeting Agenda',
+    meetingDate: '',
+    meetingTime: '',
+    duration: 60,
+    location: '',
+    facilitator: '',
+    noteTaker: '',
+    meetingObjective: '',
+    agendaItems: []
   };
 
   return (
@@ -167,14 +198,11 @@ function AgendaEditor({ agendaData, onReset, onDataChange, onRegenerate, isRegen
       {/* Header */}
       <div className="editor-header">
         <div className="header-title">
-          <h1>{agendaData.meetingTitle}</h1>
-          <p>{agendaData.meetingDate} • {agendaData.meetingTime} • {agendaData.duration} minutes</p>
+          <h1>{data.meetingTitle}</h1>
+          <p>{data.meetingDate} • {data.meetingTime} • {data.duration} minutes</p>
         </div>
 
         <div className="editor-actions">
-          {/* 移除 Preview 按钮，因为已经有实时预览了 */}
-          
-          {/* 修复：连接 AI Regenerate 按钮 */}
           <button 
             className="btn-icon btn-regenerate"
             onClick={handleRegenerate}
@@ -184,7 +212,6 @@ function AgendaEditor({ agendaData, onReset, onDataChange, onRegenerate, isRegen
             {isRegenerating ? 'Regenerating...' : 'AI Regenerate'}
           </button>
           
-          {/* 修复：红色按钮改为返回落地页 */}
           <button 
             className="btn-icon btn-reset"
             onClick={onReset}
@@ -212,7 +239,7 @@ function AgendaEditor({ agendaData, onReset, onDataChange, onRegenerate, isRegen
             <div className="edit-group">
               <label>Meeting Title</label>
               <input
-                value={agendaData.meetingTitle}
+                value={data.meetingTitle}
                 onChange={(e) => handleChange("meetingTitle", e.target.value)}
               />
             </div>
@@ -220,7 +247,7 @@ function AgendaEditor({ agendaData, onReset, onDataChange, onRegenerate, isRegen
             <div className="edit-group">
               <label>Meeting Objective</label>
               <textarea
-                value={agendaData.meetingObjective}
+                value={data.meetingObjective}
                 onChange={(e) => handleChange("meetingObjective", e.target.value)}
                 rows="4"
               />
@@ -230,7 +257,7 @@ function AgendaEditor({ agendaData, onReset, onDataChange, onRegenerate, isRegen
               <label>Date</label>
               <input
                 type="date"
-                value={agendaData.meetingDate}
+                value={data.meetingDate}
                 onChange={(e) => handleChange("meetingDate", e.target.value)}
               />
             </div>
@@ -239,7 +266,7 @@ function AgendaEditor({ agendaData, onReset, onDataChange, onRegenerate, isRegen
               <label>Time</label>
               <input
                 type="time"
-                value={agendaData.meetingTime}
+                value={data.meetingTime}
                 onChange={(e) => handleChange("meetingTime", e.target.value)}
               />
             </div>
@@ -248,15 +275,15 @@ function AgendaEditor({ agendaData, onReset, onDataChange, onRegenerate, isRegen
               <label>Duration (minutes)</label>
               <input
                 type="number"
-                value={agendaData.duration}
-                onChange={(e) => handleChange("duration", parseInt(e.target.value))}
+                value={data.duration}
+                onChange={(e) => handleChange("duration", parseInt(e.target.value) || 60)}
               />
             </div>
 
             <div className="edit-group">
               <label>Location</label>
               <input
-                value={agendaData.location}
+                value={data.location}
                 onChange={(e) => handleChange("location", e.target.value)}
               />
             </div>
@@ -264,7 +291,7 @@ function AgendaEditor({ agendaData, onReset, onDataChange, onRegenerate, isRegen
             <div className="edit-group">
               <label>Facilitator</label>
               <input
-                value={agendaData.facilitator}
+                value={data.facilitator}
                 onChange={(e) => handleChange("facilitator", e.target.value)}
               />
             </div>
@@ -337,48 +364,51 @@ function AgendaEditor({ agendaData, onReset, onDataChange, onRegenerate, isRegen
           
           <div className="preview-content">
             <div className="preview-section">
-              <h3>{agendaData.meetingTitle}</h3>
+              <h3>{data.meetingTitle}</h3>
               
               <div className="preview-info">
-                <p><strong>Date:</strong> {formatDate(agendaData.meetingDate)}</p>
-                <p><strong>Time:</strong> {agendaData.meetingTime}</p>
-                <p><strong>Duration:</strong> {agendaData.duration} minutes</p>
-                <p><strong>Location:</strong> {agendaData.location}</p>
-                <p><strong>Facilitator:</strong> {agendaData.facilitator}</p>
-                {agendaData.noteTaker && (
-                  <p><strong>Note Taker:</strong> {agendaData.noteTaker}</p>
+                <p><strong>Date:</strong> {formatDate(data.meetingDate)}</p>
+                <p><strong>Time:</strong> {data.meetingTime}</p>
+                <p><strong>Duration:</strong> {data.duration} minutes</p>
+                <p><strong>Location:</strong> {data.location}</p>
+                <p><strong>Facilitator:</strong> {data.facilitator}</p>
+                {data.noteTaker && (
+                  <p><strong>Note Taker:</strong> {data.noteTaker}</p>
                 )}
               </div>
             </div>
 
             <div className="preview-section">
               <h4>Meeting Objective</h4>
-              <p>{agendaData.meetingObjective}</p>
+              <p>{data.meetingObjective || 'No objective specified'}</p>
             </div>
 
             <div className="preview-section">
               <h4>Agenda</h4>
               <div className="agenda-timeline">
-                {agendaItemsWithId.map((item) => (
-                  <div key={item.id} className="timeline-item">
-                    <div className="time-slot">{item.timeAllocation}min</div>
-                    <div className="topic-content">
-                      <strong>{item.topic}</strong>
-                      {item.owner && <span className="owner"> • {item.owner}</span>}
-                      {item.description && <p className="description">{item.description}</p>}
-                      {item.expectedOutput && (
-                        <p className="expected-output">
-                          <em>Expected: </em>
-                          {item.expectedOutput}
-                        </p>
-                      )}
+                {agendaItemsWithId.length > 0 ? (
+                  agendaItemsWithId.map((item) => (
+                    <div key={item.id} className="timeline-item">
+                      <div className="time-slot">{item.timeAllocation || 15}min</div>
+                      <div className="topic-content">
+                        <strong>{item.topic || 'Untitled Topic'}</strong>
+                        {item.owner && <span className="owner"> • {item.owner}</span>}
+                        {item.description && <p className="description">{item.description}</p>}
+                        {item.expectedOutput && (
+                          <p className="expected-output">
+                            <em>Expected: </em>
+                            {item.expectedOutput}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p>No agenda items added yet</p>
+                )}
               </div>
             </div>
 
-            {/* 修复：连接下载按钮到实际的导出功能 */}
             <button className="btn-download" onClick={handleExport}>
               <Download size={16} /> 
               Download ({exportFormat.toUpperCase()})
@@ -386,11 +416,6 @@ function AgendaEditor({ agendaData, onReset, onDataChange, onRegenerate, isRegen
           </div>
         </div>
       </div>
-
-      {/* CSS 样式保持不变 */}
-      <style>{`
-        /* 您的 CSS 样式保持不变 */
-      `}</style>
     </div>
   );
 }
