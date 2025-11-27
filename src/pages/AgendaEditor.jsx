@@ -26,11 +26,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { 
-  generateAgendaWithAI, 
-  regenerateAgendaWithAI, 
-  regenerateAgendaItemWithAI 
-} from "../services/agendaAIService";
+import { regenerateAgendaItemWithAI } from "../services/agendaAIService";
 import "./AgendaEditor.css";
 
 // 可排序的议程项组件
@@ -127,10 +123,9 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
   );
 };
 
-function AgendaEditor({ agendaData, onPreview, onReset, onDataChange }) {
+function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenerate, isRegenerating }) {
   const { i18n, t } = useTranslation();
   const currentLanguage = i18n.language;
-  const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingItem, setIsGeneratingItem] = useState(null);
   const [exportFormat, setExportFormat] = useState('pdf');
   const [error, setError] = useState(null);
@@ -214,27 +209,23 @@ function AgendaEditor({ agendaData, onPreview, onReset, onDataChange }) {
   };
 
   // AI 重新生成整个议程
-  // 在 AgendaEditor 组件中，修改 handleRegenerateAll 函数
-const handleRegenerateAll = async () => {
-  setLoading(true);
-  setError(null);
-  try {
-    const agendaDataForAI = {
-      agendaItems: agendaItemsWithId,
-      meetingTitle: agendaData.meetingTitle,
-      duration: agendaData.duration,
-      meetingObjective: agendaData.meetingObjective
-    };
-    
-    // ✅ 使用从 props 传递的 onRegenerate，它已经包含了语言参数
-    await onRegenerate(agendaDataForAI);
-    
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+  const handleRegenerateAll = async () => {
+    setError(null);
+    try {
+      const agendaDataForAI = {
+        agendaItems: agendaItemsWithId,
+        meetingTitle: agendaData.meetingTitle,
+        duration: agendaData.duration,
+        meetingObjective: agendaData.meetingObjective
+      };
+      
+      // ✅ 使用从 props 传递的 onRegenerate，它已经包含了语言参数
+      await onRegenerate(agendaDataForAI);
+      
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   // AI 重新生成单个议程项
   const handleRegenerateItem = async (itemId) => {
@@ -291,10 +282,10 @@ const handleRegenerateAll = async () => {
           <button 
             className="btn-icon btn-regenerate" 
             onClick={handleRegenerateAll}
-            disabled={isGenerating}
+            disabled={isRegenerating}
           >
-            <RefreshCw size={16} className={isGenerating ? 'spinning' : ''} />
-            {isGenerating 
+            <RefreshCw size={16} className={isRegenerating ? 'spinning' : ''} />
+            {isRegenerating 
               ? (currentLanguage === 'zh' ? 'AI生成中...' : 'AI Generating...') 
               : (currentLanguage === 'zh' ? 'AI重新生成' : 'AI Regenerate')
             }
