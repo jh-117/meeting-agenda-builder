@@ -1,946 +1,559 @@
-/* ============================================
-   AgendaEditor.css - 左右布局优化版本
-   ============================================ */
-
-.agenda-editor {
-  min-height: 100vh;
-  padding: 30px 20px;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-}
-
-.dark .agenda-editor {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-}
-
-/* Header */
-.editor-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 30px;
-  gap: 20px;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.header-title h1 {
-  font-size: 32px;
-  font-weight: 800;
-  margin-bottom: 8px;
-  color: var(--text-light);
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.dark .header-title h1 {
-  background: linear-gradient(135deg, #818cf8, #6366f1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.header-title p {
-  font-size: 14px;
-  color: var(--text-light-secondary);
-  margin: 0;
-}
-
-.dark .header-title p {
-  color: var(--text-dark-secondary);
-}
-
-.editor-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.btn-icon {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  background: var(--bg-light);
-  color: var(--text-light);
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
-}
-
-.dark .btn-icon {
-  background: var(--bg-dark-secondary);
-  color: var(--text-dark);
-  border-color: var(--border-dark);
-}
-
-.btn-icon:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary);
-}
-
-.btn-icon:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.btn-regenerate {
-  background: linear-gradient(135deg, #10b981, #059669) !important;
-  color: white !important;
-  border: none !important;
-}
-
-.btn-reset {
-  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
-  color: white !important;
-  border: none !important;
-}
-
-/* 旋转动画 */
-.spinning {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* Editor Content - 改为左右布局 */
-.editor-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-  max-width: 1400px;
-  margin: 0 auto;
-  align-items: start;
-}
-
-@media (max-width: 1200px) {
-  .editor-content {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-}
-
-/* Editor Panel - 优化布局 */
-.editor-panel {
-  background: var(--bg-light);
-  border-radius: 16px;
-  padding: 30px;
-  border: 1px solid var(--border-light);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
-  height: fit-content;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.dark .editor-panel {
-  background: var(--bg-dark-secondary);
-  border-color: var(--border-dark);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-/* Preview Panel */
-.preview-panel {
-  background: var(--bg-light);
-  border-radius: 16px;
-  padding: 30px;
-  border: 1px solid var(--border-light);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
-  height: fit-content;
-  max-height: 80vh;
-  overflow-y: auto;
-  position: sticky;
-  top: 30px;
-}
-
-.dark .preview-panel {
-  background: var(--bg-dark-secondary);
-  border-color: var(--border-dark);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.preview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-light);
-}
-
-.dark .preview-header {
-  border-bottom-color: var(--border-dark);
-}
-
-.preview-header h2 {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-light);
-  margin: 0;
-}
-
-.dark .preview-header h2 {
-  color: var(--text-dark);
-}
-
-/* 导出选项 */
-.export-options {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.export-options label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-light-secondary);
-}
-
-.dark .export-options label {
-  color: var(--text-dark-secondary);
-}
-
-.format-buttons {
-  display: flex;
-  gap: 4px;
-  background: var(--bg-light-secondary);
-  padding: 4px;
-  border-radius: 8px;
-}
-
-.dark .format-buttons {
-  background: var(--bg-dark);
-}
-
-.format-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--text-light-secondary);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.dark .format-btn {
-  color: var(--text-dark-secondary);
-}
-
-.format-btn:hover {
-  background: var(--border-light);
-  color: var(--text-light);
-}
-
-.dark .format-btn:hover {
-  background: var(--border-dark);
-  color: var(--text-dark);
-}
-
-.format-btn.active {
-  background: var(--primary);
-  color: white;
-}
-
-/* Sections - 优化布局 */
-.edit-section {
-  margin-bottom: 32px;
-  padding: 24px;
-  background: var(--bg-light-secondary);
-  border-radius: 12px;
-  border: 1px solid var(--border-light);
-}
-
-.dark .edit-section {
-  background: var(--bg-dark);
-  border-color: var(--border-dark);
-}
-
-.edit-section:last-child {
-  margin-bottom: 0;
-}
-
-.edit-section h2 {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: var(--text-light);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-light);
-}
-
-.dark .edit-section h2 {
-  color: var(--text-dark);
-  border-bottom-color: var(--border-dark);
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.section-header h2 {
-  margin-bottom: 0;
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.btn-add {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-add:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
-}
-
-/* Edit Groups - 优化布局 */
-.edit-groups-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.edit-group {
-  background: var(--bg-light);
-  padding: 16px;
-  border-radius: 8px;
-  border: 1px solid var(--border-light);
-}
-
-.dark .edit-group {
-  background: var(--bg-dark-secondary);
-  border-color: var(--border-dark);
-}
-
-.edit-group label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: var(--text-light-secondary);
-}
-
-.dark .edit-group label {
-  color: var(--text-dark-secondary);
-}
-
-.edit-group input,
-.edit-group textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--border-light);
-  border-radius: 6px;
-  font-size: 13px;
-  background: var(--bg-light);
-  color: var(--text-light);
-  resize: vertical;
-  transition: all 0.2s ease;
-}
-
-.dark .edit-group input,
-.dark .edit-group textarea {
-  background: var(--bg-dark);
-  border-color: var(--border-dark);
-  color: var(--text-dark);
-}
-
-.edit-group input:focus,
-.edit-group textarea:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
-}
-
-/* 网格布局优化 */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.form-grid-full {
-  grid-column: 1 / -1;
-}
-
-@media (max-width: 768px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Drag & Drop 优化 */
-.drag-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.edit-item {
-  background: var(--bg-light);
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid var(--border-light);
-  transition: all 0.2s ease;
-}
-
-.dark .edit-item {
-  background: var(--bg-dark-secondary);
-  border-color: var(--border-dark);
-}
-
-.edit-item:hover {
-  border-color: var(--primary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.edit-item.dragging {
-  background: var(--primary);
-  color: white;
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-}
-
-.edit-item.dragging * {
-  color: white !important;
-}
-
-.item-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.drag-handle {
-  display: flex;
-  align-items: center;
-  cursor: grab;
-  color: var(--text-light-secondary);
-  padding: 4px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.drag-handle:hover {
-  background: var(--border-light);
-  color: var(--text-light);
-}
-
-.dark .drag-handle {
-  color: var(--text-dark-secondary);
-}
-
-.dark .drag-handle:hover {
-  background: var(--border-dark);
-  color: var(--text-dark);
-}
-
-.item-topic {
-  flex: 1;
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--text-light);
-}
-
-.dark .item-topic {
-  color: var(--text-dark);
-}
-
-.item-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-@media (max-width: 480px) {
-  .item-details {
-    grid-template-columns: 1fr;
-  }
-}
-
-.item-owner,
-.item-duration,
-.item-deadline {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.item-description,
-.item-output {
-  margin-bottom: 12px;
-}
-
-.item-description:last-child,
-.item-output:last-child {
-  margin-bottom: 0;
-}
-
-.btn-remove {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 6px;
-  color: #ef4444;
-  opacity: 0.7;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: bold;
-  width: 24px;
-  height: 24px;
-}
-
-.btn-remove:hover {
-  opacity: 1;
-  background: rgba(239, 68, 68, 0.1);
-}
-
-/* 带后缀的输入框 */
-.input-with-suffix {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-with-suffix input {
-  padding-right: 50px;
-}
-
-.input-suffix {
-  position: absolute;
-  right: 12px;
-  color: var(--text-light-secondary);
-  font-size: 11px;
-  pointer-events: none;
-  background: transparent;
-}
-
-.dark .input-suffix {
-  color: var(--text-dark-secondary);
-}
-
-/* Action Items */
-.action-item {
-  background: var(--bg-light);
-  padding: 16px;
-  border-radius: 8px;
-  border: 1px solid var(--border-light);
-  margin-bottom: 12px;
-}
-
-.dark .action-item {
-  background: var(--bg-dark-secondary);
-  border-color: var(--border-dark);
-}
-
-.action-item:last-child {
-  margin-bottom: 0;
-}
-
-.item-task {
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--text-light);
-  margin-bottom: 8px;
-}
-
-.dark .item-task {
-  color: var(--text-dark);
-}
-
-.action-item-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-/* Preview Content */
-.preview-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.preview-section {
-  padding: 20px;
-  background: var(--bg-light-secondary);
-  border-radius: 12px;
-  border: 1px solid var(--border-light);
-}
-
-.dark .preview-section {
-  background: var(--bg-dark);
-  border-color: var(--border-dark);
-}
-
-.preview-section:last-child {
-  border-bottom: none;
-}
-
-.preview-section h3 {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  color: var(--text-light);
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-light);
-}
-
-.dark .preview-section h3 {
-  color: var(--text-dark);
-  border-bottom-color: var(--border-dark);
-}
-
-.preview-section h4 {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: var(--text-light);
-}
-
-.dark .preview-section h4 {
-  color: var(--text-dark);
-}
-
-.preview-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 13px;
-}
-
-.preview-info p {
-  margin: 0;
-  color: var(--text-light);
-}
-
-.dark .preview-info p {
-  color: var(--text-dark);
-}
-
-.preview-info strong {
-  color: var(--text-light);
-}
-
-.dark .preview-info strong {
-  color: var(--text-dark);
-}
-
-/* Agenda Timeline */
-.agenda-timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.timeline-item {
-  display: flex;
-  gap: 12px;
-  padding: 16px;
-  background: var(--bg-light);
-  border-radius: 8px;
-  border: 1px solid var(--border-light);
-  transition: all 0.2s ease;
-}
-
-.dark .timeline-item {
-  background: var(--bg-dark-secondary);
-  border-color: var(--border-dark);
-}
-
-.timeline-item:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.time-slot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 60px;
-  padding: 4px 8px;
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  color: white;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.topic-content {
-  flex: 1;
-}
-
-.topic-content strong {
-  color: var(--text-light);
-  font-size: 14px;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.dark .topic-content strong {
-  color: var(--text-dark);
-}
-
-.owner {
-  font-size: 12px;
-  color: var(--text-light-secondary);
-  margin-bottom: 4px;
-}
-
-.dark .owner {
-  color: var(--text-dark-secondary);
-}
-
-.description {
-  font-size: 12px;
-  color: var(--text-light);
-  margin: 4px 0 0 0;
-  line-height: 1.4;
-}
-
-.dark .description {
-  color: var(--text-dark);
-}
-
-.expected-output {
-  font-size: 11px;
-  color: var(--text-light-secondary);
-  margin: 4px 0 0 0;
-  line-height: 1.4;
-  font-style: italic;
-}
-
-.dark .expected-output {
-  color: var(--text-dark-secondary);
-}
-
-.expected-output em {
-  font-style: normal;
-  font-weight: 600;
-}
-
-/* Action Items Preview */
-.action-items {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.action-item-preview {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 16px;
-  background: var(--bg-light);
-  border-radius: 6px;
-  border-left: 3px solid var(--primary);
-}
-
-.dark .action-item-preview {
-  background: var(--bg-dark-secondary);
-}
-
-.task {
-  flex: 1;
-  font-size: 13px;
-  color: var(--text-light);
-  font-weight: 500;
-}
-
-.dark .task {
-  color: var(--text-dark);
-}
-
-.action-details {
-  display: flex;
-  gap: 12px;
-  font-size: 11px;
-  color: var(--text-light-secondary);
-}
-
-.dark .action-details {
-  color: var(--text-dark-secondary);
-}
-
-.action-details span {
-  padding: 2px 6px;
-  background: var(--border-light);
-  border-radius: 4px;
-}
-
-.dark .action-details span {
-  background: var(--border-dark);
-}
-
-/* Download Button */
-.btn-download {
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 20px;
-  transition: all 0.3s ease;
-}
-
-.btn-download:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .editor-content {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .agenda-editor {
-    padding: 20px 10px;
-  }
-
-  .editor-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
-  .editor-actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .editor-panel,
-  .preview-panel {
-    padding: 20px;
-  }
-
-  .preview-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .export-options {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .item-details {
-    grid-template-columns: 1fr;
-  }
-
-  .timeline-item {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .time-slot {
-    align-self: flex-start;
-  }
-}
-
-@media (max-width: 480px) {
-  .editor-header h1 {
-    font-size: 24px;
-  }
-
-  .editor-actions {
-    flex-direction: column;
-  }
-
-  .btn-icon {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .btn-add {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* 滚动条样式 */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-.editor-panel::-webkit-scrollbar-track,
-.preview-panel::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.editor-panel::-webkit-scrollbar-thumb,
-.preview-panel::-webkit-scrollbar-thumb {
-  background: var(--border-light);
-  border-radius: 3px;
-}
-
-.dark .editor-panel::-webkit-scrollbar-thumb,
-.dark .preview-panel::-webkit-scrollbar-thumb {
-  background: var(--border-dark);
-}
-
-.editor-panel::-webkit-scrollbar-thumb:hover,
-.preview-panel::-webkit-scrollbar-thumb:hover {
-  background: var(--text-light-secondary);
-}
-
-.dark .editor-panel::-webkit-scrollbar-thumb:hover,
-.dark .preview-panel::-webkit-scrollbar-thumb:hover {
-  background: var(--text-dark-secondary);
-}
+import React, { useState } from "react";
+import { 
+  Eye, 
+  Download, 
+  RotateCcw, 
+  GripVertical,
+  RefreshCw,
+  FileText,
+  FileDown,
+  FileCode
+} from "lucide-react";
+import { useTranslation } from 'react-i18next';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { regenerateAgendaItemWithAI } from "../services/agendaAIService";
+import "./AgendaEditor.css";
+
+// 可排序的议程项组件
+const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const handleRegenerate = () => {
+    onRegenerateItem(item.id);
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`edit-item ${isDragging ? 'dragging' : ''}`}
+    >
+      <div className="item-header">
+        <div {...attributes} {...listeners} className="drag-handle">
+          <GripVertical size={16} />
+        </div>
+        <input
+          placeholder={currentLanguage === 'zh' ? '议题标题' : 'Topic title'}
+          value={item.topic}
+          onChange={(e) => onChange(index, "topic", e.target.value)}
+          className="item-topic"
+        />
+        <div className="item-actions">
+          <button 
+            className="btn-regenerate-item"
+            onClick={handleRegenerate}
+            disabled={isGeneratingItem === item.id}
+            title={currentLanguage === 'zh' ? 'AI重新生成此项' : 'AI Regenerate This Item'}
+          >
+            <RefreshCw size={14} className={isGeneratingItem === item.id ? 'spinning' : ''} />
+          </button>
+          <button 
+            className="btn-remove"
+            onClick={() => onRemove(index)}
+            title={currentLanguage === 'zh' ? '删除' : 'Remove'}
+          >
+            ×
+          </button>
+        </div>
+      </div>
+      
+      <div className="item-details">
+        <input
+          placeholder={currentLanguage === 'zh' ? '负责人' : 'Owner'}
+          value={item.owner}
+          onChange={(e) => onChange(index, "owner", e.target.value)}
+          className="item-owner"
+        />
+        <div className="input-with-suffix">
+          <input
+            type="number"
+            placeholder={currentLanguage === 'zh' ? '时长' : 'Duration'}
+            value={item.timeAllocation}
+            onChange={(e) => onChange(index, "timeAllocation", parseInt(e.target.value) || 15)}
+            min="5"
+            className="item-duration"
+          />
+          <span className="input-suffix">{currentLanguage === 'zh' ? '分钟' : 'min'}</span>
+        </div>
+      </div>
+
+      <textarea
+        placeholder={currentLanguage === 'zh' ? '描述...' : 'Description...'}
+        value={item.description}
+        onChange={(e) => onChange(index, "description", e.target.value)}
+        rows="2"
+        className="item-description"
+      />
+
+      <textarea
+        placeholder={currentLanguage === 'zh' ? '预期产出...' : 'Expected output...'}
+        value={item.expectedOutput}
+        onChange={(e) => onChange(index, "expectedOutput", e.target.value)}
+        rows="2"
+        className="item-output"
+      />
+    </div>
+  );
+};
+
+function AgendaEditor({ agendaData, onPreview, onReset, onDataChange, onRegenerate, isRegenerating }) {
+  const { i18n, t } = useTranslation();
+  const currentLanguage = i18n.language;
+  const [isGeneratingItem, setIsGeneratingItem] = useState(null);
+  const [exportFormat, setExportFormat] = useState('pdf');
+  const [error, setError] = useState(null);
+
+  // 为议程项添加唯一ID（如果还没有的话）
+  const agendaItemsWithId = agendaData.agendaItems.map((item, index) => ({
+    ...item,
+    id: item.id || `agenda-${index}-${Date.now()}`
+  }));
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleChange = (field, value) => {
+    const updated = { ...agendaData, [field]: value };
+    onDataChange(updated);
+  };
+
+  const handleAgendaItemChange = (index, field, value) => {
+    const updated = [...agendaItemsWithId];
+    updated[index] = { ...updated[index], [field]: value };
+    handleChange("agendaItems", updated);
+  };
+
+  const handleActionItemChange = (index, field, value) => {
+    const updated = [...agendaData.actionItems];
+    updated[index] = { ...updated[index], [field]: value };
+    handleChange("actionItems", updated);
+  };
+
+  // 拖拽排序
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      const oldIndex = agendaItemsWithId.findIndex((item) => item.id === active.id);
+      const newIndex = agendaItemsWithId.findIndex((item) => item.id === over.id);
+
+      const newItems = arrayMove(agendaItemsWithId, oldIndex, newIndex);
+      handleChange("agendaItems", newItems);
+    }
+  };
+
+  // 添加新议程项
+  const addAgendaItem = () => {
+    const newItem = {
+      id: `agenda-${Date.now()}`,
+      topic: '',
+      owner: '',
+      timeAllocation: 15,
+      description: '',
+      expectedOutput: ''
+    };
+    handleChange("agendaItems", [...agendaItemsWithId, newItem]);
+  };
+
+  // 删除议程项
+  const removeAgendaItem = (index) => {
+    const updated = agendaItemsWithId.filter((_, i) => i !== index);
+    handleChange("agendaItems", updated);
+  };
+
+  // 添加新行动项
+  const addActionItem = () => {
+    const newItem = {
+      task: '',
+      owner: '',
+      deadline: new Date().toISOString().split('T')[0]
+    };
+    handleChange("actionItems", [...agendaData.actionItems, newItem]);
+  };
+
+  // 删除行动项
+  const removeActionItem = (index) => {
+    const updated = agendaData.actionItems.filter((_, i) => i !== index);
+    handleChange("actionItems", updated);
+  };
+
+  // AI 重新生成整个议程
+  const handleRegenerateAll = async () => {
+    setError(null);
+    try {
+      const agendaDataForAI = {
+        agendaItems: agendaItemsWithId,
+        meetingTitle: agendaData.meetingTitle,
+        duration: agendaData.duration,
+        meetingObjective: agendaData.meetingObjective
+      };
+      
+      await onRegenerate(agendaDataForAI);
+      
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // AI 重新生成单个议程项
+  const handleRegenerateItem = async (itemId) => {
+    setIsGeneratingItem(itemId);
+    setError(null);
+    try {
+      const item = agendaItemsWithId.find(item => item.id === itemId);
+      const context = {
+        meetingTitle: agendaData.meetingTitle,
+        meetingObjective: agendaData.meetingObjective
+      };
+      
+      const result = await regenerateAgendaItemWithAI(item, context, currentLanguage);
+      
+      // 更新单个议程项
+      const updatedItems = agendaItemsWithId.map(item => 
+        item.id === itemId ? { ...item, ...result } : item
+      );
+      handleChange("agendaItems", updatedItems);
+      
+    } catch (err) {
+      console.error('重新生成议程项失败:', err);
+      setError(err.message || (currentLanguage === 'zh' ? '重新生成此项失败' : 'Failed to regenerate this item'));
+    } finally {
+      setIsGeneratingItem(null);
+    }
+  };
+
+  // 导出议程
+  const handleExport = () => {
+    console.log(`Exporting as ${exportFormat}`, agendaData);
+    
+    // 模拟导出功能
+    const exportMessage = currentLanguage === 'zh' 
+      ? `议程已导出为 ${exportFormat.toUpperCase()} 格式`
+      : `Agenda exported as ${exportFormat.toUpperCase()} format`;
+    
+    alert(exportMessage);
+    
+    // 这里可以添加实际的导出逻辑
+    // 例如：generatePDF(agendaData), generateWord(agendaData), 等
+  };
+
+  // 处理预览 - 统一预览功能
+  const handlePreview = () => {
+    // 如果有外部的 onPreview 函数，调用它
+    // 否则在内部处理预览逻辑
+    if (onPreview) {
+      onPreview();
+    } else {
+      // 内部预览逻辑，比如打开模态框或跳转到预览页面
+      console.log("Preview agenda:", agendaData);
+      alert(currentLanguage === 'zh' ? '打开预览模式' : 'Opening preview mode');
+    }
+  };
+
+  // 格式化日期
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString(currentLanguage === 'zh' ? 'zh-CN' : 'en-US');
+  };
+
+  return (
+    <div className="agenda-editor">
+      {/* Header */}
+      <div className="editor-header">
+        <div className="header-title">
+          <h1>{agendaData.meetingTitle}</h1>
+          <p>{agendaData.meetingDate} • {agendaData.meetingTime} • {agendaData.duration} {currentLanguage === 'zh' ? '分钟' : 'minutes'}</p>
+        </div>
+
+        <div className="editor-actions">
+          <button className="btn-icon" onClick={handlePreview}>
+            <Eye size={16} /> {currentLanguage === 'zh' ? '预览' : 'Preview'}
+          </button>
+
+          <button 
+            className="btn-icon btn-regenerate" 
+            onClick={handleRegenerateAll}
+            disabled={isRegenerating}
+          >
+            <RefreshCw size={16} className={isRegenerating ? 'spinning' : ''} />
+            {isRegenerating 
+              ? (currentLanguage === 'zh' ? 'AI生成中...' : 'AI Generating...') 
+              : (currentLanguage === 'zh' ? 'AI重新生成' : 'AI Regenerate')
+            }
+          </button>
+
+          <button className="btn-icon btn-reset" onClick={onReset}>
+            <RotateCcw size={16} /> {currentLanguage === 'zh' ? '重新开始' : 'Reset'}
+          </button>
+        </div>
+      </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="error-message">
+          {error}
+          <button onClick={() => setError(null)}>×</button>
+        </div>
+      )}
+
+      {/* Editor Content */}
+      <div className="editor-content">
+        {/* 左侧编辑面板 */}
+        <div className="editor-panel">
+          {/* Basic Info */}
+          <section className="edit-section">
+            <h2>📋 {currentLanguage === 'zh' ? '基本信息' : 'Basic Information'}</h2>
+
+            <div className="edit-group">
+              <label>{currentLanguage === 'zh' ? '会议标题' : 'Meeting Title'}</label>
+              <input
+                value={agendaData.meetingTitle}
+                onChange={(e) => handleChange("meetingTitle", e.target.value)}
+                placeholder={currentLanguage === 'zh' ? '输入会议标题...' : 'Enter meeting title...'}
+              />
+            </div>
+
+            <div className="edit-group">
+              <label>{currentLanguage === 'zh' ? '会议目的' : 'Meeting Objective'}</label>
+              <textarea
+                value={agendaData.meetingObjective}
+                onChange={(e) => handleChange("meetingObjective", e.target.value)}
+                placeholder={currentLanguage === 'zh' ? '描述会议目的...' : 'Describe meeting objective...'}
+                rows="4"
+              />
+            </div>
+          </section>
+
+          {/* Agenda Items with Drag & Drop */}
+          <section className="edit-section">
+            <div className="section-header">
+              <h2>🗓️ {currentLanguage === 'zh' ? '议程项' : 'Agenda Items'} ({agendaItemsWithId.length})</h2>
+              <button className="btn-add" onClick={addAgendaItem}>
+                + {currentLanguage === 'zh' ? '添加议程项' : 'Add Item'}
+              </button>
+            </div>
+
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext items={agendaItemsWithId.map(item => item.id)} strategy={verticalListSortingStrategy}>
+                <div className="drag-container">
+                  {agendaItemsWithId.map((item, index) => (
+                    <SortableAgendaItem
+                      key={item.id}
+                      item={item}
+                      index={index}
+                      onChange={handleAgendaItemChange}
+                      onRemove={removeAgendaItem}
+                      onRegenerateItem={handleRegenerateItem}
+                      currentLanguage={currentLanguage}
+                      isGeneratingItem={isGeneratingItem}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+
+            {agendaItemsWithId.length === 0 && (
+              <div className="empty-state">
+                <p>{currentLanguage === 'zh' ? '暂无议程项' : 'No agenda items yet'}</p>
+                <button className="btn-primary" onClick={addAgendaItem}>
+                  + {currentLanguage === 'zh' ? '添加第一个议程项' : 'Add First Agenda Item'}
+                </button>
+              </div>
+            )}
+          </section>
+
+          {/* Action Items */}
+          <section className="edit-section">
+            <div className="section-header">
+              <h2>✅ {currentLanguage === 'zh' ? '行动项' : 'Action Items'} ({agendaData.actionItems.length})</h2>
+              <button className="btn-add" onClick={addActionItem}>
+                + {currentLanguage === 'zh' ? '添加行动项' : 'Add Action'}
+              </button>
+            </div>
+
+            {agendaData.actionItems.map((item, index) => (
+              <div className="edit-item action-item" key={index}>
+                <div className="item-header">
+                  <input
+                    placeholder={currentLanguage === 'zh' ? '任务描述' : 'Task description'}
+                    value={item.task}
+                    onChange={(e) => handleActionItemChange(index, "task", e.target.value)}
+                    className="item-task"
+                  />
+                  <button 
+                    className="btn-remove"
+                    onClick={() => removeActionItem(index)}
+                    title={currentLanguage === 'zh' ? '删除' : 'Remove'}
+                  >
+                    ×
+                  </button>
+                </div>
+                
+                <div className="item-details">
+                  <input
+                    placeholder={currentLanguage === 'zh' ? '负责人' : 'Owner'}
+                    value={item.owner}
+                    onChange={(e) => handleActionItemChange(index, "owner", e.target.value)}
+                    className="item-owner"
+                  />
+                  <input
+                    type="date"
+                    value={item.deadline}
+                    onChange={(e) => handleActionItemChange(index, "deadline", e.target.value)}
+                    className="item-deadline"
+                  />
+                </div>
+              </div>
+            ))}
+
+            {agendaData.actionItems.length === 0 && (
+              <div className="empty-state">
+                <p>{currentLanguage === 'zh' ? '暂无行动项' : 'No action items yet'}</p>
+              </div>
+            )}
+          </section>
+        </div>
+
+        {/* 右侧预览和导出面板 */}
+        <div className="preview-panel">
+          <div className="preview-header">
+            <h2>👁️ {currentLanguage === 'zh' ? '实时预览' : 'Live Preview'}</h2>
+            
+            {/* 导出选项 */}
+            <div className="export-options">
+              <label>{currentLanguage === 'zh' ? '导出格式:' : 'Export as:'}</label>
+              <div className="format-buttons">
+                <button 
+                  className={`format-btn ${exportFormat === 'pdf' ? 'active' : ''}`}
+                  onClick={() => setExportFormat('pdf')}
+                  title="PDF"
+                >
+                  <FileText size={16} />
+                </button>
+                <button 
+                  className={`format-btn ${exportFormat === 'word' ? 'active' : ''}`}
+                  onClick={() => setExportFormat('word')}
+                  title="Word"
+                >
+                  <FileDown size={16} />
+                </button>
+                <button 
+                  className={`format-btn ${exportFormat === 'txt' ? 'active' : ''}`}
+                  onClick={() => setExportFormat('txt')}
+                  title="Text"
+                >
+                  <FileCode size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="preview-content">
+            {/* 预览内容 */}
+            <div className="preview-section">
+              <h3>{agendaData.meetingTitle}</h3>
+              
+              <div className="preview-info">
+                <p><strong>{currentLanguage === 'zh' ? '日期:' : 'Date:'}</strong> {formatDate(agendaData.meetingDate)}</p>
+                <p><strong>{currentLanguage === 'zh' ? '时间:' : 'Time:'}</strong> {agendaData.meetingTime}</p>
+                <p><strong>{currentLanguage === 'zh' ? '时长:' : 'Duration:'}</strong> {agendaData.duration} {currentLanguage === 'zh' ? '分钟' : 'minutes'}</p>
+                <p><strong>{currentLanguage === 'zh' ? '地点:' : 'Location:'}</strong> {agendaData.location}</p>
+                <p><strong>{currentLanguage === 'zh' ? '主持人:' : 'Facilitator:'}</strong> {agendaData.facilitator}</p>
+                {agendaData.noteTaker && (
+                  <p><strong>{currentLanguage === 'zh' ? '记录人:' : 'Note Taker:'}</strong> {agendaData.noteTaker}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="preview-section">
+              <h4>{currentLanguage === 'zh' ? '会议目的' : 'Meeting Objective'}</h4>
+              <p>{agendaData.meetingObjective}</p>
+            </div>
+
+            <div className="preview-section">
+              <h4>{currentLanguage === 'zh' ? '议程安排' : 'Agenda'}</h4>
+              <div className="agenda-timeline">
+                {agendaItemsWithId.map((item, index) => (
+                  <div key={item.id} className="timeline-item">
+                    <div className="time-slot">{item.timeAllocation}{currentLanguage === 'zh' ? '分钟' : 'min'}</div>
+                    <div className="topic-content">
+                      <strong>{item.topic}</strong>
+                      {item.owner && <span className="owner"> • {item.owner}</span>}
+                      {item.description && <p className="description">{item.description}</p>}
+                      {item.expectedOutput && (
+                        <p className="expected-output">
+                          <em>{currentLanguage === 'zh' ? '预期产出: ' : 'Expected: '}</em>
+                          {item.expectedOutput}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {agendaData.actionItems.length > 0 && (
+              <div className="preview-section">
+                <h4>{currentLanguage === 'zh' ? '行动项' : 'Action Items'}</h4>
+                <div className="action-items">
+                  {agendaData.actionItems.map((item, index) => (
+                    <div key={index} className="action-item">
+                      <div className="task">{item.task}</div>
+                      <div className="action-details">
+                        {item.owner && <span>{item.owner}</span>}
+                        {item.deadline && <span>{formatDate(item.deadline)}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 导出按钮 */}
+            <button className="btn-download" onClick={handleExport}>
+              <Download size={16} /> 
+              {currentLanguage === 'zh' ? '下载议程' : 'Download Agenda'} 
+              ({exportFormat.toUpperCase()})
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default AgendaEditor;
