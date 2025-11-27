@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next'; // 添加这行
+import { useTranslation } from 'react-i18next';
 import './App.css';
 import { useTheme } from './hooks/useTheme';
 import { useNotification } from './hooks/useNotification';
@@ -19,7 +19,7 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { notification, showNotification, hideNotification } = useNotification();
-  const { i18n } = useTranslation(); // 添加这行
+  const { i18n } = useTranslation();
 
   const handleStartClick = () => {
     setCurrentStep('step1');
@@ -28,12 +28,10 @@ function App() {
   const handleStep1Submit = async (formData) => {
     setIsGenerating(true);
     try {
-      console.log("🔤 App.jsx - 当前语言:", i18n.language); // 添加调试
+      console.log("🔤 App.jsx - 当前语言:", i18n.language);
       
-      // ✅ 传递语言参数
       const generatedAgenda = await generateAgendaWithAI(formData, i18n.language);
 
-      // 合并表单数据和生成的议程数据
       const completeAgendaData = {
         ...formData,
         ...generatedAgenda,
@@ -51,36 +49,12 @@ function App() {
     }
   };
 
-  const handleRegenerate = async () => {
-    setIsGenerating(true);
-    try {
-      console.log("🔤 App.jsx - 重新生成时语言:", i18n.language); // 添加调试
-      
-      // ✅ 传递语言参数
-      const regeneratedAgenda = await regenerateAgendaWithAI(agendaData, i18n.language);
-      
-      const updatedAgendaData = {
-        ...agendaData,
-        ...regeneratedAgenda,
-      };
-      
-      setAgendaData(updatedAgendaData);
-      showNotification('✨ 议程已重新生成！', 'success');
-    } catch (error) {
-      console.error('Error regenerating agenda:', error);
-      showNotification(`❌ 重新生成失败: ${error.message}`, 'error');
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
   const handlePreviewClick = () => {
     setShowPreview(true);
   };
 
   const handleDownload = (format) => {
     setShowPreview(false);
-    // 延迟以显示通知
     setTimeout(() => {
       showNotification(`议程已成功导出为 ${format} 格式！`, 'success');
     }, 300);
@@ -96,10 +70,13 @@ function App() {
     setShowPreview(false);
   };
 
-  const handleRegenerate = async () => {
+  // 🔄 重命名这个函数，避免与 AgendaEditor 中的冲突
+  const handleRegenerateAgenda = async () => {
     setIsGenerating(true);
     try {
-      const regeneratedAgenda = await regenerateAgendaWithAI(agendaData);
+      console.log("🔤 App.jsx - 重新生成时语言:", i18n.language);
+      
+      const regeneratedAgenda = await regenerateAgendaWithAI(agendaData, i18n.language);
       
       const updatedAgendaData = {
         ...agendaData,
@@ -141,7 +118,7 @@ function App() {
             onPreview={handlePreviewClick}
             onReset={handleReset}
             onDataChange={setAgendaData}
-            onRegenerate={handleRegenerate}
+            onRegenerate={handleRegenerateAgenda} // 🔄 使用新的函数名
             isRegenerating={isGenerating}
           />
         )}
