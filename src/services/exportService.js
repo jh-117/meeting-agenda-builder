@@ -2,6 +2,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Packer, Document, Paragraph, HeadingLevel } from 'docx';
 import { saveAs } from 'file-saver';
+import { getExportTexts } from './exportLanguages';
 
 // PDF 导出 - 使用 HTML 转 PDF 方法
 export const generatePDF = async (agendaData, language = 'zh') => {
@@ -11,7 +12,7 @@ export const generatePDF = async (agendaData, language = 'zh') => {
     tempDiv.style.position = 'absolute';
     tempDiv.style.left = '-9999px';
     tempDiv.style.top = '0';
-    tempDiv.style.width = '210mm'; // A4 宽度
+    tempDiv.style.width = '210mm';
     tempDiv.style.padding = '20mm';
     tempDiv.style.fontFamily = 'Arial, "Microsoft YaHei", "PingFang SC", sans-serif';
     tempDiv.style.fontSize = '14px';
@@ -19,50 +20,7 @@ export const generatePDF = async (agendaData, language = 'zh') => {
     tempDiv.style.background = 'white';
     tempDiv.style.color = 'black';
 
-    const texts = {
-      zh: {
-        basicInfo: '基本信息',
-        date: '日期',
-        time: '时间',
-        duration: '时长',
-        location: '地点',
-        facilitator: '主持人',
-        noteTaker: '记录人',
-        attendees: '参与者',
-        meetingObjective: '会议目的',
-        agendaItems: '议程项',
-        speaker: '负责人',
-        minutes: '分钟',
-        description: '描述',
-        expectedOutput: '预期产出',
-        actionItems: '行动项',
-        owner: '负责人',
-        deadline: '截止日期',
-        defaultTitle: '会议议程'
-      },
-      en: {
-        basicInfo: 'Basic Information',
-        date: 'Date',
-        time: 'Time',
-        duration: 'Duration',
-        location: 'Location',
-        facilitator: 'Facilitator',
-        noteTaker: 'Note Taker',
-        attendees: 'Attendees',
-        meetingObjective: 'Meeting Objective',
-        agendaItems: 'Agenda Items',
-        speaker: 'Owner',
-        minutes: 'minutes',
-        description: 'Description',
-        expectedOutput: 'Expected Output',
-        actionItems: 'Action Items',
-        owner: 'Owner',
-        deadline: 'Deadline',
-        defaultTitle: 'Meeting Agenda'
-      }
-    };
-
-    const t = texts[language] || texts.zh;
+    const t = getExportTexts(language);
 
     // 构建 HTML 内容
     let htmlContent = `
@@ -150,7 +108,7 @@ export const generatePDF = async (agendaData, language = 'zh') => {
 
     // 转换为 canvas 然后生成 PDF
     const canvas = await html2canvas(tempDiv, {
-      scale: 2, // 提高分辨率
+      scale: 2,
       useCORS: true,
       logging: false,
       backgroundColor: '#ffffff'
@@ -158,18 +116,16 @@ export const generatePDF = async (agendaData, language = 'zh') => {
 
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgWidth = 210; // A4 width in mm
-    const pageHeight = 297; // A4 height in mm
+    const imgWidth = 210;
+    const pageHeight = 297;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
     let heightLeft = imgHeight;
     let position = 0;
 
-    // 第一页
     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
 
-    // 如果需要多页
     while (heightLeft >= 0) {
       position = heightLeft - imgHeight;
       pdf.addPage();
@@ -177,18 +133,13 @@ export const generatePDF = async (agendaData, language = 'zh') => {
       heightLeft -= pageHeight;
     }
 
-    const fileName = language === 'zh' 
-      ? `会议议程-${new Date().getTime()}.pdf`
-      : `meeting-agenda-${new Date().getTime()}.pdf`;
-
+    const fileName = getFileName('pdf', language);
     pdf.save(fileName);
 
   } catch (error) {
     console.error('PDF generation error:', error);
-    // 如果失败，使用简单的回退方案
     generateSimplePDF(agendaData, language);
   } finally {
-    // 清理临时元素
     const tempElement = document.querySelector('div[style*="left: -9999px"]');
     if (tempElement) {
       document.body.removeChild(tempElement);
@@ -199,51 +150,7 @@ export const generatePDF = async (agendaData, language = 'zh') => {
 // 简单的回退方案
 const generateSimplePDF = (agendaData, language = 'zh') => {
   const doc = new jsPDF();
-  
-  const texts = {
-    zh: {
-      basicInfo: '基本信息',
-      date: '日期',
-      time: '时间',
-      duration: '时长',
-      location: '地点', 
-      facilitator: '主持人',
-      noteTaker: '记录人',
-      attendees: '参与者',
-      meetingObjective: '会议目的',
-      agendaItems: '议程项',
-      speaker: '负责人',
-      minutes: '分钟',
-      description: '描述',
-      expectedOutput: '预期产出',
-      actionItems: '行动项',
-      owner: '负责人', 
-      deadline: '截止日期',
-      defaultTitle: '会议议程'
-    },
-    en: {
-      basicInfo: 'Basic Information',
-      date: 'Date',
-      time: 'Time',
-      duration: 'Duration',
-      location: 'Location',
-      facilitator: 'Facilitator', 
-      noteTaker: 'Note Taker',
-      attendees: 'Attendees',
-      meetingObjective: 'Meeting Objective',
-      agendaItems: 'Agenda Items',
-      speaker: 'Owner',
-      minutes: 'minutes',
-      description: 'Description',
-      expectedOutput: 'Expected Output',
-      actionItems: 'Action Items',
-      owner: 'Owner',
-      deadline: 'Deadline',
-      defaultTitle: 'Meeting Agenda'
-    }
-  };
-
-  const t = texts[language] || texts.zh;
+  const t = getExportTexts(language);
   
   let yPosition = 20;
   
@@ -367,18 +274,142 @@ const generateSimplePDF = (agendaData, language = 'zh') => {
     doc.text('-', 25, yPosition);
   }
 
-  const fileName = language === 'zh' 
-    ? `会议议程-${new Date().getTime()}.pdf`
-    : `meeting-agenda-${new Date().getTime()}.pdf`;
-
+  const fileName = getFileName('pdf', language);
   doc.save(fileName);
 };
 
-// DOCX 和 TXT 导出保持不变
+// DOCX 导出
 export const generateDOCX = async (agendaData, language = 'zh') => {
-  // ... 保持你原来的 DOCX 代码
+  const t = getExportTexts(language);
+  const sections = [];
+
+  // 标题
+  sections.push(
+    new Paragraph({
+      text: agendaData.meetingTitle || t.defaultTitle,
+      heading: HeadingLevel.HEADING_1,
+    })
+  );
+
+  // 基本信息
+  sections.push(new Paragraph({ text: t.basicInfo, heading: HeadingLevel.HEADING_2 }));
+  sections.push(new Paragraph(`${t.date}: ${agendaData.meetingDate || ''}`));
+  sections.push(new Paragraph(`${t.time}: ${agendaData.meetingTime || ''} (${t.duration}: ${agendaData.duration || ''} ${t.minutes})`));
+  sections.push(new Paragraph(`${t.location}: ${agendaData.location || ''}`));
+  sections.push(new Paragraph(`${t.facilitator}: ${agendaData.facilitator || ''}`));
+  if (agendaData.noteTaker) {
+    sections.push(new Paragraph(`${t.noteTaker}: ${agendaData.noteTaker}`));
+  }
+  if (agendaData.attendees) {
+    sections.push(new Paragraph(`${t.attendees}: ${agendaData.attendees}`));
+  }
+
+  // 会议目的
+  sections.push(new Paragraph({ text: t.meetingObjective, heading: HeadingLevel.HEADING_2 }));
+  if (agendaData.meetingObjective) {
+    sections.push(new Paragraph(agendaData.meetingObjective));
+  }
+
+  // 议程项
+  sections.push(new Paragraph({ text: t.agendaItems, heading: HeadingLevel.HEADING_2 }));
+  if (agendaData.agendaItems && agendaData.agendaItems.length > 0) {
+    agendaData.agendaItems.forEach((item, index) => {
+      sections.push(new Paragraph({ text: `${index + 1}. ${item.topic || ''}`, heading: HeadingLevel.HEADING_3 }));
+      if (item.owner) sections.push(new Paragraph(`${t.speaker}: ${item.owner}`));
+      if (item.timeAllocation) sections.push(new Paragraph(`${t.duration}: ${item.timeAllocation} ${t.minutes}`));
+      if (item.description) sections.push(new Paragraph(`${t.description}: ${item.description}`));
+      if (item.expectedOutput) sections.push(new Paragraph(`${t.expectedOutput}: ${item.expectedOutput}`));
+    });
+  } else {
+    sections.push(new Paragraph('-'));
+  }
+
+  // 行动项
+  sections.push(new Paragraph({ text: t.actionItems, heading: HeadingLevel.HEADING_2 }));
+  if (agendaData.actionItems && agendaData.actionItems.length > 0) {
+    agendaData.actionItems.forEach((item, index) => {
+      sections.push(new Paragraph(`${index + 1}. ${item.task || ''}`));
+      if (item.owner) sections.push(new Paragraph(`${t.owner}: ${item.owner}`));
+      if (item.deadline) sections.push(new Paragraph(`${t.deadline}: ${item.deadline}`));
+    });
+  } else {
+    sections.push(new Paragraph('-'));
+  }
+
+  const doc = new Document({
+    sections: [{ children: sections }],
+  });
+
+  const blob = await Packer.toBlob(doc);
+  const fileName = getFileName('docx', language);
+  saveAs(blob, fileName);
 };
 
+// TXT 导出
 export const generateTXT = (agendaData, language = 'zh') => {
-  // ... 保持你原来的 TXT 代码
+  const t = getExportTexts(language);
+  let content = '';
+
+  content += `=== ${agendaData.meetingTitle || t.defaultTitle} ===\n\n`;
+
+  content += `${t.basicInfo}\n`;
+  content += `${t.date}: ${agendaData.meetingDate || ''}\n`;
+  content += `${t.time}: ${agendaData.meetingTime || ''} (${t.duration}: ${agendaData.duration || ''} ${t.minutes})\n`;
+  content += `${t.location}: ${agendaData.location || ''}\n`;
+  content += `${t.facilitator}: ${agendaData.facilitator || ''}\n`;
+  if (agendaData.noteTaker) {
+    content += `${t.noteTaker}: ${agendaData.noteTaker}\n`;
+  }
+  if (agendaData.attendees) {
+    content += `${t.attendees}: ${agendaData.attendees}\n`;
+  }
+  content += '\n';
+
+  content += `${t.meetingObjective}\n`;
+  if (agendaData.meetingObjective) {
+    content += `${agendaData.meetingObjective}\n`;
+  }
+  content += '\n';
+
+  content += `${t.agendaItems}\n`;
+  if (agendaData.agendaItems && agendaData.agendaItems.length > 0) {
+    agendaData.agendaItems.forEach((item, index) => {
+      content += `\n${index + 1}. ${item.topic || ''}\n`;
+      if (item.owner) content += `   ${t.speaker}: ${item.owner}\n`;
+      if (item.timeAllocation) content += `   ${t.duration}: ${item.timeAllocation} ${t.minutes}\n`;
+      if (item.description) content += `   ${t.description}: ${item.description}\n`;
+      if (item.expectedOutput) content += `   ${t.expectedOutput}: ${item.expectedOutput}\n`;
+    });
+  } else {
+    content += '-\n';
+  }
+
+  content += `\n${t.actionItems}\n`;
+  if (agendaData.actionItems && agendaData.actionItems.length > 0) {
+    agendaData.actionItems.forEach((item, index) => {
+      content += `${index + 1}. ${item.task || ''}\n`;
+      if (item.owner) content += `   ${t.owner}: ${item.owner}\n`;
+      if (item.deadline) content += `   ${t.deadline}: ${item.deadline}\n\n`;
+    });
+  } else {
+    content += '-\n';
+  }
+
+  const fileName = getFileName('txt', language);
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  saveAs(blob, fileName);
+};
+
+// 获取文件名
+const getFileName = (format, language) => {
+  const timestamp = new Date().getTime();
+  const names = {
+    zh: `会议议程-${timestamp}`,
+    en: `meeting-agenda-${timestamp}`,
+    ms: `agenda-mesyuarat-${timestamp}`,
+    ta: `கூட்ட-agenda-${timestamp}`
+  };
+  
+  const baseName = names[language] || names.en;
+  return `${baseName}.${format}`;
 };
