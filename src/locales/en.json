@@ -28,6 +28,7 @@
     "meetingTime": "Meeting Time",
     "duration": "Duration (minutes)",
     "location": "Location / Meeting Link",
+    "meetingType": "Meeting Type",
     "facilitator": "Facilitator",
     "noteTaker": "Note Taker",
     "attendees": "Attendees",
