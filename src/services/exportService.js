@@ -413,7 +413,3 @@ const getFileName = (format, language) => {
   const baseName = names[language] || names.en;
   return `${baseName}.${format}`;
 };
-
-export const function name(params) {
-  
-}
