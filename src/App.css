@@ -16,7 +16,6 @@
   --border-light: #e2e8f0;
   --shadow-light: 0 10px 30px rgba(15, 23, 42, 0.1);
   --shadow-light-md: 0 4px 15px rgba(15, 23, 42, 0.08);
-
   --bg-dark: #0f172a;
   --bg-dark-secondary: #1e293b;
   --text-dark: #f1f5f9;
@@ -32,6 +31,7 @@ html, body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
 }
 
 body {
@@ -77,15 +77,15 @@ body {
   z-index: 1;
 }
 
-/* 响应式 */
+/* ==================== Responsive ==================== */
 @media (max-width: 768px) {
-  :root {
-    font-size: 14px;
+  html, body {
+    font-size: 15px;
   }
 }
 
 @media (max-width: 480px) {
-  :root {
-    font-size: 13px;
+  html, body {
+    font-size: 14px;
   }
 }
