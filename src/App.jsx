@@ -1,47 +1,37 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'; // 修复这里
 import './App.css';
 import { useTheme } from './hooks/useTheme';
 import { useNotification } from './hooks/useNotification';
 import LandingPage from './pages/LandingPage';
-import FormStep1 from './pages/FormStep1';
+import FormStep1 from './pages/FormStep1'; // 修复这里
 import AgendaEditor from './pages/AgendaEditor';
-import AIPreviewPage from './pages/AIPreviewPage';
-import NotificationToast from './components/NotificationToast';
+
+import NotificationToast from './components/NotificationToast'; // 修复这里
 import ThemeToggle from './components/ThemeToggle';
 import LoadingSpinner from './components/LoadingSpinner';
-import { generateAgendaWithAI, regenerateAgendaWithAI } from './services/agendaAIService';
+import { generateAgendaWithAI, regenerateAgendaWithAI } from './services/agendaAIService'; // 修复这里
+import AIPreviewPage from './pages/AIPreviewPage';
 
 function App() {
   const [currentStep, setCurrentStep] = useState('landing');
   const [agendaData, setAgendaData] = useState(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  
+  const [showPreview, setShowPreview] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false); // 修复这里
   const { theme, toggleTheme } = useTheme();
   const { notification, showNotification, hideNotification } = useNotification();
-  const { i18n } = useTranslation();
-
-  // Test if notification system works
-  React.useEffect(() => {
-    console.log('🔔 Current notification:', notification);
-  }, [notification]);
+  const { i18n } = useTranslation(); // 修复这里
 
   const handleStartClick = () => {
-    console.log('🎯 Start button clicked, moving to step1');
     setCurrentStep('step1');
-    showNotification('请填写会议基本信息', 'info');
   };
 
   const handleStep1Submit = async (formData) => {
-    console.log('📝 Form submitted:', formData);
     setIsGenerating(true);
-    showNotification('AI正在生成议程，请稍候...', 'info');
-    
     try {
       console.log("🔤 App.jsx - 当前语言:", i18n.language);
       
       const generatedAgenda = await generateAgendaWithAI(formData, i18n.language);
-      console.log('🤖 AI Generated agenda:', generatedAgenda);
 
       const completeAgendaData = {
         ...formData,
@@ -49,9 +39,9 @@ function App() {
       };
 
       setAgendaData(completeAgendaData);
-      setCurrentStep('ai-preview');
+      setCurrentStep('editor');
       
-      showNotification('✨ AI议程已生成！请查看预览', 'success');
+      showNotification('✨ 议程已生成！现在可以编辑了', 'success');
     } catch (error) {
       console.error('Error generating agenda:', error);
       showNotification(`❌ 生成议程失败: ${error.message}`, 'error');
@@ -60,16 +50,29 @@ function App() {
     }
   };
 
+  const handlePreviewClick = () => {
+    setShowPreview(true);
+  };
+
+  const handleDownload = (format) => {
+    setShowPreview(false);
+    setTimeout(() => {
+      showNotification(`议程已成功导出为 ${format} 格式！`, 'success');
+    }, 300);
+  };
+
+  const handleBackToEditor = () => {
+    setShowPreview(false);
+  };
+
   const handleReset = () => {
     setCurrentStep('landing');
     setAgendaData(null);
-    showNotification('已重置到首页', 'info');
+    setShowPreview(false);
   };
 
   const handleRegenerateAgenda = async () => {
     setIsGenerating(true);
-    showNotification('AI正在重新生成议程...', 'info');
-    
     try {
       console.log("🔤 App.jsx - 重新生成时语言:", i18n.language);
       
@@ -89,13 +92,6 @@ function App() {
       setIsGenerating(false);
     }
   };
-
-  // Debug current step
-  React.useEffect(() => {
-    console.log('🔄 Current step:', currentStep);
-    console.log('📊 Agenda data:', agendaData);
-  }, [currentStep, agendaData]);
-
   return (
     <div className={`app ${theme}`}>
       <ThemeToggle theme={theme} onToggle={toggleTheme} />
