@@ -162,34 +162,7 @@
   text-align: left;
 }
 
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: 10px 20px;
-  border-radius: var(--radius-full);
-  font-size: clamp(12px, 1.5vw, 14px);
-  font-weight: 600;
-  margin-bottom: var(--spacing-md);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-light);
-  color: var(--primary-light);
-  background: var(--bg-light-secondary);
-  box-shadow: 0 2px 8px var(--shadow-light);
-  transition: all var(--transition-normal);
-}
 
-.dark .hero-badge {
-  border-color: var(--border-dark);
-  color: var(--primary-dark);
-  background: var(--bg-dark-secondary);
-  box-shadow: 0 2px 8px var(--shadow-dark);
-}
-
-.hero-badge:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--shadow-light-lg);
-}
 
 .hero-title {
   font-size: clamp(36px, 5.5vw, 64px);
