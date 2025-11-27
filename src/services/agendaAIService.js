@@ -33,12 +33,25 @@ export const generateAgendaWithAI = async (formData, language = 'zh') => {
 
     if (error) {
       console.error('❌ Edge Function error response:', error)
+      
+      // Try to extract error details from response body
+      let errorDetails = error.message
+      if (error.context?.response) {
+        try {
+          const responseBody = await error.context.response.json()
+          console.error('Response body:', responseBody)
+          errorDetails = responseBody.error || error.message
+        } catch (e) {
+          // Response is not JSON, use original message
+        }
+      }
+      
       console.error('Error details:', {
         message: error.message,
         status: error.status,
-        context: error.context
+        details: errorDetails
       })
-      throw new Error(`AI生成失败: ${error.message}`)
+      throw new Error(`AI生成失败: ${errorDetails}`)
     }
 
     console.log('✅ Edge Function response:', data)
