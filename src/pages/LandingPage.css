@@ -89,13 +89,13 @@
 .language-selector {
   position: fixed;
   top: 20px;
-  right: 20px;
+  right: 80px;
   display: flex;
   gap: var(--spacing-xs);
   z-index: 1000;
   flex-wrap: wrap;
   justify-content: flex-end;
-  max-width: 90vw;
+  max-width: calc(90vw - 80px);
 }
 
 .language-selector button {
