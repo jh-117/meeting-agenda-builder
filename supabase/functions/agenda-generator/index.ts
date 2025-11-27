@@ -12,7 +12,19 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { action, formData, agendaData, itemData, context, language = "zh" } = await req.json();
+    console.log('📥 Incoming request method:', req.method);
+    console.log('📥 Incoming request headers:', Object.fromEntries(req.headers));
+    
+    let body;
+    try {
+      body = await req.json();
+      console.log('📥 Request body received:', JSON.stringify(body, null, 2));
+    } catch (parseError) {
+      console.error('❌ Failed to parse request body:', parseError.message);
+      throw new Error(`Invalid JSON in request body: ${parseError.message}`);
+    }
+
+    const { action, formData, agendaData, itemData, context, language = "zh" } = body;
 
     // Get OpenAI API Key from environment
     const openaiApiKey = Deno.env.get('Agenda_generator');
