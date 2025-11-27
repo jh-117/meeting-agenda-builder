@@ -1,14 +1,5 @@
 {
   "landing": {
-    
-    "heroTitle": "创建专业的会议议程",
-    "heroDescription": "使用 AI 智能生成工具，只需几分钟即可创建精心组织的会议议程。支持实时编辑、多格式导出，让您的会议更高效、更专业。",
-    "ctaButton": "开始创建",
-    "featuresTitle": "核心功能",
-    "feature1Title": "AI 智能生成",
-    "feature1Desc": "借助 AI 技术即时生成会议议程。",
-    "feature2Title":{
-  "landing": {
     "heroTitle": "创建专业会议议程",
     "heroDescription": "使用AI工具在几分钟内生成组织良好的会议议程。支持实时编辑和多格式导出，实现高效专业的会议。",
     "ctaButton": "开始创建",
@@ -95,66 +86,5 @@
     "owner": "负责人",
     "deadline": "截止日期",
     "defaultTitle": "会议议程"
-  }
-} "多格式导出",
-    "feature2Desc": "支持 PDF、Word 或 TXT 格式下载。",
-    "feature3Title": "实时编辑",
-    "feature3Desc": "在导出前实时编辑和调整议程内容。",
-    "processTitle": "使用流程",
-    "step1": "输入信息",
-    "step2": "AI生成",
-    "step3": "编辑调整",
-    "step4": "下载导出",
-    "readyTitle": "准备好了吗？",
-    "readyDesc": "立即开始创建您的第一个 AI 驱动的会议议程",
-    "readyButton": "开始现在"
-  },
-  "formStep1": {
-    "header": "创建新的会议议程",
-    "subHeader": "第 1 步 / 2 - 基础信息",
-    "meetingTitle": "会议标题",
-    "meetingDate": "会议日期",
-    "meetingTime": "会议时间",
-    "duration": "时长 (分钟)",
-    "location": "地点/会议链接",
-    "meetingType":"会议类型",
-    "facilitator": "主持人",
-    "noteTaker": "记录人",
-    "attendees": "参与者",
-    "meetingObjective": "会议目的",
-    "errors": {
-      "meetingTitle": "会议标题不能为空",
-      "meetingDate": "会议日期不能为空",
-      "meetingTime": "会议时间不能为空",
-      "location": "地点不能为空",
-      "facilitator": "主持人不能为空",
-      "meetingObjective": "会议目的不能为空"
-    }
-  },
-  "agendaEditor": {
-    "preview": "预览",
-    "reset": "重新开始",
-    "basicInfo": "基本信息",
-    "meetingTitle": "会议标题",
-    "meetingObjective": "会议目的",
-    "agendaItems": "议程项",
-    "actionItems": "行动项",
-    "download": "下载议程"
-  },
-  "previewModal": {
-    "title": "预览议程",
-    "date": "日期",
-    "time": "时间",
-    "duration": "时长",
-    "location": "地点",
-    "facilitator": "主持人",
-    "agendaOverview": "议程项概览",
-    "selectFormat": "选择导出格式",
-    "cancel": "取消",
-    "download": "下载",
-    "exporting": "正在导出..."
-  },
-  "notification": {
-    "exportSuccess": "议程已成功导出为 {{format}} 格式！"
   }
 }
