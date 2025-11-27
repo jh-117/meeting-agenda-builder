@@ -28,7 +28,10 @@ export const generateAgendaWithAI = async (formData, language = 'zh') => {
     console.log('📡 Sending payload to Edge Function:', JSON.stringify(payload, null, 2))
 
     const { data, error } = await supabase.functions.invoke('agenda-generator', {
-      body: payload
+      body: payload,
+      headers: {
+        'Content-Type': 'application/json'
+      }
     })
 
     if (error) {
