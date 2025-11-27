@@ -692,215 +692,225 @@ function AgendaEditor({
             </div>
           </div>
 
-          {/* Agenda Items */}
-          <div style={{
-            backgroundColor: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-          }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '20px'
-            }}>
-              <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
-                🗓️ {t('editor.agendaItems')} ({agendaItemsWithId.length})
-              </h2>
-              <button 
-                onClick={addAgendaItem}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: '#6366f1',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500'
-                }}
-              >
-                + {t('actions.add')}
-              </button>
-            </div>
+{/* Agenda Items with DnD */}
+<div style={{
+  backgroundColor: 'white',
+  padding: '24px',
+  borderRadius: '12px',
+  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+}}>
+  <div style={{
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '20px'
+  }}>
+    <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
+      🗓️ {t('editor.agendaItems')} ({agendaItemsWithId.length})
+    </h2>
+    <button 
+      onClick={addAgendaItem}
+      style={{
+        padding: '8px 16px',
+        backgroundColor: '#6366f1',
+        color: 'white',
+        border: 'none',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontSize: '14px',
+        fontWeight: '500'
+      }}
+    >
+      + {t('actions.add')}
+    </button>
+  </div>
 
-            <div>
-              {agendaItemsWithId.map((item, index) => (
-                <SortableAgendaItem
-                  key={item.id}
-                  item={item}
-                  index={index}
-                  onChange={handleAgendaItemChange}
-                  onRemove={removeAgendaItem}
-                  onRegenerateItem={handleRegenerateItem}
-                  currentLanguage={currentLanguage}
-                  isGeneratingItem={isGeneratingItem}
-                />
-              ))}
-            </div>
+  {/* Wrap agenda items with DnD context */}
+  <DndContext
+    sensors={sensors}
+    collisionDetection={closestCenter}
+    onDragEnd={handleDragEnd}
+  >
+    <SortableContext 
+      items={agendaItemsWithId.map(item => item.id)} 
+      strategy={verticalListSortingStrategy}
+    >
+      <div>
+        {agendaItemsWithId.map((item, index) => (
+          <SortableAgendaItem
+            key={item.id}
+            item={item}
+            index={index}
+            onChange={handleAgendaItemChange}
+            onRemove={removeAgendaItem}
+            onRegenerateItem={handleRegenerateItem}
+            currentLanguage={currentLanguage}
+            isGeneratingItem={isGeneratingItem}
+          />
+        ))}
+      </div>
+    </SortableContext>
+  </DndContext>
 
-            {agendaItemsWithId.length === 0 && (
-              <div style={{
-                textAlign: 'center',
-                padding: '40px',
-                color: '#9ca3af'
-              }}>
-                <p>{t('editor.noAgendaItems')}</p>
-                <button 
-                  onClick={addAgendaItem}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#6366f1',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    marginTop: '12px'
-                  }}
-                >
-                  + {t('actions.addFirstItem')}
-                </button>
-              </div>
-            )}
-          </div>
+  {agendaItemsWithId.length === 0 && (
+    <div style={{
+      textAlign: 'center',
+      padding: '40px',
+      color: '#9ca3af'
+    }}>
+      <p>{t('editor.noAgendaItems')}</p>
+      <button 
+        onClick={addAgendaItem}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: '#6366f1',
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          fontSize: '14px',
+          fontWeight: '500',
+          marginTop: '12px'
+        }}
+      >
+        + {t('actions.addFirstItem')}
+      </button>
+    </div>
+  )}
+</div>
 
-          {/* Action Items Section */}
-          <div style={{
-            backgroundColor: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-          }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '20px'
-            }}>
-              <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
-                ✅ {t('editor.actionItems')} ({actionItems.length})
-              </h2>
-              <button 
-                onClick={addActionItem}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: '#10b981',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500'
-                }}
-              >
-                + {t('actions.add')}
-              </button>
-            </div>
+{/* Action Items Section */}
+<div style={{
+  backgroundColor: 'white',
+  padding: '24px',
+  borderRadius: '12px',
+  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+}}>
+  <div style={{
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '20px'
+  }}>
+    <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
+      ✅ {t('editor.actionItems')} ({actionItems.length})
+    </h2>
+    <button 
+      onClick={addActionItem}
+      style={{
+        padding: '8px 16px',
+        backgroundColor: '#10b981',
+        color: 'white',
+        border: 'none',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontSize: '14px',
+        fontWeight: '500'
+      }}
+    >
+      + {t('actions.add')}
+    </button>
+  </div>
 
-            <div>
-              {actionItems.map((item, index) => (
-                <div key={item.id} style={{
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '8px',
-                  padding: '16px',
-                  marginBottom: '12px',
-                  backgroundColor: 'white'
-                }}>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    marginBottom: '12px'
-                  }}>
-                    <input
-                      placeholder={t('agenda.taskPlaceholder')}
-                      value={item.task}
-                      onChange={(e) => handleActionItemChange(index, "task", e.target.value)}
-                      style={{
-                        flex: 1,
-                        padding: '8px 12px',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '6px',
-                        fontSize: '14px'
-                      }}
-                    />
-                    <button 
-                      onClick={() => removeActionItem(index)}
-                      style={{
-                        padding: '4px 12px',
-                        border: 'none',
-                        backgroundColor: '#fee2e2',
-                        color: '#dc2626',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        fontSize: '18px'
-                      }}
-                    >
-                      ×
-                    </button>
-                  </div>
-                  
-                  <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                    <input
-                      placeholder={t('agenda.ownerPlaceholder')}
-                      value={item.owner}
-                      onChange={(e) => handleActionItemChange(index, "owner", e.target.value)}
-                      style={{
-                        flex: 1,
-                        padding: '8px 12px',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '6px',
-                        fontSize: '14px'
-                      }}
-                    />
-                    <input
-                      type="date"
-                      placeholder={t('agenda.deadlinePlaceholder')}
-                      value={item.deadline}
-                      onChange={(e) => handleActionItemChange(index, "deadline", e.target.value)}
-                      style={{
-                        padding: '8px 12px',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '6px',
-                        fontSize: '14px'
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-
-              {actionItems.length === 0 && (
-                <div style={{
-                  textAlign: 'center',
-                  padding: '40px',
-                  color: '#9ca3af'
-                }}>
-                  <p>{t('editor.noActionItems')}</p>
-                  <button 
-                    onClick={addActionItem}
-                    style={{
-                      padding: '10px 20px',
-                      backgroundColor: '#10b981',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      marginTop: '12px'
-                    }}
-                  >
-                    + {t('actions.addFirstActionItem')}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+  <div>
+    {actionItems.map((item, index) => (
+      <div key={item.id} style={{
+        border: '1px solid #e5e7eb',
+        borderRadius: '8px',
+        padding: '16px',
+        marginBottom: '12px',
+        backgroundColor: 'white'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          marginBottom: '12px'
+        }}>
+          <input
+            placeholder={t('agenda.taskPlaceholder')}
+            value={item.task}
+            onChange={(e) => handleActionItemChange(index, "task", e.target.value)}
+            style={{
+              flex: 1,
+              padding: '8px 12px',
+              border: '1px solid #e5e7eb',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
+          <button 
+            onClick={() => removeActionItem(index)}
+            style={{
+              padding: '4px 12px',
+              border: 'none',
+              backgroundColor: '#fee2e2',
+              color: '#dc2626',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '18px'
+            }}
+          >
+            ×
+          </button>
         </div>
+        
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+          <input
+            placeholder={t('agenda.ownerPlaceholder')}
+            value={item.owner}
+            onChange={(e) => handleActionItemChange(index, "owner", e.target.value)}
+            style={{
+              flex: 1,
+              padding: '8px 12px',
+              border: '1px solid #e5e7eb',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
+          <input
+            type="date"
+            placeholder={t('agenda.deadlinePlaceholder')}
+            value={item.deadline}
+            onChange={(e) => handleActionItemChange(index, "deadline", e.target.value)}
+            style={{
+              padding: '8px 12px',
+              border: '1px solid #e5e7eb',
+              borderRadius: '6px',
+              fontSize: '14px'
+            }}
+          />
+        </div>
+      </div>
+    ))}
 
+    {actionItems.length === 0 && (
+      <div style={{
+        textAlign: 'center',
+        padding: '40px',
+        color: '#9ca3af'
+      }}>
+        <p>{t('editor.noActionItems')}</p>
+        <button 
+          onClick={addActionItem}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#10b981',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '500',
+            marginTop: '12px'
+          }}
+        >
+          + {t('actions.addFirstActionItem')}
+        </button>
+      </div>
+    )}
+  </div>
+</div>
         {/* Right Panel - Preview */}
         <div style={{
           backgroundColor: 'white',
