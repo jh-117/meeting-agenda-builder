@@ -41,42 +41,54 @@
       "meetingObjective": "Objektif mesyuarat diperlukan"
     }
   },
-  "agendaEditor": {
-    "preview": "Pratonton",
-    "reset": "Set Semula",
+  "agenda": {
+    "topicPlaceholder": "Tajuk Topik",
+    "ownerPlaceholder": "Pemilik",
+    "durationPlaceholder": "Tempoh",
+    "minutes": "minit",
+    "minutesShort": "min",
+    "descriptionPlaceholder": "Penerangan...",
+    "expectedOutputPlaceholder": "Output dijangka..."
+  },
+  "editor": {
     "basicInfo": "Maklumat Asas",
     "meetingTitle": "Tajuk Mesyuarat",
     "meetingObjective": "Objektif Mesyuarat",
+    "date": "Tarikh",
+    "time": "Masa",
+    "duration": "Tempoh (minit)",
+    "location": "Lokasi",
+    "facilitator": "Fasilitator",
     "agendaItems": "Item Agenda",
-    "actionItems": "Item Tindakan",
-    "download": "Muat Turun Agenda",
-    "add": "Tambah",
-    "topic": "Topik",
-    "speaker": "Penceramah",
-    "timeAllocation": "Peruntukan Masa",
-    "description": "Penerangan",
-    "expectedOutput": "Output Dijangka",
-    "task": "Tugas",
-    "owner": "Pemilik",
-    "deadline": "Tarikh Akhir"
+    "noAgendaItems": "Tiada item agenda lagi",
+    "livePreview": "Pratonton Langsung"
   },
-  "previewModal": {
-    "title": "Pratonton Agenda",
+  "preview": {
     "date": "Tarikh",
     "time": "Masa",
     "duration": "Tempoh",
     "location": "Lokasi",
     "facilitator": "Fasilitator",
-    "agendaOverview": "Gambaran Keseluruhan Agenda",
-    "selectFormat": "Pilih Format Eksport",
-    "cancel": "Batal",
-    "download": "Muat Turun",
-    "exporting": "Mengeksport..."
+    "noteTaker": "Pencatat Minit",
+    "meetingObjective": "Objektif Mesyuarat",
+    "noObjective": "Tiada objektif dinyatakan",
+    "agenda": "Agenda",
+    "untitledTopic": "Topik Tanpa Tajuk",
+    "expected": "Dijangka",
+    "noAgendaItems": "Tiada item agenda ditambah lagi"
   },
-  "notification": {
-    "exportSuccess": "Agenda berjaya dieksport sebagai {{format}}!"
+  "actions": {
+    "add": "Tambah",
+    "addFirstItem": "Tambah Item Pertama",
+    "aiRegenerate": "AI Jana Semula",
+    "regenerating": "Menjana Semula...",
+    "backToHome": "Kembali ke Laman Utama",
+    "download": "Muat Turun"
   },
   "export": {
+    "exportAs": "Eksport sebagai",
+    "exporting": "Mengeksport...",
+    "failed": "Eksport gagal: {{error}}",
     "basicInfo": "Maklumat Asas",
     "date": "Tarikh",
     "time": "Masa",
@@ -95,5 +107,11 @@
     "owner": "Pemilik",
     "deadline": "Tarikh Akhir",
     "defaultTitle": "Agenda Mesyuarat"
+  },
+  "common": {
+    "notSet": "Tidak ditetapkan"
+  },
+  "notification": {
+    "exportSuccess": "Agenda berjaya dieksport sebagai {{format}}!"
   }
 }
