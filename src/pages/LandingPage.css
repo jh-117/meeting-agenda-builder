@@ -678,11 +678,7 @@
   }
 }
 
-@media (max-width: 640px) {
-  .hero-badge {
-    font-size: 12px;
-    padding: 8px 16px;
-  }
+@media (max-width: 640px) 
 
   .hero-title {
     font-size: clamp(28px, 7vw, 40px);
