@@ -182,6 +182,8 @@ import { useTranslation } from 'react-i18next';
     </div>
   );
 };
+
+
 function AgendaEditor({ 
   agendaData = {
     meetingTitle: 'Q4 Project Planning Meeting',
