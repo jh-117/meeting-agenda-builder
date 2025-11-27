@@ -2,23 +2,30 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, FileText, File } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { generatePDF, generateDOCX, generateTXT } from '../utils/exportUtils';
+import { generatePDF, generateDOCX, generateTXT } from '../services/exportService'; // 更新导入路径
 import './PreviewModal.css';
 
 function PreviewModal({ agendaData, onDownload, onClose }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [selectedFormat, setSelectedFormat] = useState('pdf');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleExport = async () => {
     setIsLoading(true);
     try {
-      if (selectedFormat === 'pdf') {
-        generatePDF(agendaData);
-      } else if (selectedFormat === 'docx') {
-        await generateDOCX(agendaData);
-      } else if (selectedFormat === 'txt') {
-        generateTXT(agendaData);
+      // 使用新的导出服务，传递语言参数
+      switch (selectedFormat) {
+        case 'pdf':
+          generatePDF(agendaData, i18n.language);
+          break;
+        case 'docx':
+          await generateDOCX(agendaData, i18n.language);
+          break;
+        case 'txt':
+          generateTXT(agendaData, i18n.language);
+          break;
+        default:
+          generatePDF(agendaData, i18n.language);
       }
       onDownload(selectedFormat.toUpperCase());
     } catch (error) {
@@ -28,11 +35,17 @@ function PreviewModal({ agendaData, onDownload, onClose }) {
     }
   };
 
+  // 使用正确的翻译键
   const exportFormats = [
-    { id: 'pdf', label: t('PDF'), icon: <FileText size={20} /> },
-    { id: 'docx', label: t('Word (DOCX)'), icon: <File size={20} /> },
-    { id: 'txt', label: t('TXT'), icon: <FileText size={20} /> },
+    { id: 'pdf', label: 'PDF', icon: <FileText size={20} /> },
+    { id: 'docx', label: t('previewModal.word'), icon: <File size={20} /> },
+    { id: 'txt', label: 'TXT', icon: <FileText size={20} /> },
   ];
+
+  // 格式化日期显示
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString(i18n.language === 'zh' ? 'zh-CN' : 'en-US');
+  };
 
   return (
     <AnimatePresence>
@@ -51,39 +64,85 @@ function PreviewModal({ agendaData, onDownload, onClose }) {
           transition={{ duration: 0.3 }}
           onClick={(e) => e.stopPropagation()}
         >
-          <button className="modal-close" onClick={onClose}>
-            <X size={24} />
-          </button>
+          {/* Header */}
+          <div className="modal-header">
+            <h2>{t('previewModal.title')}</h2>
+            <button className="modal-close" onClick={onClose}>
+              <X size={24} />
+            </button>
+          </div>
 
           <div className="modal-content">
-            <h2>{t('Preview Agenda')}</h2>
-
+            {/* 基本信息预览 */}
             <div className="preview-section">
               <h3>{agendaData.meetingTitle}</h3>
               <div className="preview-info">
-                <p><strong>{t('Date')}:</strong> {agendaData.meetingDate}</p>
-                <p><strong>{t('Time')}:</strong> {agendaData.meetingTime}</p>
-                <p><strong>{t('Duration')}:</strong> {agendaData.duration} {t('minutes')}</p>
-                <p><strong>{t('Location')}:</strong> {agendaData.location}</p>
-                <p><strong>{t('Facilitator')}:</strong> {agendaData.facilitator}</p>
+                <p><strong>{t('previewModal.date')}:</strong> {formatDate(agendaData.meetingDate)}</p>
+                <p><strong>{t('previewModal.time')}:</strong> {agendaData.meetingTime}</p>
+                <p><strong>{t('previewModal.duration')}:</strong> {agendaData.duration} {t('previewModal.minutes')}</p>
+                <p><strong>{t('previewModal.location')}:</strong> {agendaData.location}</p>
+                <p><strong>{t('previewModal.facilitator')}:</strong> {agendaData.facilitator}</p>
+                {agendaData.noteTaker && (
+                  <p><strong>{t('previewModal.noteTaker')}:</strong> {agendaData.noteTaker}</p>
+                )}
               </div>
             </div>
 
-            <div className="preview-agenda">
-              <h4>{t('Agenda Items')}</h4>
-              {agendaData.agendaItems && agendaData.agendaItems.length > 0 && (
-                <ul>
+            {/* 会议目的 */}
+            {agendaData.meetingObjective && (
+              <div className="preview-section">
+                <h4>{t('previewModal.meetingObjective')}</h4>
+                <p>{agendaData.meetingObjective}</p>
+              </div>
+            )}
+
+            {/* 议程项 */}
+            <div className="preview-section">
+              <h4>{t('previewModal.agendaItems')}</h4>
+              {agendaData.agendaItems && agendaData.agendaItems.length > 0 ? (
+                <div className="agenda-list">
                   {agendaData.agendaItems.map((item, index) => (
-                    <li key={index}>
-                      {index + 1}. {item.topic} ({item.timeAllocation} {t('minutes')})
-                    </li>
+                    <div key={index} className="agenda-item">
+                      <div className="agenda-item-header">
+                        <span className="item-number">{index + 1}.</span>
+                        <span className="item-topic">{item.topic}</span>
+                        <span className="item-duration">({item.timeAllocation} {t('previewModal.minutes')})</span>
+                      </div>
+                      {item.owner && (
+                        <p className="item-owner">{t('previewModal.owner')}: {item.owner}</p>
+                      )}
+                      {item.description && (
+                        <p className="item-description">{item.description}</p>
+                      )}
+                    </div>
                   ))}
-                </ul>
+                </div>
+              ) : (
+                <p className="no-items">{t('previewModal.noAgendaItems')}</p>
               )}
             </div>
 
+            {/* 行动项 */}
+            {agendaData.actionItems && agendaData.actionItems.length > 0 && (
+              <div className="preview-section">
+                <h4>{t('previewModal.actionItems')}</h4>
+                <div className="action-list">
+                  {agendaData.actionItems.map((item, index) => (
+                    <div key={index} className="action-item">
+                      <span className="action-task">{index + 1}. {item.task}</span>
+                      <div className="action-details">
+                        {item.owner && <span>{t('previewModal.owner')}: {item.owner}</span>}
+                        {item.deadline && <span>{t('previewModal.deadline')}: {formatDate(item.deadline)}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 导出格式选择 */}
             <div className="format-selector">
-              <h4>{t('Select Export Format')}</h4>
+              <h4>{t('previewModal.selectFormat')}</h4>
               <div className="format-options">
                 {exportFormats.map((format) => (
                   <motion.button
@@ -100,6 +159,7 @@ function PreviewModal({ agendaData, onDownload, onClose }) {
               </div>
             </div>
 
+            {/* 操作按钮 */}
             <div className="modal-actions">
               <motion.button
                 className="btn-cancel"
@@ -107,7 +167,7 @@ function PreviewModal({ agendaData, onDownload, onClose }) {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                {t('Cancel')}
+                {t('previewModal.cancel')}
               </motion.button>
               <motion.button
                 className="btn-download"
@@ -117,7 +177,7 @@ function PreviewModal({ agendaData, onDownload, onClose }) {
                 whileTap={{ scale: 0.98 }}
               >
                 <Download size={18} />
-                {isLoading ? t('Exporting...') : t('Download')}
+                {isLoading ? t('previewModal.exporting') : t('previewModal.download')}
               </motion.button>
             </div>
           </div>
