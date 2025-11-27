@@ -28,7 +28,7 @@
     "meetingTime": "Masa Mesyuarat",
     "duration": "Tempoh (minit)",
     "location": "Lokasi/Pautan Mesyuarat",
-     "meetingType": "Jenis Mesyuarat",
+    "meetingType": "Jenis Mesyuarat",
     "facilitator": "Pengerusi",
     "noteTaker": "Pencatat Minit",
     "attendees": "Peserta",
