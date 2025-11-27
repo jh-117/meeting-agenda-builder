@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Add this import
 import './App.css';
 import { useTheme } from './hooks/useTheme';
 import { useNotification } from './hooks/useNotification';
 import LandingPage from './pages/LandingPage';
 import FormStep1 from './pages/FormStep1';
 import AgendaEditor from './pages/AgendaEditor';
-import AIPreviewPage from './pages/AIPreviewPage'; // Add this import
+import AIPreviewPage from './pages/AIPreviewPage';
 import NotificationToast from './components/NotificationToast';
 import ThemeToggle from './components/ThemeToggle';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -39,9 +38,9 @@ function App() {
       };
 
       setAgendaData(completeAgendaData);
-      setCurrentStep('editor');
+      setCurrentStep('ai-preview'); // Changed to navigate to AI preview
       
-      showNotification('✨ 议程已生成！现在可以编辑了', 'success');
+      showNotification('✨ AI议程已生成！请查看预览', 'success');
     } catch (error) {
       console.error('Error generating agenda:', error);
       showNotification(`❌ 生成议程失败: ${error.message}`, 'error');
@@ -94,124 +93,45 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className={`app ${theme}`}>
-        <ThemeToggle theme={theme} onToggle={toggleTheme} />
-        
-        <Routes>
-          {/* Route for AIPreviewPage */}
-          <Route 
-            path="/ai-preview" 
-            element={
-              <AIPreviewPage 
-                agendaData={agendaData}
-                onEdit={(data) => {
-                  setAgendaData(data);
-                  setCurrentStep('editor');
-                }}
-                onBack={() => setCurrentStep('editor')}
-              />
-            } 
-          />
-          
-          {/* Your existing step-based routes */}
-          <Route 
-            path="/" 
-            element={
-              <>
-                {currentStep === 'landing' && (
-                  <LandingPage onStartClick={handleStartClick} />
-                )}
-                
-                {currentStep === 'step1' && (
-                  <FormStep1 onSubmit={handleStep1Submit} />
-                )}
-
-                // In App.jsx - add this to your step logic
-{currentStep === 'ai-preview' && agendaData && (
-  <AIPreviewPage 
-    agendaData={agendaData}
-    onEdit={() => setCurrentStep('editor')}
-    onBack={() => setCurrentStep('editor')}
-    onDownloadComplete={() => {
-      showNotification('议程下载完成！', 'success');
-    }}
-  />
-)}
-                
-                {currentStep === 'editor' && agendaData && (
-                  <AgendaEditor
-                    agendaData={agendaData}
-                    onReset={handleReset}
-                    onDataChange={setAgendaData}
-                    onRegenerate={handleRegenerateAgenda}
-                    isRegenerating={isGenerating}
-                  />
-                )}
-                
-                {isGenerating && <LoadingSpinner />}
-              </>
-            } 
-          />
-        </Routes>
-
-        <NotificationToast
-          notification={notification}
-          onClose={hideNotification}
-        />
-      </div>
-    </Router>
-  );
-}
-
-export default App;
-  
-  return (
     <div className={`app ${theme}`}>
-      <div className="app-background"></div>
       <ThemeToggle theme={theme} onToggle={toggleTheme} />
       
-      {isGenerating && <LoadingSpinner />}
+      {/* Step-based navigation */}
+      {currentStep === 'landing' && (
+        <LandingPage onStartClick={handleStartClick} />
+      )}
       
-      <div className="app-content">
-        {currentStep === 'landing' && (
-          <LandingPage onStart={handleStartClick} />
-        )}
-        
-        {currentStep === 'step1' && (
-          <FormStep1 
-            onSubmit={handleStep1Submit}
-            isLoading={isGenerating}
-          />
-        )}
-        
-        {currentStep === 'editor' && agendaData && (
-          <AgendaEditor
-            agendaData={agendaData}
-            onPreview={handlePreviewClick}
-            onReset={handleReset}
-            onDataChange={setAgendaData}
-            onRegenerate={handleRegenerateAgenda}
-            isRegenerating={isGenerating}
-          />
-        )}
-      </div>
-
-      {showPreview && agendaData && (
-        <PreviewModal
+      {currentStep === 'step1' && (
+        <FormStep1 onSubmit={handleStep1Submit} />
+      )}
+      
+      {currentStep === 'ai-preview' && agendaData && (
+        <AIPreviewPage 
           agendaData={agendaData}
-          onDownload={handleDownload}
-          onClose={handleBackToEditor}
+          onEdit={() => setCurrentStep('editor')}
+          onBack={() => setCurrentStep('editor')}
+          onDownloadComplete={() => {
+            showNotification('议程下载完成！', 'success');
+          }}
         />
       )}
+      
+      {currentStep === 'editor' && agendaData && (
+        <AgendaEditor
+          agendaData={agendaData}
+          onReset={handleReset}
+          onDataChange={setAgendaData}
+          onRegenerate={handleRegenerateAgenda}
+          isRegenerating={isGenerating}
+        />
+      )}
+      
+      {isGenerating && <LoadingSpinner />}
 
-      {notification && (
-        <NotificationToast
-          message={notification.message}
-          type={notification.type}
-          onClose={hideNotification}
-        />
-      )}
+      <NotificationToast
+        notification={notification}
+        onClose={hideNotification}
+      />
     </div>
   );
 }
