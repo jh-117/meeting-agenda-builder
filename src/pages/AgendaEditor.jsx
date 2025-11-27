@@ -29,25 +29,45 @@ import { CSS } from '@dnd-kit/utilities';
 import { generatePDF, generateDOCX, generateTXT } from '../services/exportService';
 import { useTranslation } from 'react-i18next';
 
-// Sortable Agenda Item Component
-const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
-  const { t } = useTranslation();
+ // Use the useSortable hook to make this component sortable
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    border: '1px solid #e5e7eb',
+    borderRadius: '8px',
+    padding: '16px',
+    marginBottom: '12px',
+    backgroundColor: 'white',
+    opacity: isDragging ? 0.5 : 1,
+  };
   
   return (
-    <div style={{
-      border: '1px solid #e5e7eb',
-      borderRadius: '8px',
-      padding: '16px',
-      marginBottom: '12px',
-      backgroundColor: 'white'
-    }}>
+    <div ref={setNodeRef} style={style}>
       <div style={{
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
         marginBottom: '12px'
       }}>
-        <div style={{ cursor: 'grab', color: '#9ca3af' }}>
+        {/* Drag handle */}
+        <div 
+          {...attributes}
+          {...listeners}
+          style={{ 
+            cursor: isDragging ? 'grabbing' : 'grab', 
+            color: '#9ca3af',
+            touchAction: 'none' // Important for mobile drag
+          }}
+        >
           <GripVertical size={16} />
         </div>
         <input
@@ -162,7 +182,6 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
     </div>
   );
 };
-
 function AgendaEditor({ 
   agendaData = {
     meetingTitle: 'Q4 Project Planning Meeting',
