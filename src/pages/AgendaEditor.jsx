@@ -1147,6 +1147,8 @@ function AgendaEditor({
       </div>
     </div>
   );
-}
+};
+      
+      
 
 export default AgendaEditor;
