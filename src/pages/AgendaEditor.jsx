@@ -1147,7 +1147,7 @@ function AgendaEditor({
       </div>
     </div>
   );
-};
+}
       
       
 
