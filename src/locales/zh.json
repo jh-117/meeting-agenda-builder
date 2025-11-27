@@ -48,7 +48,9 @@
     "minutes": "分钟",
     "minutesShort": "分钟",
     "descriptionPlaceholder": "描述...",
-    "expectedOutputPlaceholder": "预期产出..."
+    "expectedOutputPlaceholder": "预期产出...",
+     "taskPlaceholder": "任务",
+    "deadlinePlaceholder": "截止日期"
   },
   "editor": {
     "basicInfo": "基本信息",
@@ -61,7 +63,9 @@
     "facilitator": "主持人",
     "agendaItems": "议程项目",
     "noAgendaItems": "暂无议程项目",
-    "livePreview": "实时预览"
+    "livePreview": "实时预览",
+    "actionItems": "行动项目",
+    "noActionItems": "暂无行动项目"
   },
   "preview": {
     "date": "日期",
