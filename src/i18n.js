@@ -2,11 +2,8 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from './locales/en.json';
 import zh from './locales/zh.json';
-
-const getBrowserLanguage = () => {
-  const browserLang = navigator.language || navigator.userLanguage;
-  return browserLang.startsWith('zh') ? 'zh' : 'en';
-};
+import ms from './locales/ms.json';
+import ta from './locales/ta.json';
 
 i18n
   .use(initReactI18next)
@@ -14,10 +11,14 @@ i18n
     resources: {
       en: { translation: en },
       zh: { translation: zh },
+      ms: { translation: ms },
+      ta: { translation: ta }
     },
-    lng: localStorage.getItem('language') || getBrowserLanguage(),
+    lng: 'en', // 默认语言
     fallbackLng: 'en',
-    interpolation: { escapeValue: false },
+    interpolation: { 
+      escapeValue: false 
+    }
   });
 
 export default i18n;
