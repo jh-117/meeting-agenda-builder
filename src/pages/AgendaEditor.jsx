@@ -205,6 +205,28 @@ function AgendaEditor({
     id: item.id || `agenda-${index}-${Date.now()}`
   }));
 
+
+   // DnD Sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      const oldIndex = agendaItemsWithId.findIndex((item) => item.id === active.id);
+      const newIndex = agendaItemsWithId.findIndex((item) => item.id === over.id);
+
+      const newItems = arrayMove(agendaItemsWithId, oldIndex, newIndex);
+      handleChange("agendaItems", newItems);
+    }
+  };
+
+
   const handleChangeLanguage = (lang) => {
     i18n.changeLanguage(lang);
     setShowLanguageDropdown(false);
