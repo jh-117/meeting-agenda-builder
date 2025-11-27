@@ -31,32 +31,15 @@
     "facilitator": "主持人",
     "noteTaker": "记录人",
     "attendees": "参与者",
-    "meetingObjective": "会议目的",  
+    "meetingObjective": "会议目的",
     "errors": {
       "meetingTitle": "会议标题不能为空",
       "meetingDate": "会议日期不能为空",
       "meetingTime": "会议时间不能为空",
       "location": "地点不能为空",
       "facilitator": "主持人不能为空",
-      "meetingObjective": "会议目的不能为空" 
+      "meetingObjective": "会议目的不能为空"
     }
-  },
-  "formStep2": {
-    "header": "补充详细信息",
-    "subHeader": "第 2 步 / 2 - 议程项和行动项",
-    "meetingObjective": "会议目的",
-    "agendaItems": "议程项",
-    "discussionItems": "讨论项",
-    "actionItems": "行动项",
-    "notes": "注释和附加信息",
-    "addAgenda": "添加议程项",
-    "addAction": "添加行动项",
-    "continue": "继续到编辑",
-    "attachments": "附件",
-    "clickToUpload": "点击上传文件",
-    "uploadHint": "支持 PDF, Word, Excel, PowerPoint, 图片等格式",
-    "uploadedFiles": "已上传文件",
-    "back": "返回"
   },
   "agendaEditor": {
     "preview": "预览",
