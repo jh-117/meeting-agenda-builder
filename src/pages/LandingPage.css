@@ -279,7 +279,7 @@
   animation: float 3s ease-in-out infinite;
   transition: all var(--transition-normal);
   text-align: center;
-  min-width: 140px;
+  
 }
 
 .dark .floating-card {
