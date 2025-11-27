@@ -214,30 +214,27 @@ function AgendaEditor({ agendaData, onPreview, onReset, onDataChange }) {
   };
 
   // AI 重新生成整个议程
-  const handleRegenerateAll = async () => {
-    setIsGenerating(true);
-    setError(null);
-    try {
-      const agendaDataForAI = {
-        agendaItems: agendaItemsWithId,
-        meetingTitle: agendaData.meetingTitle,
-        duration: agendaData.duration,
-        meetingObjective: agendaData.meetingObjective
-      };
-      
-      const result = await regenerateAgendaWithAI(agendaDataForAI, currentLanguage);
-      
-      // 更新议程项和行动项
-      handleChange("agendaItems", result.agendaItems || []);
-      handleChange("actionItems", result.actionItems || []);
-      
-    } catch (err) {
-      console.error('重新生成失败:', err);
-      setError(err.message || (currentLanguage === 'zh' ? '重新生成失败，请重试' : 'Regeneration failed, please try again'));
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  // 在 AgendaEditor 组件中，修改 handleRegenerateAll 函数
+const handleRegenerateAll = async () => {
+  setLoading(true);
+  setError(null);
+  try {
+    const agendaDataForAI = {
+      agendaItems: agendaItemsWithId,
+      meetingTitle: agendaData.meetingTitle,
+      duration: agendaData.duration,
+      meetingObjective: agendaData.meetingObjective
+    };
+    
+    // ✅ 使用从 props 传递的 onRegenerate，它已经包含了语言参数
+    await onRegenerate(agendaDataForAI);
+    
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // AI 重新生成单个议程项
   const handleRegenerateItem = async (itemId) => {
