@@ -49,7 +49,16 @@
     "meetingObjective": "会议目标",
     "agendaItems": "议程项目",
     "actionItems": "行动项目",
-    "download": "下载议程"
+    "download": "下载议程",
+    "add": "添加",
+    "topic": "主题",
+    "speaker": "发言人",
+    "timeAllocation": "时间分配",
+    "description": "描述",
+    "expectedOutput": "预期输出",
+    "task": "任务",
+    "owner": "负责人",
+    "deadline": "截止日期"
   },
   "previewModal": {
     "title": "议程预览",
