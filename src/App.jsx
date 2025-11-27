@@ -11,6 +11,7 @@ import NotificationToast from './components/NotificationToast'; // 修复这里
 import ThemeToggle from './components/ThemeToggle';
 import LoadingSpinner from './components/LoadingSpinner';
 import { generateAgendaWithAI, regenerateAgendaWithAI } from './services/agendaAIService'; // 修复这里
+import AIPreviewPage from './pages/AIPreviewPage';
 
 function App() {
   const [currentStep, setCurrentStep] = useState('landing');
