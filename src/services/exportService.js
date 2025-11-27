@@ -2,7 +2,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Packer, Document, Paragraph, HeadingLevel } from 'docx';
 import { saveAs } from 'file-saver';
-import i18n from './i18n';
+import i18n from '../i18n';
 
 // PDF export function
 export const generatePDF = async (agendaData, language = 'en') => {
