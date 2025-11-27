@@ -1,23 +1,22 @@
 {
   "landing": {
-   
     "heroTitle": "Buat Agenda Mesyuarat Profesional",
-    "heroDescription": "Gunakan alat AI pintar untuk mencipta agenda mesyuarat yang teratur dalam masa beberapa minit. Menyokong suntingan masa nyata, eksport pelbagai format untuk mesyuarat yang lebih cekap dan profesional.",
+    "heroDescription": "Gunakan alat AI untuk menjana agenda mesyuarat yang teratur dalam beberapa minit. Menyunting secara langsung dan eksport pelbagai format untuk mesyuarat yang cekap dan profesional.",
     "ctaButton": "Mula Mencipta",
     "featuresTitle": "Ciri Teras",
-    "feature1Title": "Penjanaan AI Pintar",
-    "feature1Desc": "Hasilkan agenda mesyuarat serta-merta dengan teknologi AI.",
+    "feature1Title": "Dikuasai AI",
+    "feature1Desc": "Jana agenda mesyuarat serta-merta dengan bantuan AI.",
     "feature2Title": "Eksport Pelbagai Format",
-    "feature2Desc": "Menyokong muat turun dalam format PDF, Word atau TXT.",
-    "feature3Title": "Suntingan Masa Nyata",
-    "feature3Desc": "Sunting dan laraskan kandungan agenda secara masa nyata sebelum eksport.",
-    "processTitle": "Proses Penggunaan",
+    "feature2Desc": "Muat turun agenda anda dalam format PDF, Word, atau TXT.",
+    "feature3Title": "Suntingan Langsung",
+    "feature3Desc": "Sunting dan laraskan agenda anda secara masa nyata sebelum eksport.",
+    "processTitle": "Cara Ia Berfungsi",
     "step1": "Masukkan Maklumat",
     "step2": "Penjanaan AI",
     "step3": "Sunting & Laraskan",
-    "step4": "Muat Turun & Eksport",
-    "readyTitle": "Bersedia?",
-    "readyDesc": "Mula buat agenda mesyuarat berkuasa AI pertama anda sekarang",
+    "step4": "Eksport",
+    "readyTitle": "Sedia untuk Bermula?",
+    "readyDesc": "Buat agenda mesyuarat berkuasa AI pertama anda sekarang",
     "readyButton": "Mula Sekarang"
   },
   "formStep1": {
@@ -27,24 +26,24 @@
     "meetingDate": "Tarikh Mesyuarat",
     "meetingTime": "Masa Mesyuarat",
     "duration": "Tempoh (minit)",
-    "location": "Lokasi/Pautan Mesyuarat",
+    "location": "Lokasi / Pautan Mesyuarat",
     "meetingType": "Jenis Mesyuarat",
-    "facilitator": "Pengerusi",
+    "facilitator": "Fasilitator",
     "noteTaker": "Pencatat Minit",
     "attendees": "Peserta",
     "meetingObjective": "Objektif Mesyuarat",
     "errors": {
-      "meetingTitle": "Tajuk mesyuarat tidak boleh kosong",
-      "meetingDate": "Tarikh mesyuarat tidak boleh kosong",
-      "meetingTime": "Masa mesyuarat tidak boleh kosong",
-      "location": "Lokasi tidak boleh kosong",
-      "facilitator": "Pengerusi tidak boleh kosong",
-      "meetingObjective": "Objektif mesyuarat tidak boleh kosong"
+      "meetingTitle": "Tajuk mesyuarat diperlukan",
+      "meetingDate": "Tarikh mesyuarat diperlukan",
+      "meetingTime": "Masa mesyuarat diperlukan",
+      "location": "Lokasi diperlukan",
+      "facilitator": "Fasilitator diperlukan",
+      "meetingObjective": "Objektif mesyuarat diperlukan"
     }
   },
   "agendaEditor": {
     "preview": "Pratonton",
-    "reset": "Mulakan Semula",
+    "reset": "Set Semula",
     "basicInfo": "Maklumat Asas",
     "meetingTitle": "Tajuk Mesyuarat",
     "meetingObjective": "Objektif Mesyuarat",
@@ -58,14 +57,34 @@
     "time": "Masa",
     "duration": "Tempoh",
     "location": "Lokasi",
-    "facilitator": "Pengerusi",
+    "facilitator": "Fasilitator",
     "agendaOverview": "Gambaran Keseluruhan Agenda",
     "selectFormat": "Pilih Format Eksport",
     "cancel": "Batal",
     "download": "Muat Turun",
-    "exporting": "Sedang mengeksport..."
+    "exporting": "Mengeksport..."
   },
   "notification": {
-    "exportSuccess": "Agenda berjaya dieksport dalam format {{format}}!"
+    "exportSuccess": "Agenda berjaya dieksport sebagai {{format}}!"
+  },
+  "export": {
+    "basicInfo": "Maklumat Asas",
+    "date": "Tarikh",
+    "time": "Masa",
+    "duration": "Tempoh",
+    "minutes": "minit",
+    "location": "Lokasi",
+    "facilitator": "Fasilitator",
+    "noteTaker": "Pencatat Minit",
+    "attendees": "Peserta",
+    "meetingObjective": "Objektif Mesyuarat",
+    "agendaItems": "Item Agenda",
+    "speaker": "Penceramah",
+    "description": "Penerangan",
+    "expectedOutput": "Output Dijangka",
+    "actionItems": "Item Tindakan",
+    "owner": "Pemilik",
+    "deadline": "Tarikh Akhir",
+    "defaultTitle": "Agenda Mesyuarat"
   }
 }
