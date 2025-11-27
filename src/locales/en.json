@@ -49,7 +49,16 @@
     "meetingObjective": "Meeting Objective",
     "agendaItems": "Agenda Items",
     "actionItems": "Action Items",
-    "download": "Download Agenda"
+    "download": "Download Agenda",
+    "add": "Add",
+    "topic": "Topic",
+    "speaker": "Speaker",
+    "timeAllocation": "Time Allocation",
+    "description": "Description",
+    "expectedOutput": "Expected Output",
+    "task": "Task",
+    "owner": "Owner",
+    "deadline": "Deadline"
   },
   "previewModal": {
     "title": "Agenda Preview",
