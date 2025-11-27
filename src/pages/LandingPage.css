@@ -297,20 +297,20 @@
 }
 
 .card-1 {
-  top: 50px;
-  left: 50px;
+  top: 20%;
+  left: 10%;
   animation-delay: 0s;
 }
 
 .card-2 {
-  top: 200px;
-  left: 200px;
-  animation-delay: 0.5
+  top: 55%;
+  left: 35%;
+  animation-delay: 0.5s;
 }
 
 .card-3 {
-  bottom: 80px;
-  right: 60px;
+  bottom: 15%;
+  right: 8%;
   animation-delay: 1s;
 }
 
