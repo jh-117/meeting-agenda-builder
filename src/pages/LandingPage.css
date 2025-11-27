@@ -287,19 +287,19 @@
 }
 
 .card-1 {
-  top: 8%;
+  top: 12%;
   left: 3%;
   animation-delay: 0s;
 }
 
 .card-2 {
-  top: 50%;
+  top: 48%;
   left: 45%;
   animation-delay: 0.5s;
 }
 
 .card-3 {
-  bottom: 8%;
+  bottom: 12%;
   right: 3%;
   animation-delay: 1s;
 }
