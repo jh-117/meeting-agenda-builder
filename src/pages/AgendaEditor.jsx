@@ -9,7 +9,7 @@ import {
   FileCode,
   Home
 } from "lucide-react";
-import { generatePDF, generateDOCX, generateTXT } from './services/exportService';
+import { generatePDF, generateDOCX, generateTXT } from '../services/exportService';
 
 // Sortable Agenda Item Component
 const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
