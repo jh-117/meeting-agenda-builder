@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'; // 修复这里
 import './App.css';
 import { useTheme } from './hooks/useTheme';
 import { useNotification } from './hooks/useNotification';
 import LandingPage from './pages/LandingPage';
-import FormStep1 from './pages/FormStep1';
+import FormStep1 from './pages/FormStep1'; // 修复这里
 import AgendaEditor from './pages/AgendaEditor';
 import PreviewModal from './components/PreviewModal';
-import NotificationToast from './components/NotificationToast';
+import NotificationToast from './components/NotificationToast'; // 修复这里
 import ThemeToggle from './components/ThemeToggle';
 import LoadingSpinner from './components/LoadingSpinner';
-import { generateAgendaWithAI, regenerateAgendaWithAI } from './services/agendaAIService';
+import { generateAgendaWithAI, regenerateAgendaWithAI } from './services/agendaAIService'; // 修复这里
 
 function App() {
   const [currentStep, setCurrentStep] = useState('landing');
   const [agendaData, setAgendaData] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false); // 修复这里
   const { theme, toggleTheme } = useTheme();
   const { notification, showNotification, hideNotification } = useNotification();
-  const { i18n } = useTranslation();
+  const { i18n } = useTranslation(); // 修复这里
 
   const handleStartClick = () => {
     setCurrentStep('step1');
@@ -70,7 +70,6 @@ function App() {
     setShowPreview(false);
   };
 
-  // 🔄 重命名这个函数，避免与 AgendaEditor 中的冲突
   const handleRegenerateAgenda = async () => {
     setIsGenerating(true);
     try {
@@ -118,7 +117,7 @@ function App() {
             onPreview={handlePreviewClick}
             onReset={handleReset}
             onDataChange={setAgendaData}
-            onRegenerate={handleRegenerateAgenda} // 🔄 使用新的函数名
+            onRegenerate={handleRegenerateAgenda}
             isRegenerating={isGenerating}
           />
         )}
