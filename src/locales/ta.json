@@ -1,0 +1,70 @@
+{
+  "landing": {
+    "heroBadge": "AI இயக்கப்பட்ட கூட்ட agenda ஜெனரேட்டர்",
+    "heroTitle": "தொழில்முறை கூட்ட agendaகளை உருவாக்கவும்",
+    "heroDescription": "AI கருவிகளைப் பயன்படுத்தி நிமிடங்களில் நன்கு ஒழுங்கமைக்கப்பட்ட கூட்ட agendaகளை உருவாக்கவும். திறமையான மற்றும் தொழில்முறை கூட்டங்களுக்கு நேரடி திருத்தம் மற்றும் பல வடிவம் ஏற்றுமதியை ஆதரிக்கிறது.",
+    "ctaButton": "உருவாக்கத் தொடங்கு",
+    "featuresTitle": "முக்கிய அம்சங்கள்",
+    "feature1Title": "AI இயக்கப்பட்ட",
+    "feature1Desc": "AI உதவியுடன் உடனடியாக கூட்ட agendaகளை உருவாக்கவும்.",
+    "feature2Title": "பல வடிவம் ஏற்றுமதி",
+    "feature2Desc": "PDF, Word, அல்லது TXT வடிவங்களில் உங்கள் agendaவைப் பதிவிறக்கவும்.",
+    "feature3Title": "நேரடி திருத்தம்",
+    "feature3Desc": "ஏற்றுமதிக்கு முன் உங்கள் agendaவை நேரத்திற்கு நேரம் திருத்தி சரிசெய்யவும்.",
+    "processTitle": "இது எவ்வாறு செயல்படுகிறது",
+    "step1": "தகவலை உள்ளிடவும்",
+    "step2": "AI உருவாக்கம்",
+    "step3": "திருத்தம் & சரிசெய்தல்",
+    "step4": "ஏற்றுமதி",
+    "readyTitle": "தொடங்க தயாரா?",
+    "readyDesc": "உங்கள் முதல் AI இயக்கப்பட்ட கூட்ட agendaவை இப்போதே உருவாக்கவும்",
+    "readyButton": "இப்போது தொடங்குங்கள்"
+  },
+  "formStep1": {
+    "header": "புதிய கூட்ட agendaவை உருவாக்கவும்",
+    "subHeader": "படி 1 / 2 - அடிப்படை தகவல்",
+    "meetingTitle": "கூட்ட தலைப்பு",
+    "meetingDate": "கூட்ட தேதி",
+    "meetingTime": "கூட்ட நேரம்",
+    "duration": "கால அளவு (நிமிடங்கள்)",
+    "location": "இடம் / கூட்ட இணைப்பு",
+    "facilitator": "தொகுப்பாளர்",
+    "noteTaker": "குறிப்பெடுப்பவர்",
+    "attendees": "பங்கேற்பாளர்கள்",
+    "meetingObjective": "கூட்ட நோக்கம்",
+    "errors": {
+      "meetingTitle": "கூட்ட தலைப்பு தேவை",
+      "meetingDate": "கூட்ட தேதி தேவை",
+      "meetingTime": "கூட்ட நேரம் தேவை",
+      "location": "இடம் தேவை",
+      "facilitator": "தொகுப்பாளர் தேவை",
+      "meetingObjective": "கூட்ட நோக்கம் தேவை"
+    }
+  },
+  "agendaEditor": {
+    "preview": "முன்னோட்ட",
+    "reset": "மீட்டமை",
+    "basicInfo": "அடிப்படை தகவல்",
+    "meetingTitle": "கூட்ட தலைப்பு",
+    "meetingObjective": "கூட்ட நோக்கம்",
+    "agendaItems": "Agenda உருப்படிகள்",
+    "actionItems": "செயல் உருப்படிகள்",
+    "download": "Agenda பதிவிறக்க"
+  },
+  "previewModal": {
+    "title": "Agenda முன்னோட்ட",
+    "date": "தேதி",
+    "time": "நேரம்",
+    "duration": "கால அளவு",
+    "location": "இடம்",
+    "facilitator": "தொகுப்பாளர்",
+    "agendaOverview": "Agenda கண்ணோட்டம்",
+    "selectFormat": "ஏற்றுமதி வடிவத்தைத் தேர்ந்தெடுக்கவும்",
+    "cancel": "ரத்து செய்",
+    "download": "பதிவிறக்க",
+    "exporting": "ஏற்றுமதி செய்கிறது..."
+  },
+  "notification": {
+    "exportSuccess": "Agenda வெற்றிகரமாக {{format}} ஆக ஏற்றுமதி செய்யப்பட்டது!"
+  }
+}
