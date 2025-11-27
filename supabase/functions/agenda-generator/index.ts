@@ -5,6 +5,7 @@ const corsHeaders = {
 };
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', {
       headers: corsHeaders
@@ -13,15 +14,20 @@ Deno.serve(async (req) => {
 
   try {
     console.log('📥 Incoming request method:', req.method);
-    console.log('📥 Incoming request headers:', Object.fromEntries(req.headers));
     
     let body;
     try {
       body = await req.json();
-      console.log('📥 Request body received:', JSON.stringify(body, null, 2));
+      console.log('📥 Request body parsed successfully');
+      console.log('📥 Action:', body.action);
     } catch (parseError) {
       console.error('❌ Failed to parse request body:', parseError.message);
-      throw new Error(`Invalid JSON in request body: ${parseError.message}`);
+      return new Response(JSON.stringify({
+        error: `Invalid JSON in request body: ${parseError.message}`
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     const { action, formData, agendaData, itemData, context, language = "zh" } = body;
@@ -29,12 +35,24 @@ Deno.serve(async (req) => {
     // Get OpenAI API Key from environment
     const openaiApiKey = Deno.env.get('Agenda_generator');
     if (!openaiApiKey) {
-      throw new Error('OpenAI API Key not configured');
+      console.error('❌ OpenAI API Key not configured');
+      return new Response(JSON.stringify({
+        error: 'OpenAI API Key not configured in environment variables'
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     // Validate action
     if (!['generate', 'regenerate', 'regenerate_item'].includes(action)) {
-      throw new Error(`Invalid action: ${action}`);
+      console.error('❌ Invalid action:', action);
+      return new Response(JSON.stringify({
+        error: `Invalid action: ${action}. Must be one of: generate, regenerate, regenerate_item`
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     // Language configuration
@@ -74,8 +92,14 @@ Deno.serve(async (req) => {
 
     if (action === "generate") {
       // Validate required formData fields
-      if (!formData.meetingTitle || !formData.duration) {
-        throw new Error('Missing required fields: meetingTitle, duration');
+      if (!formData || !formData.meetingTitle || formData.duration === undefined) {
+        console.error('❌ Missing required fields in formData');
+        return new Response(JSON.stringify({
+          error: 'Missing required fields: meetingTitle, duration'
+        }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
       }
 
       // Build attachments info
@@ -131,10 +155,17 @@ ${config.jsonInstruction}
 }
 
 Generate between 4-8 agenda items based on the meeting duration of ${formData.duration} minutes. Distribute time proportionally.`;
+
     } else if (action === "regenerate") {
       // Validate required agendaData
-      if (!agendaData.agendaItems || !Array.isArray(agendaData.agendaItems)) {
-        throw new Error('Missing or invalid agendaItems in agendaData');
+      if (!agendaData || !agendaData.agendaItems || !Array.isArray(agendaData.agendaItems)) {
+        console.error('❌ Missing or invalid agendaItems in agendaData');
+        return new Response(JSON.stringify({
+          error: 'Missing or invalid agendaItems in agendaData'
+        }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
       }
 
       prompt = `${config.systemPrompt}
@@ -168,10 +199,17 @@ ${config.jsonInstruction}
     }
   ]
 }`;
+
     } else if (action === "regenerate_item") {
       // Validate required itemData
-      if (!itemData.topic) {
-        throw new Error('Missing required field: itemData.topic');
+      if (!itemData || !itemData.topic) {
+        console.error('❌ Missing required field: itemData.topic');
+        return new Response(JSON.stringify({
+          error: 'Missing required field: itemData.topic'
+        }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
       }
 
       prompt = `${config.systemPrompt}
@@ -199,7 +237,7 @@ Please regenerate ONLY this single agenda item, returning valid JSON:
 }`;
     }
 
-    console.log("AI Prompt:", prompt);
+    console.log('✅ Prompt prepared, calling OpenAI API...');
 
     // Call OpenAI API
     const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -230,30 +268,43 @@ Please regenerate ONLY this single agenda item, returning valid JSON:
 
     if (!openaiResponse.ok) {
       const error = await openaiResponse.json();
-      console.error('OpenAI API Error:', error);
-      throw new Error(error.error?.message || `OpenAI API error: ${openaiResponse.status}`);
+      console.error('❌ OpenAI API Error:', error);
+      return new Response(JSON.stringify({
+        error: `OpenAI API error: ${error.error?.message || openaiResponse.statusText}`,
+        details: error
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     const openaiData = await openaiResponse.json();
     const content = openaiData.choices[0].message.content;
 
-    console.log("AI Response:", content);
+    console.log('✅ OpenAI response received');
 
     // Clean possible markdown code blocks
     const cleanedContent = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
     const parsedData = JSON.parse(cleanedContent);
 
+    console.log('✅ Response parsed successfully');
+
     return new Response(JSON.stringify(parsedData), {
+      status: 200,
       headers: {
         ...corsHeaders,
         'Content-Type': 'application/json'
       }
     });
+
   } catch (error) {
-    console.error('Error:', error);
+    console.error('❌ Error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : '';
+    
     return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Unknown error',
-      details: error instanceof Error ? error.stack : ''
+      error: errorMessage,
+      details: errorStack
     }), {
       status: 400,
       headers: {
