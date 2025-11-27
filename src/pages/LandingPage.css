@@ -314,12 +314,6 @@
   animation-delay: 1s;
 }
 
-.card-tamil {
-  top: 120px !important;
-  right: 80px !important;
-  animation-delay: 0.3s !important;
-}
-
 @keyframes float {
   0%, 100% { 
     transform: translateY(0px) rotate(0deg); 
@@ -688,11 +682,6 @@
   .card-3 {
     bottom: 60px;
     right: 40px;
-  }
-
-  .card-tamil {
-    top: 100px !important;
-    right: 60px !important;
   }
 }
 
