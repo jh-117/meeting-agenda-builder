@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { generatePDF, generateDOCX, generateTXT } from './services/exportService'
 
-
 // Sortable Agenda Item Component
 const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
   return (
@@ -182,6 +181,7 @@ function AgendaEditor({
   const [isGeneratingItem, setIsGeneratingItem] = useState(null);
   const [exportFormat, setExportFormat] = useState('pdf');
   const [error, setError] = useState(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   const agendaItemsWithId = (agendaData?.agendaItems || []).map((item, index) => ({
     ...item,
@@ -223,6 +223,9 @@ function AgendaEditor({
 
   const handleExport = async () => {
     try {
+      setIsExporting(true);
+      setError(null);
+      
       const exportData = {
         ...agendaData,
         agendaItems: agendaItemsWithId
@@ -244,6 +247,8 @@ function AgendaEditor({
     } catch (error) {
       console.error('Export error:', error);
       setError(`Export failed: ${error.message}`);
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -763,6 +768,7 @@ function AgendaEditor({
 
             <button 
               onClick={handleExport}
+              disabled={isExporting}
               style={{
                 width: '100%',
                 display: 'flex',
@@ -770,17 +776,19 @@ function AgendaEditor({
                 justifyContent: 'center',
                 gap: '8px',
                 padding: '12px',
-                backgroundColor: '#6366f1',
+                backgroundColor: isExporting ? '#9ca3af' : '#6366f1',
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
-                cursor: 'pointer',
+                cursor: isExporting ? 'not-allowed' : 'pointer',
                 fontSize: '14px',
                 fontWeight: '600'
               }}
             >
-              <Download size={16} /> 
-              Download ({exportFormat.toUpperCase()})
+              <Download size={16} style={{
+                animation: isExporting ? 'spin 1s linear infinite' : 'none'
+              }} /> 
+              {isExporting ? 'Exporting...' : `Download (${exportFormat.toUpperCase()})`}
             </button>
           </div>
         </div>
