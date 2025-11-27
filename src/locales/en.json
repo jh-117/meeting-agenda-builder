@@ -49,8 +49,8 @@
     "minutesShort": "min",
     "descriptionPlaceholder": "Description...",
     "expectedOutputPlaceholder": "Expected output..."
-     "taskPlaceholder": "Task",
-    "deadlinePlaceholder": "Deadline",
+    "taskPlaceholder": "Task",
+    "deadlinePlaceholder": "Deadline"
   },
   "editor": {
     "basicInfo": "Basic Information",
