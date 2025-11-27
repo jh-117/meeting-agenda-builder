@@ -188,6 +188,16 @@ function AgendaEditor({
   const [isExporting, setIsExporting] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
+  // Action Items 状态
+  const [actionItems, setActionItems] = useState([
+    {
+      id: 'action-1',
+      task: 'Prepare project timeline',
+      owner: 'Project Manager',
+      deadline: '2025-12-01'
+    }
+  ]);
+
   const currentLanguage = i18n.language;
 
   const agendaItemsWithId = (agendaData?.agendaItems || []).map((item, index) => ({
@@ -233,6 +243,28 @@ function AgendaEditor({
     handleChange("agendaItems", updatedItems);
   };
 
+  // Action Items 处理函数
+  const handleActionItemChange = (index, field, value) => {
+    const updatedItems = [...actionItems];
+    updatedItems[index] = { ...updatedItems[index], [field]: value };
+    setActionItems(updatedItems);
+  };
+
+  const addActionItem = () => {
+    const newItem = {
+      id: `action-${Date.now()}`,
+      task: '',
+      owner: '',
+      deadline: ''
+    };
+    setActionItems([...actionItems, newItem]);
+  };
+
+  const removeActionItem = (index) => {
+    const updatedItems = actionItems.filter((_, i) => i !== index);
+    setActionItems(updatedItems);
+  };
+
   const handleExport = async () => {
     try {
       setIsExporting(true);
@@ -240,7 +272,8 @@ function AgendaEditor({
       
       const exportData = {
         ...agendaData,
-        agendaItems: agendaItemsWithId
+        agendaItems: agendaItemsWithId,
+        actionItems: actionItems
       };
 
       switch (exportFormat) {
@@ -674,6 +707,139 @@ function AgendaEditor({
               </div>
             )}
           </div>
+
+          {/* Action Items Section */}
+          <div style={{
+            backgroundColor: 'white',
+            padding: '24px',
+            borderRadius: '12px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '20px'
+            }}>
+              <h2 style={{ fontSize: '18px', margin: 0, color: '#1f2937' }}>
+                ✅ {t('editor.actionItems')} ({actionItems.length})
+              </h2>
+              <button 
+                onClick={addActionItem}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#10b981',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '500'
+                }}
+              >
+                + {t('actions.add')}
+              </button>
+            </div>
+
+            <div>
+              {actionItems.map((item, index) => (
+                <div key={item.id} style={{
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  marginBottom: '12px',
+                  backgroundColor: 'white'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    marginBottom: '12px'
+                  }}>
+                    <input
+                      placeholder={t('agenda.taskPlaceholder')}
+                      value={item.task}
+                      onChange={(e) => handleActionItemChange(index, "task", e.target.value)}
+                      style={{
+                        flex: 1,
+                        padding: '8px 12px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '6px',
+                        fontSize: '14px'
+                      }}
+                    />
+                    <button 
+                      onClick={() => removeActionItem(index)}
+                      style={{
+                        padding: '4px 12px',
+                        border: 'none',
+                        backgroundColor: '#fee2e2',
+                        color: '#dc2626',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontSize: '18px'
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  
+                  <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                    <input
+                      placeholder={t('agenda.ownerPlaceholder')}
+                      value={item.owner}
+                      onChange={(e) => handleActionItemChange(index, "owner", e.target.value)}
+                      style={{
+                        flex: 1,
+                        padding: '8px 12px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '6px',
+                        fontSize: '14px'
+                      }}
+                    />
+                    <input
+                      type="date"
+                      placeholder={t('agenda.deadlinePlaceholder')}
+                      value={item.deadline}
+                      onChange={(e) => handleActionItemChange(index, "deadline", e.target.value)}
+                      style={{
+                        padding: '8px 12px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '6px',
+                        fontSize: '14px'
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+
+              {actionItems.length === 0 && (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '40px',
+                  color: '#9ca3af'
+                }}>
+                  <p>{t('editor.noActionItems')}</p>
+                  <button 
+                    onClick={addActionItem}
+                    style={{
+                      padding: '10px 20px',
+                      backgroundColor: '#10b981',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      marginTop: '12px'
+                    }}
+                  >
+                    + {t('actions.addFirstActionItem')}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Right Panel - Preview */}
@@ -839,6 +1005,46 @@ function AgendaEditor({
                 )}
               </div>
             </div>
+
+            {/* Action Items Preview */}
+            {actionItems.length > 0 && (
+              <div style={{ marginBottom: '24px' }}>
+                <h4 style={{ fontSize: '16px', marginBottom: '12px', color: '#374151' }}>
+                  {t('preview.actionItems')}
+                </h4>
+                <div>
+                  {actionItems.map((item) => (
+                    <div key={item.id} style={{
+                      display: 'flex',
+                      gap: '12px',
+                      marginBottom: '12px',
+                      paddingBottom: '12px',
+                      borderBottom: '1px solid #f3f4f6'
+                    }}>
+                      <div style={{ flex: 1 }}>
+                        <strong style={{ fontSize: '14px', color: '#1f2937' }}>
+                          {item.task || t('preview.untitledTask')}
+                        </strong>
+                        {item.owner && (
+                          <span style={{ fontSize: '14px', color: '#6b7280' }}>
+                            {' • '}{item.owner}
+                          </span>
+                        )}
+                        {item.deadline && (
+                          <p style={{
+                            margin: '4px 0',
+                            fontSize: '13px',
+                            color: '#6b7280'
+                          }}>
+                            {t('preview.deadline')}: {formatDate(item.deadline)}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <button 
               onClick={handleExport}
