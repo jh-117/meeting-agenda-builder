@@ -1,15 +1,17 @@
 // src/services/agendaAIService.js
 import { supabase } from '../supabaseClient'
 
-export const generateAgendaWithAI = async (formData, language = 'zh') => {
+export const generateAgendaWithAI = async (formData, language = 'zh', attachmentContent = null, attachmentType = null) => {
   try {
-    console.log('📡 Calling Edge Function via Supabase client...', { language });
+    console.log('📡 Calling Edge Function via Supabase client...', { language, hasAttachment: !!attachmentContent });
     
     const { data, error } = await supabase.functions.invoke('agenda-generator', {
       body: {
         action: 'generate',
         formData: formData,
-        language: language // 传递语言参数
+        language: language,
+        attachmentContent: attachmentContent,
+        attachmentType: attachmentType
       }
     });
 
@@ -27,15 +29,17 @@ export const generateAgendaWithAI = async (formData, language = 'zh') => {
   }
 }
 
-export const regenerateAgendaWithAI = async (agendaData, language = 'zh') => {
+export const regenerateAgendaWithAI = async (agendaData, language = 'zh', attachmentContent = null, attachmentType = null) => {
   try {
-    console.log('📡 Calling Edge Function for regeneration...', { language });
+    console.log('📡 Calling Edge Function for regeneration...', { language, hasAttachment: !!attachmentContent });
     
     const { data, error } = await supabase.functions.invoke('agenda-generator', {
       body: {
         action: 'regenerate',
         agendaData: agendaData,
-        language: language // 传递语言参数
+        language: language,
+        attachmentContent: attachmentContent,
+        attachmentType: attachmentType
       }
     });
 
@@ -53,17 +57,19 @@ export const regenerateAgendaWithAI = async (agendaData, language = 'zh') => {
   }
 }
 
-// 单个议程项重新生成
-export const regenerateAgendaItemWithAI = async (itemData, context, language = 'zh') => {
+// 单个议程项重新生成 - 更新以支持附件
+export const regenerateAgendaItemWithAI = async (itemData, context, language = 'zh', attachmentContent = null, attachmentType = null) => {
   try {
-    console.log('📡 Regenerating single agenda item...', { language });
+    console.log('📡 Regenerating single agenda item...', { language, hasAttachment: !!attachmentContent });
     
     const { data, error } = await supabase.functions.invoke('agenda-generator', {
       body: {
         action: 'regenerate_item',
         itemData: itemData,
         context: context,
-        language: language
+        language: language,
+        attachmentContent: attachmentContent,
+        attachmentType: attachmentType
       }
     });
 
