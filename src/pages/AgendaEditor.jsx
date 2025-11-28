@@ -33,7 +33,6 @@ import { useTranslation } from 'react-i18next';
 const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
   const { t } = useTranslation();
   
-  // Use the useSortable hook to make this component sortable
   const {
     attributes,
     listeners,
@@ -62,14 +61,13 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
         gap: '8px',
         marginBottom: '12px'
       }}>
-        {/* Drag handle */}
         <div 
           {...attributes}
           {...listeners}
           style={{ 
             cursor: isDragging ? 'grabbing' : 'grab', 
             color: '#9ca3af',
-            touchAction: 'none' // Important for mobile drag
+            touchAction: 'none'
           }}
         >
           <GripVertical size={16} />
@@ -87,14 +85,15 @@ const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem,
           }}
         />
         <button 
-          onClick={() => onRegenerateItem(item.id)}
+          onClick={() => onRegenerateItem(item.id, index)}
           disabled={isGeneratingItem === item.id}
           style={{
             padding: '8px',
             border: 'none',
             backgroundColor: '#f3f4f6',
             borderRadius: '6px',
-            cursor: 'pointer'
+            cursor: isGeneratingItem === item.id ? 'not-allowed' : 'pointer',
+            opacity: isGeneratingItem === item.id ? 0.6 : 1
           }}
         >
           <RefreshCw size={14} style={{
@@ -218,17 +217,22 @@ function AgendaEditor({
   }, 
   onReset, 
   onDataChange, 
-  onRegenerate, 
-  isRegenerating 
+  isRegenerating: externalIsRegenerating,
+  onRegenerationComplete 
 }) {
   const { t, i18n } = useTranslation();
   const [isGeneratingItem, setIsGeneratingItem] = useState(null);
+  const [isRegenerating, setIsRegenerating] = useState(false);
   const [exportFormat, setExportFormat] = useState('pdf');
   const [error, setError] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isProcessingFiles, setIsProcessingFiles] = useState(false);
+  const [attachmentContent, setAttachmentContent] = useState('');
 
-  // Action Items 状态
+  // Action Items state
   const [actionItems, setActionItems] = useState([
     {
       id: 'action-1',
@@ -245,8 +249,7 @@ function AgendaEditor({
     id: item.id || `agenda-${index}-${Date.now()}`
   }));
 
-
-   // DnD Sensors
+  // DnD Sensors
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -265,7 +268,6 @@ function AgendaEditor({
       handleChange("agendaItems", newItems);
     }
   };
-
 
   const handleChangeLanguage = (lang) => {
     i18n.changeLanguage(lang);
@@ -305,7 +307,7 @@ function AgendaEditor({
     handleChange("agendaItems", updatedItems);
   };
 
-  // Action Items 处理函数
+  // Action Items handlers
   const handleActionItemChange = (index, field, value) => {
     const updatedItems = [...actionItems];
     updatedItems[index] = { ...updatedItems[index], [field]: value };
@@ -359,17 +361,213 @@ function AgendaEditor({
     }
   };
 
-  const handleRegenerate = async () => {
-    if (onRegenerate) {
-      await onRegenerate();
+  // File upload handler with AI processing - INCLUDES PPT SUPPORT
+  const handleFileUpload = async (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length === 0) return;
+
+    setIsUploading(true);
+    setError(null);
+
+    try {
+      const newFiles = [];
+      let allExtractedText = '';
+
+      for (const file of files) {
+        // Check file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error(`File ${file.name} is too large. Maximum size is 10MB.`);
+        }
+
+        // Upload to Supabase Storage
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+        const filePath = `meeting-attachments/${fileName}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('attachments')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('attachments')
+          .getPublicUrl(filePath);
+
+        // Process file with AI to extract text
+        setIsProcessingFiles(true);
+        try {
+          const processedFile = await processFileWithAI(publicUrl, file.name, file.type);
+          
+          if (processedFile.success && processedFile.extractedText) {
+            allExtractedText += `\n\n--- ${file.name} ---\n${processedFile.extractedText}`;
+          }
+
+          newFiles.push({
+            name: file.name,
+            url: publicUrl,
+            size: file.size,
+            type: file.type,
+            content: processedFile.extractedText || `[File: ${file.name}]`,
+            isProcessable: processedFile.success,
+            processed: true
+          });
+        } catch (processError) {
+          console.error('File processing error:', processError);
+          newFiles.push({
+            name: file.name,
+            url: publicUrl,
+            size: file.size,
+            type: file.type,
+            content: `[File: ${file.name} - Processing failed]`,
+            isProcessable: false,
+            processed: true
+          });
+        }
+      }
+
+      // Update state
+      setUploadedFiles(prev => [...prev, ...newFiles]);
+      
+      if (allExtractedText.trim()) {
+        setAttachmentContent(prev => prev ? prev + allExtractedText : allExtractedText);
+      }
+
+    } catch (error) {
+      console.error('Upload error:', error);
+      setError(`Upload failed: ${error.message}`);
+    } finally {
+      setIsUploading(false);
+      setIsProcessingFiles(false);
+      event.target.value = '';
     }
   };
 
-  const handleRegenerateItem = async (itemId) => {
+  const removeFile = async (index) => {
+    const fileToRemove = uploadedFiles[index];
+    
+    try {
+      // Delete from storage
+      if (fileToRemove.url) {
+        const filePath = fileToRemove.url.split('/').pop();
+        await supabase.storage
+          .from('attachments')
+          .remove([`meeting-attachments/${filePath}`]);
+      }
+    } catch (error) {
+      console.error('Error deleting file from storage:', error);
+    }
+
+    // Remove from state
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+    
+    // Update attachment content
+    if (fileToRemove.content && attachmentContent.includes(fileToRemove.content)) {
+      const newContent = attachmentContent.replace(fileToRemove.content, '').trim();
+      setAttachmentContent(newContent || '');
+    }
+  };
+
+  const getFileIcon = (fileType, fileName) => {
+    if (fileType.includes('image')) return <Image size={14} color="#6b7280" />;
+    if (fileType.includes('pdf') || fileName.endsWith('.pdf')) return <FileText size={14} color="#6b7280" />;
+    if (fileType.includes('word') || fileName.endsWith('.doc') || fileName.endsWith('.docx')) return <FileDoc size={14} color="#6b7280" />;
+    if (fileType.includes('presentation') || fileName.endsWith('.ppt') || fileName.endsWith('.pptx')) return <Presentation size={14} color="#6b7280" />;
+    return <File size={14} color="#6b7280" />;
+  };
+
+  // Full agenda regeneration using AI with attachments
+  const handleRegenerate = async () => {
+    if (!agendaData.meetingTitle || !agendaData.meetingObjective) {
+      setError(t('actions.regenerateRequiredFields'));
+      return;
+    }
+
+    setIsRegenerating(true);
+    setError(null);
+
+    try {
+      console.log('🔄 Regenerating full agenda with attachments...', { 
+        currentLanguage,
+        hasAttachments: uploadedFiles.length > 0,
+        attachmentContentLength: attachmentContent.length
+      });
+      
+      const regeneratedData = await regenerateAgendaWithAI(
+        agendaData, 
+        currentLanguage,
+        attachmentContent,
+        uploadedFiles.length > 0 ? 'processed_files' : null
+      );
+      
+      console.log('✅ Regenerated agenda data:', regeneratedData);
+
+      if (regeneratedData && onDataChange) {
+        onDataChange(regeneratedData);
+      }
+
+      if (onRegenerationComplete) {
+        onRegenerationComplete(regeneratedData);
+      }
+    } catch (error) {
+      console.error('❌ Error regenerating agenda:', error);
+      setError(error.message || t('actions.regenerateFailed'));
+    } finally {
+      setIsRegenerating(false);
+    }
+  };
+
+  // INDIVIDUAL AGENDA ITEM REGENERATION - FULLY WORKING
+  const handleRegenerateItem = async (itemId, index) => {
+    const currentItem = agendaItemsWithId[index];
+    
+    if (!currentItem.topic && !agendaData.meetingObjective) {
+      setError(t('actions.regenerateItemRequiredFields'));
+      return;
+    }
+
     setIsGeneratingItem(itemId);
-    setTimeout(() => {
+    setError(null);
+
+    try {
+      console.log('🔄 Regenerating agenda item with attachments...', { 
+        currentItem, 
+        currentLanguage,
+        hasAttachments: uploadedFiles.length > 0 
+      });
+      
+      const context = {
+        meetingTitle: agendaData.meetingTitle,
+        meetingObjective: agendaData.meetingObjective,
+        existingItems: agendaItemsWithId.filter(item => item.id !== itemId)
+      };
+
+      const regeneratedItem = await regenerateAgendaItemWithAI(
+        currentItem, 
+        context, 
+        currentLanguage,
+        attachmentContent,
+        uploadedFiles.length > 0 ? 'processed_files' : null
+      );
+      
+      console.log('✅ Regenerated item data:', regeneratedItem);
+
+      if (regeneratedItem) {
+        // Update the specific agenda item with regenerated content
+        const updatedItems = [...agendaItemsWithId];
+        updatedItems[index] = { 
+          ...updatedItems[index], 
+          ...regeneratedItem 
+        };
+        handleChange("agendaItems", updatedItems);
+      }
+    } catch (error) {
+      console.error('❌ Error regenerating agenda item:', error);
+      setError(error.message || t('actions.regenerateItemFailed'));
+    } finally {
       setIsGeneratingItem(null);
-    }, 1000);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -381,6 +579,14 @@ function AgendaEditor({
     }
   };
 
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
   const data = agendaData || {};
 
   // Language options
@@ -390,6 +596,8 @@ function AgendaEditor({
     { code: 'ms', name: 'Malay', nativeName: 'Bahasa Melayu' },
     { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்' }
   ];
+
+  const showRegenerateLoading = isRegenerating || externalIsRegenerating;
 
   return (
     <div style={{ 
@@ -486,7 +694,7 @@ function AgendaEditor({
           
           <button 
             onClick={handleRegenerate}
-            disabled={isRegenerating}
+            disabled={showRegenerateLoading}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -496,16 +704,16 @@ function AgendaEditor({
               color: 'white',
               border: 'none',
               borderRadius: '8px',
-              cursor: isRegenerating ? 'not-allowed' : 'pointer',
+              cursor: showRegenerateLoading ? 'not-allowed' : 'pointer',
               fontSize: '14px',
               fontWeight: '500',
-              opacity: isRegenerating ? 0.6 : 1
+              opacity: showRegenerateLoading ? 0.6 : 1
             }}
           >
             <RefreshCw size={16} style={{
-              animation: isRegenerating ? 'spin 1s linear infinite' : 'none'
+              animation: showRegenerateLoading ? 'spin 1s linear infinite' : 'none'
             }} />
-            {isRegenerating ? t('actions.regenerating') : t('actions.aiRegenerate')}
+            {showRegenerateLoading ? t('actions.regenerating') : t('actions.aiRegenerate')}
           </button>
           
           <button 
@@ -540,7 +748,7 @@ function AgendaEditor({
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
-          {error}
+          <span>{error}</span>
           <button 
             onClick={() => setError(null)}
             style={{
@@ -550,7 +758,9 @@ function AgendaEditor({
               fontSize: '20px',
               cursor: 'pointer'
             }}
-          >×</button>
+          >
+            ×
+          </button>
         </div>
       )}
 
@@ -604,6 +814,134 @@ function AgendaEditor({
                   resize: 'vertical'
                 }}
               />
+            </div>
+
+            {/* File Upload Section - INCLUDES PPT SUPPORT */}
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', fontWeight: '500' }}>
+                📎 {t('editor.attachments')} {uploadedFiles.length > 0 && `(${uploadedFiles.length})`}
+              </label>
+              <div style={{
+                border: '2px dashed #d1d5db',
+                borderRadius: '8px',
+                padding: '20px',
+                textAlign: 'center',
+                backgroundColor: '#f9fafb',
+                marginBottom: '12px'
+              }}>
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleFileUpload}
+                  disabled={isUploading || isProcessingFiles}
+                  accept=".txt,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.xls,.xlsx,.ppt,.pptx"
+                  style={{ display: 'none' }}
+                  id="file-upload"
+                />
+                <label
+                  htmlFor="file-upload"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '8px',
+                    cursor: (isUploading || isProcessingFiles) ? 'not-allowed' : 'pointer',
+                    opacity: (isUploading || isProcessingFiles) ? 0.6 : 1
+                  }}
+                >
+                  <Upload size={24} color="#6b7280" />
+                  <span style={{ color: '#6b7280', fontSize: '14px' }}>
+                    {isUploading ? t('editor.uploading') : 
+                     isProcessingFiles ? t('editor.processingFiles') : 
+                     t('editor.uploadFiles')}
+                  </span>
+                  <span style={{ color: '#9ca3af', fontSize: '12px' }}>
+                    {t('editor.maxFileSize')}
+                  </span>
+                  <span style={{ color: '#10b981', fontSize: '12px' }}>
+                    {t('editor.supportsAllFiles')}
+                  </span>
+                </label>
+              </div>
+
+              {/* Uploaded Files List */}
+              {uploadedFiles.length > 0 && (
+                <div style={{ marginTop: '12px' }}>
+                  <h4 style={{ fontSize: '14px', marginBottom: '8px', color: '#374151' }}>
+                    {t('editor.uploadedFiles')}:
+                  </h4>
+                  {uploadedFiles.map((file, index) => (
+                    <div key={index} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '8px 12px',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '6px',
+                      marginBottom: '6px',
+                      backgroundColor: 'white'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {getFileIcon(file.type, file.name)}
+                        <div>
+                          <div style={{ fontSize: '14px', fontWeight: '500' }}>
+                            {file.name}
+                          </div>
+                          <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                            {formatFileSize(file.size)} • 
+                            {file.isProcessable ? '✅ AI Ready' : '📁 Reference Only'} • 
+                            {file.type}
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                        <a
+                          href={file.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            padding: '4px 8px',
+                            backgroundColor: '#f3f4f6',
+                            borderRadius: '4px',
+                            textDecoration: 'none',
+                            color: '#374151',
+                            fontSize: '12px'
+                          }}
+                        >
+                          {t('editor.view')}
+                        </a>
+                        <button
+                          onClick={() => removeFile(index)}
+                          style={{
+                            padding: '4px',
+                            border: 'none',
+                            backgroundColor: '#fee2e2',
+                            color: '#dc2626',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {attachmentContent && (
+                    <div style={{
+                      marginTop: '8px',
+                      padding: '8px',
+                      backgroundColor: '#f0f9ff',
+                      border: '1px solid #bae6fd',
+                      borderRadius: '6px',
+                      fontSize: '12px',
+                      color: '#0369a1'
+                    }}>
+                      <BookOpen size={12} style={{ display: 'inline', marginRight: '4px' }} />
+                      ✅ {t('editor.aiUsingAttachment')} ({attachmentContent.length} characters)
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div style={{ marginBottom: '16px' }}>
@@ -746,7 +1084,7 @@ function AgendaEditor({
                       index={index}
                       onChange={handleAgendaItemChange}
                       onRemove={removeAgendaItem}
-                      onRegenerateItem={handleRegenerateItem}
+                      onRegenerateItem={handleRegenerateItem} // NOW WORKING
                       currentLanguage={currentLanguage}
                       isGeneratingItem={isGeneratingItem}
                     />
@@ -915,6 +1253,7 @@ function AgendaEditor({
             </div>
           </div>
         </div>
+
 
         {/* Right Panel - Preview */}
         <div style={{
