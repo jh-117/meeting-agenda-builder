@@ -765,3 +765,41 @@ a:focus-visible {
 .dark a:focus-visible {
   outline-color: var(--primary-dark);
 }
+
+/* Powered by section styles */
+.powered-by-section {
+  padding: 2rem 0;
+  border-top: 1px solid #334155;
+  text-align: center;
+  background-color: #0f172a;
+  margin-top: 2rem;
+}
+
+.powered-by-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.powered-by-text {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+.powered-by-logo {
+  height: 2rem;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.powered-by-logo:hover {
+  opacity: 1;
+}
+
+.company-name {
+  font-size: 1rem;
+  color: #cbd5e1;
+  font-weight: 500;
+}
