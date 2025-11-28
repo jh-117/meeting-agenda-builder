@@ -155,7 +155,7 @@ function LandingPage({ onStart }) {
         </div>
       </motion.div>
 
-     {/* Powered by section at the bottom */}
+      {/* Powered by section at the bottom */}
       <motion.div className="powered-by-section" variants={itemVariants}>
         <div className="powered-by-content">
           <p className="powered-by-text">Powered by</p>
@@ -169,3 +169,6 @@ function LandingPage({ onStart }) {
     </motion.div>
   );
 }
+
+
+export default LandingPage;
