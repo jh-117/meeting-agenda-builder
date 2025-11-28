@@ -20,8 +20,8 @@ serve(async (req) => {
       itemData, 
       context, 
       language = "zh",
-      attachmentContent = null, // Add attachment content
-      attachmentType = null     // Add attachment type
+      attachmentContent = null,
+      attachmentType = null
     } = await req.json()
 
     // 从环境变量获取 OpenAI API Key
@@ -30,39 +30,43 @@ serve(async (req) => {
       throw new Error('OpenAI API Key not configured')
     }
 
-    // 语言配置 - 更新提示词以包含附件
+    // 语言配置 - 强化提示词以强制使用附件内容
     const languageConfig = {
       zh: {
-        systemPrompt: "你是一个专业的会议议程生成助手，请用正式、专业的商务中文回复。所有议程项和行动项都使用中文。",
-        generatePrompt: "基于以下会议信息和提供的附件内容，生成详细且结构良好的议程：",
-        regeneratePrompt: "请以不同的方法或角度重新生成议程项，并考虑附件内容：",
-        regenerateItemPrompt: "请重新生成这个议程项，提供不同的角度或更详细的内容，并考虑附件内容：",
-        jsonInstruction: "请生成以下结构的JSON响应（仅返回有效的JSON，不要markdown或解释）：",
-        attachmentContext: "附件内容（用于参考）："
+        systemPrompt: "你是一个专业的会议议程生成助手。请用正式、专业的商务中文回复。所有议程项和行动项都使用中文。\n\n重要：你必须基于提供的附件内容创建具体、详细的议程项，不要生成通用的议程模板。",
+        generatePrompt: "基于以下会议信息和提供的附件内容，生成详细且结构良好的议程。必须使用附件中的具体信息：",
+        regeneratePrompt: "请以不同的方法或角度重新生成议程项，必须深入利用附件内容：",
+        regenerateItemPrompt: "请重新生成这个议程项，提供不同的角度或更详细的内容，必须参考附件内容：",
+        jsonInstruction: "请生成以下结构的JSON响应（仅返回有效的JSON，不要markdown或解释）。议程项必须反映附件中的具体内容：",
+        attachmentContext: "附件内容（必须使用此内容创建具体议程项）：",
+        attachmentInstruction: "重要提示：你必须使用上述附件内容中的具体信息来创建议程项。议程项应直接反映附件中提到的项目目标、交付成果、时间线、资源分配和风险。不要创建通用的议程模板。"
       },
       en: {
-        systemPrompt: "You are a professional meeting agenda generator. Please use formal, professional business English. All agenda items and action items should be in English.",
-        generatePrompt: "Based on the following meeting information and the provided attachment content, generate a detailed and well-structured agenda:",
-        regeneratePrompt: "Please regenerate the agenda items with a different approach or perspective, considering the attachment content:",
-        regenerateItemPrompt: "Please regenerate this agenda item with a different perspective or more detailed content, considering the attachment content:",
-        jsonInstruction: "Generate a JSON response with the following structure (return ONLY valid JSON, no markdown, no explanations):",
-        attachmentContext: "Attachment content (for reference):"
+        systemPrompt: "You are a professional meeting agenda generator. Please use formal, professional business English. All agenda items and action items should be in English.\n\nCRITICAL: You MUST create SPECIFIC, DETAILED agenda items based on the provided attachment content. Do NOT generate generic agenda templates.",
+        generatePrompt: "Based on the following meeting information and the provided attachment content, generate a detailed and well-structured agenda. You MUST use the specific information from the attachment:",
+        regeneratePrompt: "Please regenerate the agenda items with a different approach or perspective, making DEEP USE of the attachment content:",
+        regenerateItemPrompt: "Please regenerate this agenda item with a different perspective or more detailed content, making DIRECT REFERENCE to the attachment content:",
+        jsonInstruction: "Generate a JSON response with the following structure (return ONLY valid JSON, no markdown, no explanations). Agenda items MUST reflect the specific content from the attachment:",
+        attachmentContext: "ATTACHMENT CONTENT (YOU MUST USE THIS TO CREATE SPECIFIC AGENDA ITEMS):",
+        attachmentInstruction: "CRITICAL: You MUST use the specific information from the above attachment content to create agenda items. Agenda items should directly reflect the project goals, deliverables, timelines, resource allocations, and risks mentioned in the attachment. Do NOT create generic agenda templates."
       },
       ms: {
-        systemPrompt: "Anda adalah pembantu penjanaan agenda mesyuarat profesional. Sila gunakan Bahasa Melayu formal dan profesional. Semua item agenda dan item tindakan hendaklah dalam Bahasa Melayu.",
-        generatePrompt: "Berdasarkan maklumat mesyuarat berikut dan kandungan lampiran yang disediakan, hasilkan agenda yang terperinci dan tersusun baik:",
-        regeneratePrompt: "Sila hasilkan semula item agenda dengan pendekatan atau perspektif yang berbeza, dengan mengambil kira kandungan lampiran:",
-        regenerateItemPrompt: "Sila hasilkan semula item agenda ini dengan perspektif yang berbeza atau kandungan yang lebih terperinci, dengan mengambil kira kandungan lampiran:",
-        jsonInstruction: "Hasilkan respons JSON dengan struktur berikut (kembalikan HANYA JSON yang sah, tiada markdown, tiada penjelasan):",
-        attachmentContext: "Kandungan lampiran (untuk rujukan):"
+        systemPrompt: "Anda adalah pembantu penjanaan agenda mesyuarat profesional. Sila gunakan Bahasa Melayu formal dan profesional. Semua item agenda dan item tindakan hendaklah dalam Bahasa Melayu.\n\nPENTING: Anda MESTI mencipta item agenda YANG SPESIFIK dan TERPERINCI berdasarkan kandungan lampiran yang disediakan. JANGAN hasilkan templat agenda generik.",
+        generatePrompt: "Berdasarkan maklumat mesyuarat berikut dan kandungan lampiran yang disediakan, hasilkan agenda yang terperinci dan tersusun baik. Anda MESTI menggunakan maklumat spesifik dari lampiran:",
+        regeneratePrompt: "Sila hasilkan semula item agenda dengan pendekatan atau perspektif yang berbeza, dengan menggunakan SECARA MENDALAM kandungan lampiran:",
+        regenerateItemPrompt: "Sila hasilkan semula item agenda ini dengan perspektif yang berbeza atau kandungan yang lebih terperinci, dengan membuat RUJUKAN LANGSUNG kepada kandungan lampiran:",
+        jsonInstruction: "Hasilkan respons JSON dengan struktur berikut (kembalikan HANYA JSON yang sah, tiada markdown, tiada penjelasan). Item agenda MESTI mencerminkan kandungan spesifik dari lampiran:",
+        attachmentContext: "KANDUNGAN LAMPIRAN (ANDA MESTI GUNAKAN INI UNTUK MENCIPTA ITEM AGENDA SPESIFIK):",
+        attachmentInstruction: "PENTING: Anda MESTI menggunakan maklumat spesifik dari kandungan lampiran di atas untuk mencipta item agenda. Item agenda harus mencerminkan secara langsung matlamat projek, penghantaran, garis masa, peruntukan sumber, dan risiko yang disebut dalam lampiran. JANGAN cipta templat agenda generik."
       },
       ta: {
-        systemPrompt: "நீங்கள் ஒரு தொழில்முறை கூட்ட அட்டவணை உருவாக்கும் உதவியாளர். முறையான, தொழில்முறை வணிக தமிழைப் பயன்படுத்தவும். அனைத்து அட்டவணை உருப்படிகளும் செயல் உருப்படிகளும் தமிழில் இருக்க வேண்டும்.",
-        generatePrompt: "பின்வரும் கூட்டத் தகவல்கள் மற்றும் வழங்கப்பட்ட இணைப்பு உள்ளடக்கத்தின் அடிப்படையில், விரிவான மற்றும் நன்கு கட்டமைக்கப்பட்ட அட்டவணையை உருவாக்கவும்:",
-        regeneratePrompt: "இணைப்பு உள்ளடக்கத்தைக் கருத்தில் கொண்டு, வேறுபட்ட அணுகுமுறை அல்லது கோணத்துடன் அட்டவணை உருப்படிகளை மீண்டும் உருவாக்கவும்:",
-        regenerateItemPrompt: "இணைப்பு உள்ளடக்கத்தைக் கருத்தில் கொண்டு, இந்த அட்டவணை உருப்படியை வேறுபட்ட கோணம் அல்லது மேலும் விரிவான உள்ளடக்கத்துடன் மீண்டும் உருவாக்கவும்:",
-        jsonInstruction: "பின்வரும் கட்டமைப்புடன் JSON பதிலை உருவாக்கவும் (செல்லுபடியாகும் JSON மட்டுமே திருப்பி விடுங்கள், markdown அல்லது விளக்கங்கள் இல்லை):",
-        attachmentContext: "இணைப்பு உள்ளடக்கம் (குறிப்புக்காக):"
+        systemPrompt: "நீங்கள் ஒரு தொழில்முறை கூட்ட அட்டவணை உருவாக்கும் உதவியாளர். முறையான, தொழில்முறை வணிக தமிழைப் பயன்படுத்தவும். அனைத்து அட்டவணை உருப்படிகளும் செயல் உருப்படிகளும் தமிழில் இருக்க வேண்டும்.\n\nமுக்கியமானது: வழங்கப்பட்ட இணைப்பு உள்ளடக்கத்தின் அடிப்படையில் நீங்கள் குறிப்பிட்ட, விரிவான அட்டவணை உருப்படிகளை உருவாக்க வேண்டும். பொதுவான அட்டவணை வார்ப்புருக்களை உருவாக்க வேண்டாம்.",
+        generatePrompt: "பின்வரும் கூட்டத் தகவல்கள் மற்றும் வழங்கப்பட்ட இணைப்பு உள்ளடக்கத்தின் அடிப்படையில், விரிவான மற்றும் நன்கு கட்டமைக்கப்பட்ட அட்டவணையை உருவாக்கவும். இணைப்பிலிருந்து குறிப்பிட்ட தகவல்களை நீங்கள் பயன்படுத்த வேண்டும்:",
+        regeneratePrompt: "இணைப்பு உள்ளடக்கத்தை ஆழமாகப் பயன்படுத்தி, வேறுபட்ட அணுகுமுறை அல்லது கோணத்துடன் அட்டவணை உருப்படிகளை மீண்டும் உருவாக்கவும்:",
+        regenerateItemPrompt: "இந்த அட்டவணை உருப்படியை வேறுபட்ட கோணம் அல்லது மேலும் விரிவான உள்ளடக்கத்துடன் மீண்டும் உருவாக்கவும், இணைப்பு உள்ளடக்கத்தை நேரடியாகக் குறிப்பிடவும்:",
+        jsonInstruction: "பின்வரும் கட்டமைப்புடன் JSON பதிலை உருவாக்கவும் (செல்லுபடியாகும் JSON மட்டுமே திருப்பி விடுங்கள், markdown அல்லது விளக்கங்கள் இல்லை). அட்டவணை உருப்படிகள் இணைப்பிலிருந்து குறிப்பிட்ட உள்ளடக்கத்தை பிரதிபலிக்க வேண்டும்:",
+        attachmentContext: "இணைப்பு உள்ளடக்கம் (குறிப்பிட்ட அட்டவணை உருப்படிகளை உருவாக்க நீங்கள் இதைப் பயன்படுத்த வேண்டும்):",
+        attachmentInstruction: "முக்கியமானது: அட்டவணை உருப்படிகளை உருவாக்க மேலே உள்ள இணைப்பு உள்ளடக்கத்திலிருந்து குறிப்பிட்ட தகவல்களை நீங்கள் பயன்படுத்த வேண்டும். அட்டவணை உருப்படிகள் இணைப்பில் குறிப்பிடப்பட்டுள்ள திட்ட இலக்குகள், வழங்கப்படும் பொருட்கள், காலவரிசைகள், வள ஒதுக்கீடுகள் மற்றும் அபாயங்களை நேரடியாக பிரதிபலிக்க வேண்டும். பொதுவான அட்டவணை வார்ப்புருக்களை உருவாக்க வேண்டாம்."
       }
     }
 
@@ -86,6 +90,11 @@ serve(async (req) => {
 
 ${config.generatePrompt}
 
+${config.attachmentInstruction}
+
+${config.attachmentContext}
+${attachmentContext}
+
 Meeting Information:
 - Title: ${formData.meetingTitle}
 - Date: ${formData.meetingDate}
@@ -97,16 +106,15 @@ Meeting Information:
 - Attendees: ${formData.attendees || "Not specified"}
 - Objective: ${formData.meetingObjective}
 ${formData.additionalInfo ? `- Additional Info: ${formData.additionalInfo}` : ""}
-${attachmentContext}
 
 ${config.jsonInstruction}
 {
   "agendaItems": [
     {
-      "topic": "string",
+      "topic": "string (MUST be specific and reference attachment content)",
       "owner": "string (person responsible for this topic)",
       "timeAllocation": number (in minutes),
-      "description": "string (what will be discussed)",
+      "description": "string (what will be discussed - MUST reference attachment details)",
       "expectedOutput": "string (what should be decided or delivered)"
     }
   ],
@@ -126,6 +134,8 @@ Generate between 4-8 agenda items based on the meeting duration of ${formData.du
 
 ${config.regeneratePrompt}
 
+${config.attachmentInstruction}
+
 Current agenda items:
 ${agendaData.agendaItems.map((item) => `- ${item.topic} (${item.timeAllocation}min) - ${item.description}`).join("\n")}
 
@@ -139,10 +149,10 @@ ${config.jsonInstruction}
 {
   "agendaItems": [
     {
-      "topic": "string",
+      "topic": "string (MUST reference attachment content)",
       "owner": "string",
       "timeAllocation": number,
-      "description": "string",
+      "description": "string (MUST use attachment details)",
       "expectedOutput": "string"
     }
   ],
@@ -160,6 +170,8 @@ ${config.jsonInstruction}
 
 ${config.regenerateItemPrompt}
 
+${config.attachmentInstruction}
+
 Current item:
 - Topic: ${itemData.topic}
 - Description: ${itemData.description}
@@ -174,10 +186,10 @@ ${attachmentContext}
 
 Please regenerate ONLY this single agenda item, returning valid JSON:
 {
-  "topic": "string",
+  "topic": "string (MUST reference attachment content)",
   "owner": "string",
   "timeAllocation": number,
-  "description": "string",
+  "description": "string (MUST use attachment details)",
   "expectedOutput": "string"
 }`
 
