@@ -1,6 +1,33 @@
 // src/services/agendaAIService.js
 import { supabase } from '../supabaseClient'
 
+// Process file and extract text
+export const processFileWithAI = async (fileUrl, fileName, fileType) => {
+  try {
+    console.log('📡 Processing file with AI...', { fileName, fileType });
+
+    const { data, error } = await supabase.functions.invoke('process-file', {
+      body: {
+        fileUrl,
+        fileName,
+        fileType
+      }
+    });
+
+    if (error) {
+      console.error('❌ File processing error:', error);
+      throw new Error(`文件处理失败: ${error.message}`);
+    }
+
+    console.log('✅ File processing response:', data);
+    return data;
+    
+  } catch (error) {
+    console.error('❌ Error in processFileWithAI:', error);
+    throw new Error(`处理文件失败: ${error.message}`);
+  }
+}
+
 export const generateAgendaWithAI = async (formData, language = 'zh', attachmentContent = null, attachmentType = null) => {
   try {
     console.log('📡 Calling Edge Function via Supabase client...', { language, hasAttachment: !!attachmentContent });
@@ -57,7 +84,6 @@ export const regenerateAgendaWithAI = async (agendaData, language = 'zh', attach
   }
 }
 
-// 单个议程项重新生成 - 更新以支持附件
 export const regenerateAgendaItemWithAI = async (itemData, context, language = 'zh', attachmentContent = null, attachmentType = null) => {
   try {
     console.log('📡 Regenerating single agenda item...', { language, hasAttachment: !!attachmentContent });
