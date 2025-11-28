@@ -4,6 +4,9 @@ import { Zap, Download, Edit } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import './LandingPage.css';
 
+// Import your logo - make sure to add this import
+// import kadoshLogo from './path-to-your-logo/kadosh-logo.png';
+
 function LandingPage({ onStart }) {
   const { t, i18n } = useTranslation();
 
@@ -63,7 +66,6 @@ function LandingPage({ onStart }) {
       <motion.div className="hero-section" variants={itemVariants}>
         <div className="hero-content">
           <div className="hero-badge">
-           
           
           </div>
           <motion.h1 className="hero-title">{t('landing.heroTitle')}</motion.h1>
@@ -151,20 +153,23 @@ function LandingPage({ onStart }) {
           </motion.button>
         </div>
       </motion.div>
-    </motion.div>
-  );
 
-  {/* Powered by section at the bottom */}
-        <div className="py-6 border-t border-slate-800 text-center bg-slate-950">
-          <p className="text-sm text-slate-400 mb-3">Powered by</p>
-          <img
+      {/* Powered by section at the bottom */}
+      <motion.div className="powered-by-section" variants={itemVariants}>
+        <div className="powered-by-content">
+          <p className="powered-by-text">Powered by</p>
+          {/* Uncomment and add your logo import at the top */}
+          {/* <img
             src={kadoshLogo}
             alt="Kadosh AI"
-            className="mx-auto h-8"
-          />
+            className="powered-by-logo"
+          /> */}
+          {/* Or use text if no logo */}
+          <span className="company-name">Kadosh AI</span>
         </div>
+      </motion.div>
+    </motion.div>
+  );
 }
-
-
 
 export default LandingPage;
