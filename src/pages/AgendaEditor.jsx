@@ -8,7 +8,9 @@ import {
   FileDown,
   FileCode,
   Home,
-  Globe
+  Globe,
+  Upload,
+  X  // ADD THIS - was missing
 } from "lucide-react";
 import {
   DndContext,
@@ -28,6 +30,14 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { generatePDF, generateDOCX, generateTXT } from '../services/exportService';
 import { useTranslation } from 'react-i18next';
+
+// ADD THESE IMPORTS - were missing
+import { supabase } from '../supabaseClient';
+import { 
+  processFileWithAI, 
+  regenerateAgendaWithAI, 
+  regenerateAgendaItemWithAI 
+} from '../services/agendaAIService';
 
 // Sortable Agenda Item Component with DnD functionality
 const SortableAgendaItem = ({ item, index, onChange, onRemove, onRegenerateItem, currentLanguage, isGeneratingItem }) => {
