@@ -29,7 +29,10 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { generatePDF, generateDOCX, generateTXT } from '../services/exportService';
 import { useTranslation } from 'react-i18next';
-
+import { 
+  regenerateAgendaWithAI, 
+  regenerateAgendaItemWithAI 
+} from '../services/agendaAIService';
 import './AgendaEditor.css';
 
 // ============================================
