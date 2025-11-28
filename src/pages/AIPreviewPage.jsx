@@ -19,6 +19,7 @@ function AIPreviewPage() {
   const [error, setError] = useState(null);
 
   const agendaData = location.state?.agendaData || null;
+  const formData = location.state?.formData || null;
 
   const handleDownload = async () => {
     try {
@@ -52,7 +53,7 @@ function AIPreviewPage() {
   };
 
   const handleEdit = () => {
-    navigate('/editor', { state: { agendaData } });
+    navigate('/editor', { state: { agendaData, formData } });
   };
 
   const handleBack = () => {

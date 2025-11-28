@@ -65,7 +65,13 @@
     "noAgendaItems": "No agenda items yet",
     "livePreview": "Live Preview",
     "actionItems": "Action Items",
-    "noActionItems": "No action items yet"
+    "noActionItems": "No action items yet",
+    "attachmentsUsed": "Attachments Used",
+    "filesUsedForAI": "files used for AI generation",
+    "contentExtracted": "AI used attachment content",
+    "charactersUsed": "characters",
+    "processed": "Processed",
+    "reference": "Reference"
   },
   "preview": {
     "date": "Date",
@@ -93,7 +99,14 @@
     "download": "Download",
     "addFirstActionItem": "Add First Action Item",
     "goBack": "Go Back",
-    "editAgenda": "Edit Agenda"
+    "editAgenda": "Edit Agenda",
+    "regenerate": "Regenerate",
+    "remove": "Remove",
+    "regenerateRequiredFields": "Please provide meeting title and objective to regenerate",
+    "regenerateFailed": "Regeneration failed",
+    "regenerateItemRequiredFields": "Please provide topic or meeting objective to regenerate item",
+    "regenerateItemFailed": "Failed to regenerate item",
+    "usingOriginalAttachments": "Using original attachments"
   },
   "export": {
     "exportAs": "Export as",

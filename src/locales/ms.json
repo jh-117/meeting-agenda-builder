@@ -64,8 +64,14 @@
     "agendaItems": "Item Agenda",
     "noAgendaItems": "Tiada item agenda lagi",
     "livePreview": "Pratonton Langsung",
-      "actionItems": "Item Tindakan",
-    "noActionItems": "Tiada item tindakan lagi"
+    "actionItems": "Item Tindakan",
+    "noActionItems": "Tiada item tindakan lagi",
+    "attachmentsUsed": "Lampiran Digunakan",
+    "filesUsedForAI": "fail digunakan untuk penjanaan AI",
+    "contentExtracted": "AI menggunakan kandungan lampiran",
+    "charactersUsed": "aksara",
+    "processed": "Diproses",
+    "reference": "Rujukan"
   },
   "preview": {
     "date": "Tarikh",
@@ -93,7 +99,14 @@
     "download": "Muat Turun",
     "addFirstActionItem": "Tambah Item Tindakan Pertama",
     "goBack": "Kembali",
-    "editAgenda": "Sunting Agenda"
+    "editAgenda": "Sunting Agenda",
+    "regenerate": "Jana Semula",
+    "remove": "Buang",
+    "regenerateRequiredFields": "Sila berikan tajuk mesyuarat dan objektif untuk menjana semula",
+    "regenerateFailed": "Penjanaan semula gagal",
+    "regenerateItemRequiredFields": "Sila berikan topik atau objektif mesyuarat untuk menjana semula item",
+    "regenerateItemFailed": "Gagal menjana semula item",
+    "usingOriginalAttachments": "Menggunakan lampiran asal"
   },
   "export": {
     "exportAs": "Eksport sebagai",

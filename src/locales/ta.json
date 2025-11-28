@@ -64,9 +64,14 @@
     "agendaItems": "அட்டவணை உருப்படிகள்",
     "noAgendaItems": "இன்னும் அட்டவணை உருப்படிகள் இல்லை",
     "livePreview": "நேரடி முன்னோட்டம்",
-        "actionItems": "செயல் உருப்படிகள்",
-    "noActionItems": "இன்னும் செயல் உருப்படிகள் இல்லை"
-
+    "actionItems": "செயல் உருப்படிகள்",
+    "noActionItems": "இன்னும் செயல் உருப்படிகள் இல்லை",
+    "attachmentsUsed": "பயன்படுத்தப்பட்ட இணைப்புகள்",
+    "filesUsedForAI": "கோப்புகள் AI உருவாக்கத்திற்கு பயன்படுத்தப்பட்டன",
+    "contentExtracted": "AI இணைப்பு உள்ளடக்கத்தைப் பயன்படுத்தியது",
+    "charactersUsed": "எழுத்துக்கள்",
+    "processed": "செயலாக்கப்பட்டது",
+    "reference": "குறிப்பு"
   },
   "preview": {
     "date": "தேதி",
@@ -94,7 +99,14 @@
     "download": "பதிவிறக்க",
     "addFirstActionItem": "முதல் செயல் உருப்படியைச் சேர்",
     "goBack": "திரும்பிச் செல்",
-    "editAgenda": "அட்டவணையைத் திருத்து"
+    "editAgenda": "அட்டவணையைத் திருத்து",
+    "regenerate": "மீண்டும் உருவாக்கு",
+    "remove": "அகற்று",
+    "regenerateRequiredFields": "மீண்டும் உருவாக்க கூட்டத் தலைப்பு மற்றும் நோக்கத்தை வழங்கவும்",
+    "regenerateFailed": "மீண்டும் உருவாக்குதல் தோல்வி",
+    "regenerateItemRequiredFields": "உருப்படியை மீண்டும் உருவாக்க தலைப்பு அல்லது கூட்ட நோக்கத்தை வழங்கவும்",
+    "regenerateItemFailed": "உருப்படியை மீண்டும் உருவாக்குதல் தோல்வி",
+    "usingOriginalAttachments": "அசல் இணைப்புகளைப் பயன்படுத்துகிறது"
   },
   "export": {
     "exportAs": "ஏற்றுமதி செய்ய",

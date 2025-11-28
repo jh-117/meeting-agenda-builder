@@ -7,8 +7,6 @@ import './FormStep1.css';
 function FormStep1({ onSubmit }) {
   const { t, i18n } = useTranslation();
   const currentLanguage = i18n.language;
-  // Add this state declaration
-const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     // 基本信息
@@ -37,6 +35,7 @@ const [isSubmitting, setIsSubmitting] = useState(false);
   });
 
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 会议类型选项 - 添加马来文和泰米尔文
   const meetingTypes = [

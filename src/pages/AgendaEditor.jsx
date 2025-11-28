@@ -552,26 +552,26 @@ function AgendaEditor({
             {/* ADDED: Attachment Info Display */}
             {initialFormData?.attachmentMetadata && initialFormData.attachmentMetadata.length > 0 && (
               <div className="form-group">
-                <label>📎 {t('editor.attachmentsUsed') || '已使用的附件'}</label>
-                <div style={{ 
-                  padding: '12px', 
-                  backgroundColor: '#f0f9ff', 
+                <label>📎 {t('editor.attachmentsUsed')}</label>
+                <div style={{
+                  padding: '12px',
+                  backgroundColor: '#f0f9ff',
                   borderRadius: '8px',
                   fontSize: '13px',
                   color: '#0369a1'
                 }}>
                   <div style={{ marginBottom: '8px', fontWeight: '500' }}>
-                    ✅ {initialFormData.attachmentMetadata.length} 个文件已用于AI生成
+                    ✅ {initialFormData.attachmentMetadata.length} {t('editor.filesUsedForAI')}
                   </div>
                   {initialFormData.attachmentMetadata.map((file, idx) => (
                     <div key={idx} style={{ marginLeft: '12px', color: '#0c4a6e' }}>
-                      • {file.name} {file.isProcessable ? '(已处理)' : '(参考)'}
+                      • {file.name} {file.isProcessable ? `(${t('editor.processed')})` : `(${t('editor.reference')})`}
                     </div>
                   ))}
                   {attachmentContent && (
                     <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #bae6fd' }}>
-                      <BookOpen size={12} />
-                      📝 AI已使用附件内容 ({attachmentContent.length} 字符)
+                      <BookOpen size={12} style={{ display: 'inline', marginRight: '4px' }} />
+                      📝 {t('editor.contentExtracted')} ({attachmentContent.length} {t('editor.charactersUsed')})
                     </div>
                   )}
                 </div>

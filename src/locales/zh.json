@@ -65,7 +65,13 @@
     "noAgendaItems": "暂无议程项目",
     "livePreview": "实时预览",
     "actionItems": "行动项目",
-    "noActionItems": "暂无行动项目"
+    "noActionItems": "暂无行动项目",
+    "attachmentsUsed": "已使用的附件",
+    "filesUsedForAI": "个文件已用于AI生成",
+    "contentExtracted": "AI已使用附件内容",
+    "charactersUsed": "字符",
+    "processed": "已处理",
+    "reference": "参考"
   },
   "preview": {
     "date": "日期",
@@ -93,7 +99,14 @@
     "download": "下载",
     "addFirstActionItem": "添加第一个行动项目",
     "goBack": "返回",
-    "editAgenda": "编辑议程"
+    "editAgenda": "编辑议程",
+    "regenerate": "重新生成",
+    "remove": "删除",
+    "regenerateRequiredFields": "请提供会议标题和目标以重新生成",
+    "regenerateFailed": "重新生成失败",
+    "regenerateItemRequiredFields": "请提供议题或会议目标以重新生成项目",
+    "regenerateItemFailed": "重新生成项目失败",
+    "usingOriginalAttachments": "使用原始附件"
   },
   "export": {
     "exportAs": "导出为",
