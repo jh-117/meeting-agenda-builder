@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Zap, Download, Edit } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import './LandingPage.css';
+import kadoshLogo from '../assets/kadoshAI.png'
 
 // Import your logo - make sure to add this import
 // import kadoshLogo from './path-to-your-logo/kadosh-logo.png';
