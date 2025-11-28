@@ -9,8 +9,6 @@ import {
   FileCode,
   Home,
   Globe,
-  Upload,
-  X,
   BookOpen
 } from "lucide-react";
 import {
@@ -31,9 +29,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { generatePDF, generateDOCX, generateTXT } from '../services/exportService';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../supabaseClient';
 import { 
-  processFileWithAI, 
   regenerateAgendaWithAI, 
   regenerateAgendaItemWithAI 
 } from '../services/agendaAIService';
@@ -179,6 +175,7 @@ function AgendaEditor({
       }
     ]
   }, 
+  initialFormData = null, // NEW: Receives original form data with attachments
   onReset, 
   onDataChange, 
   isRegenerating: externalIsRegenerating,
@@ -191,20 +188,17 @@ function AgendaEditor({
   const [error, setError] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [isUploading, setIsUploading] = useState(false);
-  const [isProcessingFiles, setIsProcessingFiles] = useState(false);
-  const [attachmentContent, setAttachmentContent] = useState('');
-  const [actionItems, setActionItems] = useState([
-    {
-      id: 'action-1',
-      task: 'Prepare project timeline',
-      owner: 'Project Manager',
-      deadline: '2025-12-01'
-    }
-  ]);
+  
+  // Get action items from agendaData or initialize empty
+  const [actionItems, setActionItems] = useState(
+    agendaData.actionItems || []
+  );
 
   const currentLanguage = i18n.language;
+
+  // Extract attachment content from initial form data
+  const attachmentContent = initialFormData?.attachmentContent || '';
+  const attachmentType = initialFormData?.attachmentType || null;
 
   const agendaItemsWithId = (agendaData?.agendaItems || []).map((item, index) => ({
     ...item,
@@ -272,175 +266,7 @@ function AgendaEditor({
   };
 
   // ============================================
-  // FILE UPLOAD HANDLER
-  // ============================================
-
-  const handleFileUpload = async (event) => {
-    const files = Array.from(event.target.files);
-    if (files.length === 0) return;
-
-    setIsUploading(true);
-    setError(null);
-
-    try {
-      const newFiles = [];
-      let allExtractedText = '';
-
-      for (const file of files) {
-        // Check file size
-        if (file.size > 10 * 1024 * 1024) {
-          throw new Error(`File ${file.name} is too large. Maximum size is 10MB.`);
-        }
-
-        // Validate file type
-        const allowedTypes = [
-          'text/plain',
-          'application/pdf',
-          'application/msword',
-          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-          'application/vnd.ms-powerpoint',
-          'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-          'application/vnd.ms-excel',
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          'image/jpeg',
-          'image/png',
-          'image/gif'
-        ];
-
-        const isValidType = allowedTypes.includes(file.type) || 
-                           ['.txt', '.pdf', '.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.jpg', '.jpeg', '.png', '.gif']
-                           .some(ext => file.name.toLowerCase().endsWith(ext));
-
-        if (!isValidType) {
-          throw new Error(`File type not supported: ${file.name}`);
-        }
-
-        // Upload to Supabase Storage
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-        const filePath = `meeting-attachments/${fileName}`;
-
-        console.log('Uploading file to Supabase:', { filePath, fileSize: file.size });
-
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('attachments')
-          .upload(filePath, file);
-
-        if (uploadError) {
-          throw new Error(`Upload failed: ${uploadError.message}`);
-        }
-
-        console.log('✅ File uploaded successfully:', uploadData);
-
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('attachments')
-          .getPublicUrl(filePath);
-
-        console.log('📎 Public URL generated:', publicUrl);
-
-        // Process file with AI
-        setIsProcessingFiles(true);
-        try {
-          console.log('🔄 Processing file with AI service...');
-          const processedFile = await processFileWithAI(publicUrl, file.name, file.type);
-          
-          console.log('✅ File processed:', processedFile);
-
-          if (processedFile.success && processedFile.extractedText) {
-            allExtractedText += `\n\n--- ${file.name} ---\n${processedFile.extractedText}`;
-          }
-
-          newFiles.push({
-            name: file.name,
-            url: publicUrl,
-            size: file.size,
-            type: file.type,
-            content: processedFile.extractedText || `[File: ${file.name}]`,
-            isProcessable: processedFile.success,
-            processed: true
-          });
-        } catch (processError) {
-          console.error('File processing error:', processError);
-          newFiles.push({
-            name: file.name,
-            url: publicUrl,
-            size: file.size,
-            type: file.type,
-            content: `[File: ${file.name} - Processing failed]`,
-            isProcessable: false,
-            processed: true
-          });
-        }
-      }
-
-      setUploadedFiles(prev => [...prev, ...newFiles]);
-      
-      if (allExtractedText.trim()) {
-        setAttachmentContent(prev => prev ? prev + allExtractedText : allExtractedText);
-      }
-
-      console.log('✅ All files processed:', { count: newFiles.length });
-
-    } catch (error) {
-      console.error('Upload error:', error);
-      setError(`Upload failed: ${error.message}`);
-    } finally {
-      setIsUploading(false);
-      setIsProcessingFiles(false);
-      event.target.value = '';
-    }
-  };
-
-  const removeFile = async (index) => {
-    const fileToRemove = uploadedFiles[index];
-    
-    try {
-      if (fileToRemove.url) {
-        const urlParts = fileToRemove.url.split('/');
-        const filePath = urlParts[urlParts.length - 1];
-        
-        console.log('Deleting file from storage:', filePath);
-        
-        const { error: deleteError } = await supabase.storage
-          .from('attachments')
-          .remove([`meeting-attachments/${filePath}`]);
-
-        if (deleteError) {
-          console.error('Error deleting file:', deleteError);
-        }
-      }
-    } catch (error) {
-      console.error('Error deleting file from storage:', error);
-    }
-
-    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
-    
-    if (fileToRemove.content && attachmentContent.includes(fileToRemove.content)) {
-      const newContent = attachmentContent.replace(fileToRemove.content, '').trim();
-      setAttachmentContent(newContent || '');
-    }
-  };
-
-  const getFileIcon = (fileType, fileName) => {
-    if (fileType.includes('image')) return <FileText size={14} color="#6b7280" />;
-    if (fileType.includes('pdf') || fileName.endsWith('.pdf')) return <FileText size={14} color="#dc2626" />;
-    if (fileType.includes('word') || fileName.endsWith('.doc') || fileName.endsWith('.docx')) return <FileText size={14} color="#2563eb" />;
-    if (fileType.includes('presentation') || fileName.endsWith('.ppt') || fileName.endsWith('.pptx')) return <FileText size={14} color="#dc2626" />;
-    if (fileType.includes('sheet') || fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) return <FileText size={14} color="#16a34a" />;
-    return <FileText size={14} color="#6b7280" />;
-  };
-
-  const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
-
-  // ============================================
-  // AI REGENERATION HANDLERS
+  // AI REGENERATION HANDLERS (UPDATED)
   // ============================================
 
   const handleRegenerate = async () => {
@@ -453,29 +279,40 @@ function AgendaEditor({
     setError(null);
 
     try {
-      console.log('🔄 Regenerating full agenda with attachments...', { 
+      console.log('🔄 重新生成完整议程（使用原始附件）...', { 
         currentLanguage,
-        hasAttachments: uploadedFiles.length > 0,
+        hasAttachment: !!attachmentContent,
       });
       
       const regeneratedData = await regenerateAgendaWithAI(
         agendaData, 
         currentLanguage,
-        attachmentContent,
-        uploadedFiles.length > 0 ? 'processed_files' : null
+        attachmentContent, // Use stored attachment content
+        attachmentType
       );
       
-      console.log('✅ Regenerated agenda data:', regeneratedData);
+      console.log('✅ 重新生成的议程数据:', regeneratedData);
 
       if (regeneratedData && onDataChange) {
-        onDataChange(regeneratedData);
+        const updatedData = {
+          ...agendaData,
+          agendaItems: regeneratedData.agendaItems || agendaData.agendaItems,
+          actionItems: regeneratedData.actionItems || agendaData.actionItems
+        };
+        
+        onDataChange(updatedData);
+        
+        // Update local action items state
+        if (regeneratedData.actionItems) {
+          setActionItems(regeneratedData.actionItems);
+        }
       }
 
       if (onRegenerationComplete) {
         onRegenerationComplete(regeneratedData);
       }
     } catch (error) {
-      console.error('❌ Error regenerating agenda:', error);
+      console.error('❌ 重新生成议程错误:', error);
       setError(error.message || t('actions.regenerateFailed'));
     } finally {
       setIsRegenerating(false);
@@ -494,7 +331,7 @@ function AgendaEditor({
     setError(null);
 
     try {
-      console.log('🔄 Regenerating agenda item with attachments...');
+      console.log('🔄 重新生成议程项（使用原始附件）...');
       
       const context = {
         meetingTitle: agendaData.meetingTitle,
@@ -506,11 +343,11 @@ function AgendaEditor({
         currentItem, 
         context, 
         currentLanguage,
-        attachmentContent,
-        uploadedFiles.length > 0 ? 'processed_files' : null
+        attachmentContent, // Use stored attachment content
+        attachmentType
       );
       
-      console.log('✅ Regenerated item data:', regeneratedItem);
+      console.log('✅ 重新生成的项目数据:', regeneratedItem);
 
       if (regeneratedItem) {
         const updatedItems = [...agendaItemsWithId];
@@ -521,7 +358,7 @@ function AgendaEditor({
         handleChange("agendaItems", updatedItems);
       }
     } catch (error) {
-      console.error('❌ Error regenerating agenda item:', error);
+      console.error('❌ 重新生成议程项错误:', error);
       setError(error.message || t('actions.regenerateItemFailed'));
     } finally {
       setIsGeneratingItem(null);
@@ -711,74 +548,35 @@ function AgendaEditor({
               />
             </div>
 
-            {/* File Upload */}
-            <div className="form-group">
-              <label>📎 {t('editor.attachments')} {uploadedFiles.length > 0 && `(${uploadedFiles.length})`}</label>
-              <div className="upload-area">
-                <input
-                  type="file"
-                  multiple
-                  onChange={handleFileUpload}
-                  disabled={isUploading || isProcessingFiles}
-                  accept=".txt,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.xls,.xlsx,.ppt,.pptx"
-                  className="file-input"
-                  id="file-upload"
-                />
-                <label htmlFor="file-upload" className="upload-label">
-                  <Upload size={24} />
-                  <span>
-                    {isUploading ? t('editor.uploading') : 
-                     isProcessingFiles ? t('editor.processingFiles') : 
-                     t('editor.uploadFiles')}
-                  </span>
-                  <span className="upload-hint">{t('editor.maxFileSize')}</span>
-                  <span className="upload-support">{t('editor.supportsAllFiles')}</span>
-                </label>
-              </div>
-
-              {uploadedFiles.length > 0 && (
-                <div className="uploaded-files-list">
-                  <h4>{t('editor.uploadedFiles')}:</h4>
-                  {uploadedFiles.map((file, index) => (
-                    <div key={index} className="file-item">
-                      <div className="file-icon">
-                        {getFileIcon(file.type, file.name)}
-                      </div>
-                      <div className="file-info">
-                        <div className="file-name">{file.name}</div>
-                        <div className="file-meta">
-                          {formatFileSize(file.size)} • 
-                          {file.isProcessable ? '✅ AI Ready' : '📁 Reference Only'} • 
-                          {file.type}
-                        </div>
-                      </div>
-                      <div className="file-actions">
-                        <a
-                          href={file.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn-file-view"
-                        >
-                          {t('editor.view')}
-                        </a>
-                        <button
-                          onClick={() => removeFile(index)}
-                          className="btn-file-remove"
-                        >
-                          <X size={14} />
-                        </button>
-                      </div>
+            {/* REMOVED: File Upload Section */}
+            {/* ADDED: Attachment Info Display */}
+            {initialFormData?.attachmentMetadata && initialFormData.attachmentMetadata.length > 0 && (
+              <div className="form-group">
+                <label>📎 {t('editor.attachmentsUsed') || '已使用的附件'}</label>
+                <div style={{ 
+                  padding: '12px', 
+                  backgroundColor: '#f0f9ff', 
+                  borderRadius: '8px',
+                  fontSize: '13px',
+                  color: '#0369a1'
+                }}>
+                  <div style={{ marginBottom: '8px', fontWeight: '500' }}>
+                    ✅ {initialFormData.attachmentMetadata.length} 个文件已用于AI生成
+                  </div>
+                  {initialFormData.attachmentMetadata.map((file, idx) => (
+                    <div key={idx} style={{ marginLeft: '12px', color: '#0c4a6e' }}>
+                      • {file.name} {file.isProcessable ? '(已处理)' : '(参考)'}
                     </div>
                   ))}
                   {attachmentContent && (
-                    <div className="attachment-status">
+                    <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #bae6fd' }}>
                       <BookOpen size={12} />
-                      ✅ {t('editor.aiUsingAttachment')} ({attachmentContent.length} characters)
+                      📝 AI已使用附件内容 ({attachmentContent.length} 字符)
                     </div>
                   )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
             <div className="form-row">
               <div className="form-group">
@@ -868,7 +666,6 @@ function AgendaEditor({
                     ))}
                   </div>
                 ) : (
-                
                   <div className="empty-state">
                     <p>{t('editor.noAgendaItems')}</p>
                     <button 
