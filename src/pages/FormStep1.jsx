@@ -185,23 +185,52 @@ function FormStep1({ onSubmit }) {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = validate();
+ // FormStep1.jsx - UPDATED handleSubmit
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const newErrors = validate();
+  
+  if (Object.keys(newErrors).length === 0) {
+    setIsSubmitting(true);
     
-    if (Object.keys(newErrors).length === 0) {
-      // 准备提交给 AI 的数据
+    try {
+      // Combine all extracted text from attachments
+      const attachmentContent = formData.attachments
+        .filter(att => att.isProcessable && att.extractedText)
+        .map(att => `--- ${att.name} ---\n${att.extractedText}`)
+        .join('\n\n');
+
+      // Prepare submit data with attachment info
       const submitData = {
         ...formData,
-        // 处理会议类型
         meetingType: formData.meetingType === 'other' ? formData.customMeetingType : formData.meetingType,
+        attachmentContent: attachmentContent || null,
+        attachmentType: formData.attachments.length > 0 ? 'processed_files' : null,
+        // Keep attachment metadata for reference
+        attachmentMetadata: formData.attachments.map(att => ({
+          name: att.name,
+          isProcessable: att.isProcessable,
+          url: att.url
+        }))
       };
+      
+      console.log('提交数据包含附件:', {
+        hasAttachmentContent: !!attachmentContent,
+        attachmentType: submitData.attachmentType,
+        fileCount: formData.attachments.length
+      });
+      
       onSubmit(submitData);
-    } else {
-      setErrors(newErrors);
+    } catch (error) {
+      console.error('提交错误:', error);
+      setErrors({ submit: '提交失败，请重试' });
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
+  } else {
+    setErrors(newErrors);
+  }
+};
   const getPlaceholder = (field) => {
     const placeholders = {
       meetingTitle: {
