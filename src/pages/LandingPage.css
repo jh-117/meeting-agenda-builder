@@ -798,8 +798,10 @@ a:focus-visible {
   opacity: 1;
 }
 
-.company-name {
-  font-size: 1rem;
-  color: #cbd5e1;
-  font-weight: 500;
+/* If you need to adjust the logo size or appearance, you can modify these properties: */
+.powered-by-logo {
+  height: 2rem; /* Adjust height as needed */
+  width: auto; /* Maintain aspect ratio */
+  max-width: 120px; /* Optional: set maximum width */
+  filter: brightness(0.9); /* Optional: adjust brightness if needed */
 }
