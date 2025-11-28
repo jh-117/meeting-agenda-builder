@@ -155,22 +155,17 @@ function LandingPage({ onStart }) {
         </div>
       </motion.div>
 
-      {/* Powered by section at the bottom */}
+     {/* Powered by section at the bottom */}
       <motion.div className="powered-by-section" variants={itemVariants}>
         <div className="powered-by-content">
           <p className="powered-by-text">Powered by</p>
-          {/* Uncomment and add your logo import at the top */}
-          {/* <img
+          <img
             src={kadoshLogo}
             alt="Kadosh AI"
             className="powered-by-logo"
-          /> */}
-          {/* Or use text if no logo */}
-          <span className="company-name">Kadosh AI</span>
+          />
         </div>
       </motion.div>
     </motion.div>
   );
 }
-
-export default LandingPage;
