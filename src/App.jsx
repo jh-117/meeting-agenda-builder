@@ -18,6 +18,7 @@ function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
   const [agendaData, setAgendaData] = useState(null);
+  const [formData, setFormData] = useState(null); // NEW: Store original form data
   const [isGenerating, setIsGenerating] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { notification, showNotification, hideNotification } = useNotification();
@@ -27,27 +28,58 @@ function AppContent() {
     if (location.state?.agendaData) {
       setAgendaData(location.state.agendaData);
     }
+    if (location.state?.formData) {
+      setFormData(location.state.formData); // NEW: Store form data from navigation
+    }
   }, [location.state]);
 
   const handleStartClick = () => {
     navigate('/form');
   };
 
-  const handleStep1Submit = async (formData) => {
+  // UPDATED: handleStep1Submit with attachment data
+  const handleStep1Submit = async (submitData) => {
     setIsGenerating(true);
     try {
       console.log("🔤 App.jsx - Current language:", i18n.language);
+      console.log("📎 App.jsx - Processing with attachments:", {
+        hasAttachmentContent: !!submitData.attachmentContent,
+        attachmentType: submitData.attachmentType,
+        fileCount: submitData.attachments?.length || 0
+      });
 
-      const generatedAgenda = await generateAgendaWithAI(formData, i18n.language);
+      // Store original form data for regeneration
+      setFormData(submitData);
+
+      // Generate agenda with AI using attachment content
+      const generatedAgenda = await generateAgendaWithAI(
+        submitData, 
+        i18n.language,
+        submitData.attachmentContent,
+        submitData.attachmentType
+      );
 
       const completeAgendaData = {
-        ...formData,
-        ...generatedAgenda,
+        meetingTitle: submitData.meetingTitle,
+        meetingDate: submitData.meetingDate,
+        meetingTime: submitData.meetingTime,
+        duration: submitData.duration,
+        location: submitData.location,
+        facilitator: submitData.facilitator,
+        noteTaker: submitData.noteTaker,
+        meetingObjective: submitData.meetingObjective,
+        agendaItems: generatedAgenda.agendaItems || [],
+        actionItems: generatedAgenda.actionItems || []
       };
 
       setAgendaData(completeAgendaData);
 
-      navigate('/preview', { state: { agendaData: completeAgendaData } });
+      navigate('/preview', { 
+        state: { 
+          agendaData: completeAgendaData,
+          formData: submitData // NEW: Pass form data to preview
+        } 
+      });
 
       showNotification('✨ Agenda generated successfully!', 'success');
     } catch (error) {
@@ -61,14 +93,31 @@ function AppContent() {
   const handleReset = () => {
     navigate('/');
     setAgendaData(null);
+    setFormData(null); // NEW: Reset form data
   };
 
+  // UPDATED: handleRegenerateAgenda with attachment data
   const handleRegenerateAgenda = async () => {
+    if (!formData) {
+      console.error('No form data available for regeneration');
+      showNotification('❌ Cannot regenerate: Missing original form data', 'error');
+      return;
+    }
+
     setIsGenerating(true);
     try {
       console.log("🔤 App.jsx - Regenerating with language:", i18n.language);
+      console.log("📎 App.jsx - Regenerating with stored attachments:", {
+        hasAttachmentContent: !!formData.attachmentContent,
+        attachmentType: formData.attachmentType
+      });
 
-      const regeneratedAgenda = await regenerateAgendaWithAI(agendaData, i18n.language);
+      const regeneratedAgenda = await regenerateAgendaWithAI(
+        agendaData, 
+        i18n.language,
+        formData.attachmentContent, // Use stored attachment content
+        formData.attachmentType
+      );
 
       const updatedAgendaData = {
         ...agendaData,
@@ -83,6 +132,16 @@ function AppContent() {
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  // NEW: Handle edit from preview page
+  const handleEditAgenda = () => {
+    navigate('/editor', { 
+      state: { 
+        agendaData: agendaData,
+        formData: formData // Pass form data to editor
+      } 
+    });
   };
 
   return (
@@ -104,12 +163,20 @@ function AppContent() {
               />
             }
           />
-          <Route path="/preview" element={<AIPreviewPage />} />
+          <Route 
+            path="/preview" 
+            element={
+              <AIPreviewPage 
+                onEdit={handleEditAgenda} // NEW: Pass edit handler
+              />
+            } 
+          />
           <Route
             path="/editor"
             element={
               <AgendaEditor
                 agendaData={agendaData}
+                initialFormData={formData} // NEW: Pass stored form data with attachments
                 onReset={handleReset}
                 onDataChange={setAgendaData}
                 onRegenerate={handleRegenerateAgenda}
