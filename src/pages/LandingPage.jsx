@@ -155,4 +155,14 @@ function LandingPage({ onStart }) {
   );
 }
 
+{/* Powered by section at the bottom */}
+        <div className="py-6 border-t border-slate-800 text-center bg-slate-950">
+          <p className="text-sm text-slate-400 mb-3">Powered by</p>
+          <img
+            src={kadoshLogo}
+            alt="Kadosh AI"
+            className="mx-auto h-8"
+          />
+        </div>
+
 export default LandingPage;
