@@ -52,6 +52,7 @@ function LandingPage({ onStart }) {
       animate="visible"
     >
       {/* Language Selector */}
+      <BackgroundMusic src={themeMusic} />
       <motion.div className="language-selector" variants={itemVariants}>
         {languages.map((lang) => (
           <button
