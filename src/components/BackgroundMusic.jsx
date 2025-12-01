@@ -5,13 +5,11 @@ const BackgroundMusic = ({ src }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
 
-  // Initialize audio object once
   useEffect(() => {
     audioRef.current = new Audio(src);
-    audioRef.current.loop = true; // Make it loop endlessly
-    audioRef.current.volume = 0.5; // Set volume to 50% so it's not too loud
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.3; // Lowered to 30% for background music
 
-    // Cleanup on unmount
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -26,7 +24,6 @@ const BackgroundMusic = ({ src }) => {
     if (isPlaying) {
       audioRef.current.pause();
     } else {
-      // Browser requires user interaction to play audio
       audioRef.current.play().catch(error => {
         console.error("Audio playback failed:", error);
       });
@@ -37,28 +34,38 @@ const BackgroundMusic = ({ src }) => {
   return (
     <button
       onClick={toggleMusic}
-      className={`fixed bottom-6 left-6 z-50 p-3 rounded-full shadow-lg transition-all duration-300 group ${
-        isPlaying 
-          ? 'bg-green-500 text-white hover:bg-green-600 ring-4 ring-green-500/30' 
-          : 'bg-slate-700 text-slate-400 hover:bg-slate-600 hover:text-white'
-      }`}
+      style={{
+        position: 'fixed',
+        bottom: '1.5rem',
+        left: '1.5rem',
+        zIndex: 9999,
+        padding: '0.75rem',
+        borderRadius: '50%',
+        border: 'none',
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        backgroundColor: isPlaying ? 'rgba(99, 102, 241, 0.9)' : 'rgba(51, 65, 85, 0.8)',
+        color: 'white',
+        boxShadow: isPlaying 
+          ? '0 8px 16px rgba(99, 102, 241, 0.4), 0 0 0 4px rgba(99, 102, 241, 0.2)' 
+          : '0 4px 12px rgba(0, 0, 0, 0.3)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'scale(1.1)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'scale(1)';
+      }}
       aria-label={isPlaying ? "Mute Music" : "Play Music"}
       title={isPlaying ? "Pause Music" : "Play Music"}
     >
-      <div className="relative flex items-center justify-center">
-        {isPlaying ? (
-          <>
-            <Music size={24} className="animate-pulse" />
-            {/* Optional: Visual sound wave effect */}
-            <span className="absolute -top-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-200 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-400"></span>
-            </span>
-          </>
-        ) : (
-          <VolumeX size={24} />
-        )}
-      </div>
+      {isPlaying ? (
+        <Music size={20} style={{ display: 'block' }} />
+      ) : (
+        <VolumeX size={20} style={{ display: 'block' }} />
+      )}
     </button>
   );
 };
