@@ -52,7 +52,7 @@ function LandingPage({ onStart }) {
       animate="visible"
     >
       {/* Language Selector */}
-      <BackgroundMusic src={themeMusic} />
+      
       <motion.div className="language-selector" variants={itemVariants}>
         {languages.map((lang) => (
           <button
@@ -68,6 +68,7 @@ function LandingPage({ onStart }) {
 
       {/* Hero Section */}
       <motion.div className="hero-section" variants={itemVariants}>
+        <BackgroundMusic src={themeMusic} />
         <div className="hero-content">
           <div className="hero-badge">
           
