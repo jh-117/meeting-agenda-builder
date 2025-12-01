@@ -45,6 +45,7 @@ function LandingPage({ onStart }) {
   ];
 
   return (
+    <BackgroundMusic src={themeMusic} />
     <motion.div
       className="landing-page"
       variants={containerVariants}
@@ -54,7 +55,7 @@ function LandingPage({ onStart }) {
       {/* Language Selector */}
       
       <motion.div className="language-selector" variants={itemVariants}>
-        <BackgroundMusic src={themeMusic} />
+        
         {languages.map((lang) => (
           <button
             key={lang.code}
