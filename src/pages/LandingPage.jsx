@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import './LandingPage.css';
 import kadoshLogo from '../assets/kadoshAI.png'
 import BackgroundMusic from '../components/BackgroundMusic';
-import themeMusic from '../assets/scan-theme.mp3';
+import themeMusic from '../assets/agenda-theme.mp3';
 
 // Import your logo - make sure to add this import
 // import kadoshLogo from './path-to-your-logo/kadosh-logo.png';
