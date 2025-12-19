@@ -1,36 +1,36 @@
-// supabase/functions/agenda-generator/index.ts
-
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
+};
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+Deno.serve(async (req: Request) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      status: 200,
+      headers: corsHeaders,
+    });
   }
 
   try {
-    const { 
-      action, 
-      formData, 
-      agendaData, 
-      itemData, 
-      context, 
+    const {
+      action,
+      formData,
+      agendaData,
+      itemData,
+      context,
       language = "zh",
       attachmentContent = null,
       attachmentType = null
     } = await req.json()
 
-    // 从环境变量获取 OpenAI API Key
-    const openaiApiKey = Deno.env.get('Agenda_generator')
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY')
     if (!openaiApiKey) {
-      throw new Error('OpenAI API Key not configured')
+      throw new Error('OpenAI API Key not configured. Please set OPENAI_API_KEY environment variable.')
     }
 
-    // 语言配置 - 强化提示词以强制使用附件内容
     const languageConfig = {
       zh: {
         systemPrompt: "你是一个专业的会议议程生成助手。请用正式、专业的商务中文回复。所有议程项和行动项都使用中文。\n\n重要：你必须基于提供的附件内容创建具体、详细的议程项，不要生成通用的议程模板。",
@@ -74,124 +74,23 @@ serve(async (req) => {
 
     let prompt = ""
 
-    // Build attachment context if available
     let attachmentContext = ""
     if (attachmentContent) {
       attachmentContext = `\n\n${config.attachmentContext}\n${attachmentContent}\n`
       
-      // Add type information if available
       if (attachmentType) {
         attachmentContext = `\n\n${config.attachmentContext} (${attachmentType})\n${attachmentContent}\n`
       }
     }
 
     if (action === "generate") {
-      prompt = `${config.systemPrompt}
-
-${config.generatePrompt}
-
-${config.attachmentInstruction}
-
-${config.attachmentContext}
-${attachmentContext}
-
-Meeting Information:
-- Title: ${formData.meetingTitle}
-- Date: ${formData.meetingDate}
-- Time: ${formData.meetingTime}
-- Duration: ${formData.duration} minutes
-- Location: ${formData.location}
-- Meeting Type: ${formData.meetingType}
-- Facilitator: ${formData.facilitator}
-- Attendees: ${formData.attendees || "Not specified"}
-- Objective: ${formData.meetingObjective}
-${formData.additionalInfo ? `- Additional Info: ${formData.additionalInfo}` : ""}
-
-${config.jsonInstruction}
-{
-  "agendaItems": [
-    {
-      "topic": "string (MUST be specific and reference attachment content)",
-      "owner": "string (person responsible for this topic)",
-      "timeAllocation": number (in minutes),
-      "description": "string (what will be discussed - MUST reference attachment details)",
-      "expectedOutput": "string (what should be decided or delivered)"
-    }
-  ],
-  "actionItems": [
-    {
-      "task": "string",
-      "owner": "string",
-      "deadline": "YYYY-MM-DD"
-    }
-  ]
-}
-
-Generate between 4-8 agenda items based on the meeting duration of ${formData.duration} minutes. Distribute time proportionally.`
+      prompt = `${config.systemPrompt}\n\n${config.generatePrompt}\n\n${config.attachmentInstruction}\n\n${config.attachmentContext}\n${attachmentContext}\n\nMeeting Information:\n- Title: ${formData.meetingTitle}\n- Date: ${formData.meetingDate}\n- Time: ${formData.meetingTime}\n- Duration: ${formData.duration} minutes\n- Location: ${formData.location}\n- Meeting Type: ${formData.meetingType}\n- Facilitator: ${formData.facilitator}\n- Attendees: ${formData.attendees || "Not specified"}\n- Objective: ${formData.meetingObjective}\n${formData.additionalInfo ? `- Additional Info: ${formData.additionalInfo}` : ""}\n\n${config.jsonInstruction}\n{\n  "agendaItems": [\n    {\n      "topic": "string (MUST be specific and reference attachment content)",\n      "owner": "string (person responsible for this topic)",\n      "timeAllocation": number (in minutes),\n      "description": "string (what will be discussed - MUST reference attachment details)",\n      "expectedOutput": "string (what should be decided or delivered)"\n    }\n  ],\n  "actionItems": [\n    {\n      "task": "string",\n      "owner": "string",\n      "deadline": "YYYY-MM-DD"\n    }\n  ]\n}\n\nGenerate between 4-8 agenda items based on the meeting duration of ${formData.duration} minutes. Distribute time proportionally.`
 
     } else if (action === "regenerate") {
-      prompt = `${config.systemPrompt}
-
-${config.regeneratePrompt}
-
-${config.attachmentInstruction}
-
-Current agenda items:
-${agendaData.agendaItems.map((item) => `- ${item.topic} (${item.timeAllocation}min) - ${item.description}`).join("\n")}
-
-Meeting context:
-- Title: ${agendaData.meetingTitle}
-- Duration: ${agendaData.duration} minutes
-- Objective: ${agendaData.meetingObjective}
-${attachmentContext}
-
-${config.jsonInstruction}
-{
-  "agendaItems": [
-    {
-      "topic": "string (MUST reference attachment content)",
-      "owner": "string",
-      "timeAllocation": number,
-      "description": "string (MUST use attachment details)",
-      "expectedOutput": "string"
-    }
-  ],
-  "actionItems": [
-    {
-      "task": "string",
-      "owner": "string",
-      "deadline": "YYYY-MM-DD"
-    }
-  ]
-}`
+      prompt = `${config.systemPrompt}\n\n${config.regeneratePrompt}\n\n${config.attachmentInstruction}\n\nCurrent agenda items:\n${agendaData.agendaItems.map((item) => `- ${item.topic} (${item.timeAllocation}min) - ${item.description}`).join("\n")}\n\nMeeting context:\n- Title: ${agendaData.meetingTitle}\n- Duration: ${agendaData.duration} minutes\n- Objective: ${agendaData.meetingObjective}\n${attachmentContext}\n\n${config.jsonInstruction}\n{\n  "agendaItems": [\n    {\n      "topic": "string (MUST reference attachment content)",\n      "owner": "string",\n      "timeAllocation": number,\n      "description": "string (MUST use attachment details)",\n      "expectedOutput": "string"\n    }\n  ],\n  "actionItems": [\n    {\n      "task": "string",\n      "owner": "string",\n      "deadline": "YYYY-MM-DD"\n    }\n  ]\n}`
 
     } else if (action === "regenerate_item") {
-      prompt = `${config.systemPrompt}
-
-${config.regenerateItemPrompt}
-
-${config.attachmentInstruction}
-
-Current item:
-- Topic: ${itemData.topic}
-- Description: ${itemData.description}
-- Time Allocation: ${itemData.timeAllocation} minutes
-${itemData.owner ? `- Owner: ${itemData.owner}` : ""}
-${itemData.expectedOutput ? `- Expected Output: ${itemData.expectedOutput}` : ""}
-
-Meeting context:
-- Title: ${context.meetingTitle}
-- Objective: ${context.meetingObjective}
-${attachmentContext}
-
-Please regenerate ONLY this single agenda item, returning valid JSON:
-{
-  "topic": "string (MUST reference attachment content)",
-  "owner": "string",
-  "timeAllocation": number,
-  "description": "string (MUST use attachment details)",
-  "expectedOutput": "string"
-}`
+      prompt = `${config.systemPrompt}\n\n${config.regenerateItemPrompt}\n\n${config.attachmentInstruction}\n\nCurrent item:\n- Topic: ${itemData.topic}\n- Description: ${itemData.description}\n- Time Allocation: ${itemData.timeAllocation} minutes\n${itemData.owner ? `- Owner: ${itemData.owner}` : ""}\n${itemData.expectedOutput ? `- Expected Output: ${itemData.expectedOutput}` : ""}\n\nMeeting context:\n- Title: ${context.meetingTitle}\n- Objective: ${context.meetingObjective}\n${attachmentContext}\n\nPlease regenerate ONLY this single agenda item, returning valid JSON:\n{\n  "topic": "string (MUST reference attachment content)",\n  "owner": "string",\n  "timeAllocation": number,\n  "description": "string (MUST use attachment details)",\n  "expectedOutput": "string"\n}`
 
     } else {
       throw new Error("Invalid action")
@@ -199,7 +98,6 @@ Please regenerate ONLY this single agenda item, returning valid JSON:
 
     console.log("AI Prompt:", prompt)
 
-    // 调用 OpenAI API
     const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -230,7 +128,6 @@ Please regenerate ONLY this single agenda item, returning valid JSON:
 
     console.log("AI Response:", content)
 
-    // 清理可能的 markdown 代码块
     const cleanedContent = content
       .replace(/```json\n?/g, "")
       .replace(/```\n?/g, "")
