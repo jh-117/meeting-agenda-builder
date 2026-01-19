@@ -167,9 +167,9 @@
 .dark .form-group input,
 .dark .form-group textarea,
 .dark .form-group select {
-  background: var(--bg-dark-secondary);
-  border-color: var(--border-dark);
-  color: var(--text-dark);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;           /* Added: Stops the arrow from repeating */
+  background-position: right 12px center; /* Added: Keeps the arrow aligned correctly */
 }
 
 .form-group input:focus,
