@@ -163,19 +163,32 @@ function LandingPage({ onStart }) {
           </div>
         </motion.div>
 
-        {/* Powered by section at the bottom */}
-        <motion.div className="powered-by-section" variants={itemVariants}>
-          <div className="powered-by-content">
-            <p className="powered-by-text">Powered by</p>
-            <img
-              src={kadoshLogo}
-              alt="Kadosh AI"
-              className="powered-by-logo"
-            />
+        {/* Footer / Copyright Section */}
+        <motion.div className="footer-section" variants={itemVariants}>
+          <div className="footer-content">
+            {/* Top Row: Privacy Policy */}
+            <a href="/privacy" className="privacy-link">
+              Privacy Policy
+            </a>
+
+            {/* Bottom Row: Copyright + Logo + Rights */}
+            <div className="copyright-line">
+              <span>Copyright © 2026</span>
+              <img
+                src={kadoshLogo}
+                alt="Kadosh AI"
+                className="footer-logo-inline"
+              />
+              <span>All rights reserved</span>
+            </div>
           </div>
         </motion.div>
       </motion.div>
     </>
+  );
+}
+
+export default LandingPage;
   );
 }
 
