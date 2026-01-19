@@ -8,6 +8,7 @@ import LandingPage from './pages/LandingPage';
 import FormStep1 from './pages/FormStep1';
 import AgendaEditor from './pages/AgendaEditor';
 import AIPreviewPage from './pages/AIPreviewPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 import NotificationToast from './components/NotificationToast';
 import ThemeToggle from './components/ThemeToggle';
@@ -154,6 +155,7 @@ function AppContent() {
       <div className="app-content">
         <Routes>
           <Route path="/" element={<LandingPage onStart={handleStartClick} />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route
             path="/form"
             element={
@@ -163,13 +165,13 @@ function AppContent() {
               />
             }
           />
-          <Route 
-            path="/preview" 
+          <Route
+            path="/preview"
             element={
-              <AIPreviewPage 
+              <AIPreviewPage
                 onEdit={handleEditAgenda} // NEW: Pass edit handler
               />
-            } 
+            }
           />
           <Route
             path="/editor"
