@@ -167,9 +167,9 @@
 .dark .form-group input,
 .dark .form-group textarea,
 .dark .form-group select {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;           /* Added: Stops the arrow from repeating */
-  background-position: right 12px center; /* Added: Keeps the arrow aligned correctly */
+  background: var(--bg-dark-secondary);
+  border-color: var(--border-dark);
+  color: var(--text-dark);
 }
 
 .form-group input:focus,
@@ -568,15 +568,22 @@
 }
 
 /* 选择框样式增强 */
+/* Base style for the dropdown arrow (Light Mode) */
 .form-group select {
   appearance: none;
+  /* Dark Grey Arrow */
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 12px center;
   background-repeat: no-repeat;
-  background-size: 16px;
+  background-size: 16px; /* This keeps the arrow small */
   padding-right: 40px;
 }
 
+/* Override style for the dropdown arrow (Dark Mode) */
 .dark .form-group select {
+  /* White Arrow */
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px; /* Force the size again to be safe */
 }
