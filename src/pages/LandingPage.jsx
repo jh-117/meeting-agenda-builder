@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Zap, Download, Edit } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -7,11 +7,9 @@ import kadoshLogo from '../assets/kadoshAI.png'
 import BackgroundMusic from '../components/BackgroundMusic';
 import themeMusic from '../assets/agenda-theme.mp3';
 
-// Import your logo - make sure to add this import
-// import kadoshLogo from './path-to-your-logo/kadosh-logo.png';
-
-function LandingPage({ onStart }) {
+function LandingPage({ onStart, onPrivacyPolicyClick }) {
   const { t, i18n } = useTranslation();
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   /**
    * 切换语言并保存到 localStorage
@@ -56,9 +54,7 @@ function LandingPage({ onStart }) {
         animate="visible"
       >
         {/* Language Selector */}
-        
         <motion.div className="language-selector" variants={itemVariants}>
-          
           {languages.map((lang) => (
             <button
               key={lang.code}
@@ -162,22 +158,37 @@ function LandingPage({ onStart }) {
             </motion.button>
           </div>
         </motion.div>
+      </motion.div>
 
-        {/* Powered by section at the bottom */}
-        <motion.div className="powered-by-section" variants={itemVariants}>
-          <div className="powered-by-content">
-            <p className="powered-by-text">Powered by</p>
+      {/* Footer - Updated to match correct example structure */}
+      <footer className="bg-white border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex flex-col items-center justify-center space-y-6 mb-6">
+            {/* Privacy Policy Link - Matching structure from correct example */}
+            <div className="text-center">
+              <button
+                onClick={onPrivacyPolicyClick || (() => setShowPrivacyModal(true))}
+                className="text-gray-600 hover:text-indigo-600 font-medium transition-colors text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 rounded px-2 py-1"
+              >
+                Privacy Policy
+              </button>
+            </div>
+          </div>
+
+          {/* Copyright Footer Row - Matching structure from correct example */}
+          <div className="flex items-center justify-center text-gray-400 text-sm gap-3">
+            <span>Copyright © {new Date().getFullYear()}</span>
             <img
               src={kadoshLogo}
               alt="Kadosh AI"
-              className="powered-by-logo"
+              className="h-5 w-auto object-contain"
             />
+            <span>All rights reserved</span>
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </footer>
     </>
   );
 }
-
 
 export default LandingPage;
