@@ -189,8 +189,3 @@ function LandingPage({ onStart }) {
 }
 
 export default LandingPage;
-  );
-}
-
-
-export default LandingPage;
