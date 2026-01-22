@@ -397,28 +397,77 @@
   width: 64px;
   height: 64px;
   margin: 0 auto var(--spacing-md);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
   border-radius: var(--radius-md);
   transition: all var(--transition-normal);
 }
 
-.dark .feature-icon-wrapper {
-  background: linear-gradient(135deg, rgba(129, 140, 248, 0.15), rgba(236, 72, 153, 0.15));
+.feature-icon-blue {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.feature-icon-purple {
+  background: rgba(168, 85, 247, 0.15);
+}
+
+.feature-icon-green {
+  background: rgba(34, 197, 94, 0.15);
+}
+
+.dark .feature-icon-blue {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.dark .feature-icon-purple {
+  background: rgba(168, 85, 247, 0.2);
+}
+
+.dark .feature-icon-green {
+  background: rgba(34, 197, 94, 0.2);
 }
 
 .feature-card:hover .feature-icon-wrapper {
   transform: scale(1.1) rotate(5deg);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2));
+}
+
+.feature-card:hover .feature-icon-blue {
+  background: rgba(59, 130, 246, 0.25);
+}
+
+.feature-card:hover .feature-icon-purple {
+  background: rgba(168, 85, 247, 0.25);
+}
+
+.feature-card:hover .feature-icon-green {
+  background: rgba(34, 197, 94, 0.25);
 }
 
 .feature-icon {
   width: 32px;
   height: 32px;
-  color: var(--primary-light);
 }
 
-.dark .feature-icon {
-  color: var(--primary-dark);
+.feature-icon-blue .feature-icon {
+  color: #3b82f6;
+}
+
+.feature-icon-purple .feature-icon {
+  color: #a855f7;
+}
+
+.feature-icon-green .feature-icon {
+  color: #22c55e;
+}
+
+.dark .feature-icon-blue .feature-icon {
+  color: #60a5fa;
+}
+
+.dark .feature-icon-purple .feature-icon {
+  color: #c084fc;
+}
+
+.dark .feature-icon-green .feature-icon {
+  color: #4ade80;
 }
 
 .feature-card h3 {
@@ -521,14 +570,26 @@
 }
 
 .process-step h4 {
-  font-size: clamp(15px, 1.6vw, 17px);
-  font-weight: 600;
+  font-size: clamp(16px, 1.8vw, 18px);
+  font-weight: 700;
   color: var(--text-light);
   line-height: 1.5;
+  margin-bottom: var(--spacing-sm);
 }
 
 .dark .process-step h4 {
   color: var(--text-dark);
+}
+
+.process-step p {
+  font-size: clamp(14px, 1.5vw, 15px);
+  line-height: 1.6;
+  color: var(--text-light-secondary);
+  margin: 0;
+}
+
+.dark .process-step p {
+  color: var(--text-dark-secondary);
 }
 
 /* ==================== CTA Section ==================== */

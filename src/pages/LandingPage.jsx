@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Download, Edit } from 'lucide-react';
+import { Upload, Search, Shield } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import './LandingPage.css';
 import kadoshLogo from '../assets/kadoshAI.png'
@@ -98,25 +98,24 @@ function LandingPage({ onStart }) {
 
         {/* Features Section */}
         <motion.div className="features-section" variants={itemVariants}>
-          <h2>{t('landing.featuresTitle')}</h2>
           <div className="features-grid">
             <div className="feature-card">
-              <div className="feature-icon-wrapper">
-                <Zap className="feature-icon" />
+              <div className="feature-icon-wrapper feature-icon-blue">
+                <Upload className="feature-icon" />
               </div>
               <h3>{t('landing.feature1Title')}</h3>
               <p>{t('landing.feature1Desc')}</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon-wrapper">
-                <Download className="feature-icon" />
+              <div className="feature-icon-wrapper feature-icon-purple">
+                <Search className="feature-icon" />
               </div>
               <h3>{t('landing.feature2Title')}</h3>
               <p>{t('landing.feature2Desc')}</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon-wrapper">
-                <Edit className="feature-icon" />
+              <div className="feature-icon-wrapper feature-icon-green">
+                <Shield className="feature-icon" />
               </div>
               <h3>{t('landing.feature3Title')}</h3>
               <p>{t('landing.feature3Desc')}</p>
@@ -130,19 +129,18 @@ function LandingPage({ onStart }) {
           <div className="process-steps">
             <div className="process-step">
               <div className="step-number">1</div>
-              <h4>{t('landing.step1')}</h4>
+              <h4>{t('landing.step1Title')}</h4>
+              <p>{t('landing.step1Desc')}</p>
             </div>
             <div className="process-step">
               <div className="step-number">2</div>
-              <h4>{t('landing.step2')}</h4>
+              <h4>{t('landing.step2Title')}</h4>
+              <p>{t('landing.step2Desc')}</p>
             </div>
             <div className="process-step">
               <div className="step-number">3</div>
-              <h4>{t('landing.step3')}</h4>
-            </div>
-            <div className="process-step">
-              <div className="step-number">4</div>
-              <h4>{t('landing.step4')}</h4>
+              <h4>{t('landing.step3Title')}</h4>
+              <p>{t('landing.step3Desc')}</p>
             </div>
           </div>
         </motion.div>
