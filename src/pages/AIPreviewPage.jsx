@@ -110,17 +110,6 @@ function AIPreviewPage() {
           <CheckCircle size={20} />
           <span>{t('aiPreview.aiGenerated')}</span>
         </div>
-
-        <button
-          onClick={handleDownload}
-          disabled={isExporting}
-          className="btn-action primary"
-        >
-          <Download size={16} style={{
-            animation: isExporting ? 'spin 1s linear infinite' : 'none'
-          }} />
-          {isExporting ? t('aiPreview.downloadingAs') : `${t('aiPreview.downloadAs')} ${exportFormat.toUpperCase()}`}
-        </button>
       </div>
 
       {error && (
@@ -266,12 +255,28 @@ function AIPreviewPage() {
 
           <div className="action-buttons">
             <button
+              onClick={handleDownload}
+              disabled={isExporting}
+              className="btn-action primary"
+            >
+              <Download size={16} style={{
+                animation: isExporting ? 'spin 1s linear infinite' : 'none'
+              }} />
+              {isExporting ? t('aiPreview.downloadingAs') : `${t('aiPreview.downloadAs')} ${exportFormat.toUpperCase()}`}
+            </button>
+
+            <button
               onClick={handleEdit}
               className="btn-action secondary"
             >
               <Edit3 size={16} />
               {t('actions.editAgenda')}
             </button>
+          </div>
+
+          <div className="tip-box">
+            <h4>💡 {t('aiPreview.tip')}</h4>
+            <p>{t('aiPreview.tipContent')}</p>
           </div>
         </div>
       </div>
