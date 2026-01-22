@@ -56,19 +56,20 @@ function LandingPage({ onStart }) {
         animate="visible"
       >
         {/* Language Selector */}
-        
+
         <motion.div className="language-selector" variants={itemVariants}>
-          
-          {languages.map((lang) => (
-            <button
-              key={lang.code}
-              className={i18n.language === lang.code ? 'active' : ''}
-              onClick={() => changeLanguage(lang.code)}
-              aria-label={`Switch to ${lang.name}`}
-            >
-              {lang.nativeName}
-            </button>
-          ))}
+          <select
+            value={i18n.language}
+            onChange={(e) => changeLanguage(e.target.value)}
+            className="language-dropdown"
+            aria-label="Select language"
+          >
+            {languages.map((lang) => (
+              <option key={lang.code} value={lang.code}>
+                {lang.nativeName}
+              </option>
+            ))}
+          </select>
         </motion.div>
 
         {/* Hero Section */}

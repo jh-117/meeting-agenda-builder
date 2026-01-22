@@ -90,56 +90,53 @@
   position: fixed;
   top: 20px;
   right: 80px;
-  display: flex;
-  gap: var(--spacing-xs);
   z-index: 1000;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  max-width: calc(90vw - 80px);
 }
 
-.language-selector button {
+.language-dropdown {
   background: var(--bg-light-secondary);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
-  padding: 8px 16px;
-  font-size: 13px;
+  padding: 10px 36px 10px 16px;
+  font-size: 14px;
   cursor: pointer;
   transition: all var(--transition-fast);
-  color: var(--text-light-secondary);
+  color: var(--text-light);
   font-weight: 500;
-  white-space: nowrap;
-  min-width: 60px;
-  text-align: center;
+  min-width: 140px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
 }
 
-.dark .language-selector button {
+.dark .language-dropdown {
   background: var(--bg-dark-secondary);
   border-color: var(--border-dark);
-  color: var(--text-dark-secondary);
-}
-
-.language-selector button:hover {
-  background: var(--bg-light-tertiary);
-  border-color: var(--primary-light);
-  color: var(--text-light);
-}
-
-.dark .language-selector button:hover {
-  background: var(--bg-dark-tertiary);
-  border-color: var(--primary-dark);
   color: var(--text-dark);
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f9fafb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
 }
 
-.language-selector button.active {
-  background: var(--primary-light);
-  color: white;
+.language-dropdown:hover {
+  background-color: var(--bg-light-tertiary);
   border-color: var(--primary-light);
 }
 
-.dark .language-selector button.active {
-  background: var(--primary-dark);
+.dark .language-dropdown:hover {
+  background-color: var(--bg-dark-tertiary);
   border-color: var(--primary-dark);
+}
+
+.language-dropdown:focus {
+  outline: none;
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.dark .language-dropdown:focus {
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
 }
 
 /* ==================== Hero Section ==================== */
@@ -663,13 +660,12 @@
   .language-selector {
     top: 15px;
     right: 15px;
-    gap: 6px;
   }
 
-  .language-selector button {
-    padding: 6px 12px;
-    font-size: 12px;
-    min-width: 50px;
+  .language-dropdown {
+    padding: 8px 32px 8px 12px;
+    font-size: 13px;
+    min-width: 120px;
   }
 
   .features-section,
@@ -729,16 +725,14 @@
   }
 
   .language-selector {
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    max-width: 100%;
-    gap: 6px;
+    top: 10px;
+    right: 10px;
   }
 
-  .language-selector button {
-    padding: 4px 8px;
-    font-size: 11px;
-    min-width: 45px;
+  .language-dropdown {
+    padding: 6px 28px 6px 10px;
+    font-size: 12px;
+    min-width: 110px;
   }
 
   .hero-title {
