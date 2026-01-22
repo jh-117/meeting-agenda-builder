@@ -156,9 +156,8 @@ function AIPreviewPage() {
         </div>
       )}
 
-      <div className="preview-grid">
-        {/* Preview Panel */}
-        <div className="preview-panel">
+      {/* Preview Panel */}
+      <div className="preview-panel">
           <h2>📋 {t('aiPreview.agendaPreview')}</h2>
 
           <div style={{ marginBottom: '24px' }}>
@@ -258,15 +257,6 @@ function AIPreviewPage() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Side Panel - Empty or for future use */}
-        <div className="side-panel">
-          <div className="tip-box">
-            <h4>💡 {t('aiPreview.tip')}</h4>
-            <p>{t('aiPreview.tipContent')}</p>
-          </div>
-        </div>
       </div>
     </div>
   );
