@@ -18,6 +18,7 @@ function AIPreviewPage() {
   const [exportFormat, setExportFormat] = useState('pdf');
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState(null);
+  const [showFormatDropdown, setShowFormatDropdown] = useState(false);
 
   const agendaData = location.state?.agendaData || null;
   const formData = location.state?.formData || null;
@@ -111,16 +112,50 @@ function AIPreviewPage() {
           <span>{t('aiPreview.aiGenerated')}</span>
         </div>
 
-        <button
-          onClick={handleDownload}
-          disabled={isExporting}
-          className="btn-action primary"
-        >
-          <Download size={16} style={{
-            animation: isExporting ? 'spin 1s linear infinite' : 'none'
-          }} />
-          {isExporting ? t('aiPreview.downloadingAs') : `${t('aiPreview.downloadAs')} ${exportFormat.toUpperCase()}`}
-        </button>
+        <div className="header-actions">
+          <div className="format-selector">
+            <label>{t('aiPreview.downloadFormat')}</label>
+            <div className="format-buttons">
+              <button
+                onClick={() => setExportFormat('pdf')}
+                className={`btn-format ${exportFormat === 'pdf' ? 'active' : ''}`}
+              >
+                PDF
+              </button>
+              <button
+                onClick={() => setExportFormat('word')}
+                className={`btn-format ${exportFormat === 'word' ? 'active' : ''}`}
+              >
+                Word
+              </button>
+              <button
+                onClick={() => setExportFormat('txt')}
+                className={`btn-format ${exportFormat === 'txt' ? 'active' : ''}`}
+              >
+                Text
+              </button>
+            </div>
+          </div>
+
+          <button
+            onClick={handleDownload}
+            disabled={isExporting}
+            className="btn-action primary"
+          >
+            <Download size={16} style={{
+              animation: isExporting ? 'spin 1s linear infinite' : 'none'
+            }} />
+            {isExporting ? t('aiPreview.downloadingAs') : `${t('aiPreview.downloadAs')} ${exportFormat.toUpperCase()}`}
+          </button>
+
+          <button
+            onClick={handleEdit}
+            className="btn-action secondary"
+          >
+            <Edit3 size={16} />
+            {t('actions.editAgenda')}
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -234,45 +269,6 @@ function AIPreviewPage() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Action Panel */}
-        <div className="action-panel">
-          <h2>🎯 {t('aiPreview.nextSteps')}</h2>
-
-          <div className="format-selector">
-            <label>{t('aiPreview.downloadFormat')}</label>
-            <div className="format-buttons">
-              <button
-                onClick={() => setExportFormat('pdf')}
-                className={`btn-format ${exportFormat === 'pdf' ? 'active' : ''}`}
-              >
-                PDF
-              </button>
-              <button
-                onClick={() => setExportFormat('word')}
-                className={`btn-format ${exportFormat === 'word' ? 'active' : ''}`}
-              >
-                Word
-              </button>
-              <button
-                onClick={() => setExportFormat('txt')}
-                className={`btn-format ${exportFormat === 'txt' ? 'active' : ''}`}
-              >
-                Text
-              </button>
-            </div>
-          </div>
-
-          <div className="action-buttons">
-            <button
-              onClick={handleEdit}
-              className="btn-action secondary"
-            >
-              <Edit3 size={16} />
-              {t('actions.editAgenda')}
-            </button>
-          </div>
         </div>
       </div>
     </div>
