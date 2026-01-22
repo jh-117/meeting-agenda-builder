@@ -106,9 +106,44 @@ function AIPreviewPage() {
           </div>
         </div>
 
-        <div className="preview-badge">
-          <CheckCircle size={20} />
-          <span>{t('aiPreview.aiGenerated')}</span>
+        <div className="preview-header-right">
+          <div className="header-format-selector">
+            {['pdf', 'word', 'txt'].map((format) => (
+              <button
+                key={format}
+                onClick={() => setExportFormat(format)}
+                className={`btn-format-header ${exportFormat === format ? 'active' : ''}`}
+                title={format.toUpperCase()}
+              >
+                {format === 'pdf' ? 'PDF' : format === 'word' ? 'DOC' : 'TXT'}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={handleDownload}
+            disabled={isExporting}
+            className="btn-header-action primary"
+            title={t('aiPreview.downloadAs')}
+          >
+            <Download size={18} style={{
+              animation: isExporting ? 'spin 1s linear infinite' : 'none'
+            }} />
+            <span className="btn-text">{t('actions.download')}</span>
+          </button>
+
+          <button
+            onClick={handleEdit}
+            className="btn-header-action secondary"
+            title={t('actions.editAgenda')}
+          >
+            <Edit3 size={18} />
+            <span className="btn-text">{t('actions.edit')}</span>
+          </button>
+
+          <div className="preview-badge">
+            <CheckCircle size={18} />
+          </div>
         </div>
       </div>
 
@@ -121,9 +156,8 @@ function AIPreviewPage() {
         </div>
       )}
 
-      <div className="preview-grid">
-        {/* Preview Panel */}
-        <div className="preview-panel">
+      {/* Preview Panel */}
+      <div className="preview-panel">
           <h2>📋 {t('aiPreview.agendaPreview')}</h2>
 
           <div style={{ marginBottom: '24px' }}>
@@ -223,62 +257,6 @@ function AIPreviewPage() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Action Panel */}
-        <div className="action-panel">
-          <h2>🎯 {t('aiPreview.nextSteps')}</h2>
-
-          <div className="format-selector">
-            <label>{t('aiPreview.downloadFormat')}</label>
-            <div className="format-buttons">
-              <button
-                onClick={() => setExportFormat('pdf')}
-                className={`btn-format ${exportFormat === 'pdf' ? 'active' : ''}`}
-              >
-                PDF
-              </button>
-              <button
-                onClick={() => setExportFormat('word')}
-                className={`btn-format ${exportFormat === 'word' ? 'active' : ''}`}
-              >
-                Word
-              </button>
-              <button
-                onClick={() => setExportFormat('txt')}
-                className={`btn-format ${exportFormat === 'txt' ? 'active' : ''}`}
-              >
-                Text
-              </button>
-            </div>
-          </div>
-
-          <div className="action-buttons">
-            <button
-              onClick={handleDownload}
-              disabled={isExporting}
-              className="btn-action primary"
-            >
-              <Download size={16} style={{
-                animation: isExporting ? 'spin 1s linear infinite' : 'none'
-              }} />
-              {isExporting ? t('aiPreview.downloadingAs') : `${t('aiPreview.downloadAs')} ${exportFormat.toUpperCase()}`}
-            </button>
-
-            <button
-              onClick={handleEdit}
-              className="btn-action secondary"
-            >
-              <Edit3 size={16} />
-              {t('actions.editAgenda')}
-            </button>
-          </div>
-
-          <div className="tip-box">
-            <h4>💡 {t('aiPreview.tip')}</h4>
-            <p>{t('aiPreview.tipContent')}</p>
-          </div>
-        </div>
       </div>
     </div>
   );
